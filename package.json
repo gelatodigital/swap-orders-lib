@@ -1,0 +1,24 @@
+{
+  "name": "orders-lib",
+  "version": "2.0.0",
+  "description": "GelatoNetwork orders library.",
+  "main": "index.js",
+  "author": "0mkar",
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "bootstrap": "lerna bootstrap",
+    "publish:lerna": "lerna publish",
+    "clean": "lerna clean --yes && lerna exec -- rimraf yarn.lock dist/ .rts2_cache_{cjs,esm}/",
+    "build": "lerna run build",
+    "start": "lerna run --parallel --no-bail start -- --noClean",
+    "lint": "lerna run lint --parallel",
+    "test": "lerna run test --parallel"
+  }
+}
