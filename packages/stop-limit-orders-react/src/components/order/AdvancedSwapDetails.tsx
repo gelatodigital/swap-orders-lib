@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { GelatoStopLimitOrders, utils } from "@gelatonetwork/limit-orders-lib";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
@@ -7,7 +8,7 @@ import { useGelatoStopLimitOrders } from "../../hooks/gelato";
 import useGelatoStopLimitOrdersLib from "../../hooks/gelato/useGelatoStopLimitOrdersLib";
 import useGasOverhead from "../../hooks/useGasOverhead";
 import useTheme from "../../hooks/useTheme";
-import { Rate } from "../../state/gorder/actions";
+import { Rate } from "../../state/gstoplimit/actions";
 import { TYPE } from "../../theme";
 import { useWeb3 } from "../../web3";
 import { AutoColumn } from "../Column";
@@ -70,7 +71,8 @@ export function AdvancedStopLimitSwapDetails() {
     //   };
 
     const { minReturn } = library.getFeeAndSlippageAdjustedMinReturn(
-      rawOutputAmount, slippage
+      rawOutputAmount,
+      slippage
     );
 
     const slippagePercentage = slippage / 100;

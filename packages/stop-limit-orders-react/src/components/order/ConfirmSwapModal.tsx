@@ -76,8 +76,9 @@ export default function ConfirmSwapModal({
   // text to show while loading
   const pendingText = `Submitting order to swap ${inputAmount?.toSignificant(
     6
-  )} ${inputAmount?.currency?.symbol} for ${outputAmount?.toSignificant(6)} ${outputAmount?.currency?.symbol
-    }`;
+  )} ${inputAmount?.currency?.symbol} for ${outputAmount?.toSignificant(6)} ${
+    outputAmount?.currency?.symbol
+  }`;
 
   const confirmationContent = useCallback(
     () =>
