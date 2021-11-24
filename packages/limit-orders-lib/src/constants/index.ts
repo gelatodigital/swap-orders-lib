@@ -25,6 +25,7 @@ export const HANDLERS_ADDRESSES = {
   // UniswapV2Router02Handler
   [CHAIN_ID.MATIC]: {
     ["quickswap"]: "0xaccbd2c6ad75ad3394dc5f4b1f606bf111e4eae3",
+    ["quickswap_stoploss"]: "0x6EA82C72732389c5149326e048A46Be9F8bec8E8",
     ["polydex"]: "0x00fc86d360162e4672ec6B427E12ed36F39f1f53",
     ["cafeswap"]: "0xd167afcee4e9a89e69646fd3c27e58b61d1b7f97",
   },
@@ -58,7 +59,7 @@ export const NETWORK_NAME = {
 export const NETWORK_HANDLERS = {
   [CHAIN_ID.MAINNET]: ["uniswap"],
   [CHAIN_ID.ROPSTEN]: ["uniswap"],
-  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap"],
+  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoploss"],
   [CHAIN_ID.FANTOM]: ["spiritswap", "spookyswap", "bombswap", "defyswap"],
   [CHAIN_ID.BSC]: ["pancakeswap"],
   [CHAIN_ID.AVAX]: ["traderjoe"],
@@ -164,3 +165,12 @@ export const NATIVE_WRAPPED_TOKEN_ADDRESS = {
 };
 
 export const GENERIC_GAS_LIMIT_ORDER_EXECUTION = "400000";
+
+export const GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS = {
+  [CHAIN_ID.MATIC]: "0xE912CD26C4A4cfffc175A297F1328aB23313a1a7",
+};
+
+export const STOP_LIMIT_ORDER_SUBGRAPH_URL = {
+  [CHAIN_ID.MATIC]:
+    "https://api.thegraph.com/subgraphs/name/harrytgerman/stoplimitorder",
+};

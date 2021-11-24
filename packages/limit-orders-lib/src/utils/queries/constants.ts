@@ -204,3 +204,39 @@ export const GET_ALL_CANCELLED_ORDERS_BY_OWNER = gql`
     }
   }
 `;
+
+export const GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER = gql`
+  query getOrdersByOwner($owner: String, $module: String) {
+    orders(
+      first: 1000
+      orderBy: updatedAtBlock
+      orderDirection: desc
+      where: { owner: $owner, module: $module }
+    ) {
+      id
+      owner
+      inputToken
+      outputToken
+      minReturn
+      maxReturn
+      module
+      witness
+      secret
+      inputAmount
+      vault
+      bought
+      auxData
+      status
+      createdTxHash
+      executedTxHash
+      cancelledTxHash
+      blockNumber
+      createdAt
+      updatedAt
+      updatedAtBlock
+      updatedAtBlockHash
+      data
+      inputData
+    }
+  }
+`;

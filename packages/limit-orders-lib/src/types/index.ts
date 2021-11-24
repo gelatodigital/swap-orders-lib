@@ -13,7 +13,8 @@ export type Handler =
   | "cafeswap"
   | "pancakeswap"
   | "traderjoe"
-  | "defyswap";
+  | "defyswap"
+  | "quickswap_stoploss";
 
 export interface TransactionData {
   to: string;
@@ -25,7 +26,7 @@ export interface TransactionDataWithSecret {
   payload: TransactionData;
   secret: string;
   witness: string;
-  order: PartialOrder;
+  order: PartialOrder | PartialStopLimitOrder;
 }
 
 export interface WitnessAndSecret {
@@ -61,6 +62,10 @@ export interface Order {
   handler: string | null;
 }
 
+export interface StopLimitOrder extends Order {
+  maxReturn: string;
+}
+
 export interface PartialOrder {
   id: string;
   owner: string;
@@ -75,4 +80,8 @@ export interface PartialOrder {
   data: string;
   inputData: string;
   handler: string | null;
+}
+
+export interface PartialStopLimitOrder extends PartialOrder {
+  maxReturn: string;
 }
