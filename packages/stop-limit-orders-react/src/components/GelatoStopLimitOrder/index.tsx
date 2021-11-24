@@ -38,7 +38,7 @@ import {
   SwapCallbackError,
   Wrapper,
 } from "../order/styleds";
-import SwapHeader from "../order/SwapHeader";
+import { SwapHeader } from "../order/SwapHeader";
 import TradePrice from "../order/TradePrice";
 import { useGelatoStopLimitOrders } from "../../hooks/gelato";
 import { useIsSwapUnsupported } from "../../hooks/useIsSwapUnsupported";
@@ -76,7 +76,7 @@ enum Rate {
   MUL = "MUL",
 }
 
-const PoweredByWrapper = styled(PoweredByGelato) <{ size: number }>`
+const PoweredByWrapper = styled(PoweredByGelato)<{ size: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
   height: ${() => "26px"};
   width: ${({ size }) => (size ? size + "px" : "32px")};
@@ -201,8 +201,8 @@ export default function GelatoStopLimitOrder({
   const allowedSlippage = new Percent(slippage, 10_000);
   const userHasSpecifiedInputOutput = Boolean(
     (independentField === Field.INPUT || independentField === Field.OUTPUT) &&
-    currencies.input &&
-    currencies.output
+      currencies.input &&
+      currencies.output
   );
   const routeNotFound = !trade?.route;
   const isLoadingRoute =
@@ -216,7 +216,7 @@ export default function GelatoStopLimitOrder({
   );
   const showMaxButton = Boolean(
     maxInputAmount?.greaterThan(0) &&
-    !parsedAmounts.input?.equalTo(maxInputAmount)
+      !parsedAmounts.input?.equalTo(maxInputAmount)
   );
 
   const handleSwap = useCallback(() => {
@@ -573,8 +573,8 @@ export default function GelatoStopLimitOrder({
                               ${currencies.input?.symbol}`}
                         </span>
                         {approvalState === ApprovalState.PENDING ||
-                          (approvalSubmitted &&
-                            approvalState === ApprovalState.NOT_APPROVED) ? (
+                        (approvalSubmitted &&
+                          approvalState === ApprovalState.NOT_APPROVED) ? (
                           <Loader stroke="white" />
                         ) : approvalSubmitted &&
                           approvalState === ApprovalState.APPROVED ? (

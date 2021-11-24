@@ -1,10 +1,11 @@
-import { GelatoStopLimitOrders, utils } from "@gelatonetwork/limit-orders-lib";
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { GelatoLimitOrders, utils } from "@gelatonetwork/limit-orders-lib";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { formatUnits } from "@ethersproject/units";
 import React, { useMemo } from "react";
-import { useGelatoStopLimitOrders } from "../../hooks/gelato";
-import useGelatoStopLimitOrdersLib from "../../hooks/gelato/useGelatoStopLimitOrdersLib";
+import { useGelatoLimitOrders } from "../../hooks/gelato";
+import useGelatoLimitOrdersLib from "../../hooks/gelato/useGelatoLimitOrdersLib";
 import useGasOverhead from "../../hooks/useGasOverhead";
 import useTheme from "../../hooks/useTheme";
 import { Rate } from "../../state/gorder/actions";
@@ -14,15 +15,15 @@ import { AutoColumn } from "../Column";
 import { RowBetween, RowFixed } from "../Row";
 import { MouseoverTooltip } from "../Tooltip";
 
-export function AdvancedStopLimitSwapDetails() {
+export function AdvancedSwapDetails() {
   const theme = useTheme();
   const { chainId } = useWeb3();
   const {
-    derivedOrderInfo: { parsedAmounts, rawAmounts, slippage },
+    derivedOrderInfo: { parsedAmounts, rawAmounts },
     orderState: { rateType },
-  } = useGelatoStopLimitOrders();
+  } = useGelatoLimitOrders();
 
-  const library = useGelatoStopLimitOrdersLib();
+  const library = useGelatoLimitOrdersLib();
 
   const { gasPrice, realExecutionPriceAsString } = useGasOverhead(
     parsedAmounts.input,
@@ -35,17 +36,19 @@ export function AdvancedStopLimitSwapDetails() {
   const realExecutionRateWithSymbols = useMemo(
     () =>
       parsedAmounts.input?.currency &&
-        parsedAmounts.output?.currency &&
-        realExecutionPriceAsString
+      parsedAmounts.output?.currency &&
+      realExecutionPriceAsString
         ? realExecutionPriceAsString === "never executes"
           ? realExecutionPriceAsString
-          : `1 ${isInvertedRate
-            ? parsedAmounts.output.currency.symbol
-            : parsedAmounts.input.currency.symbol
-          } = ${realExecutionPriceAsString} ${isInvertedRate
-            ? parsedAmounts.input.currency.symbol
-            : parsedAmounts.output.currency.symbol
-          }`
+          : `1 ${
+              isInvertedRate
+                ? parsedAmounts.output.currency.symbol
+                : parsedAmounts.input.currency.symbol
+            } = ${realExecutionPriceAsString} ${
+              isInvertedRate
+                ? parsedAmounts.input.currency.symbol
+                : parsedAmounts.output.currency.symbol
+            }`
         : undefined,
     [parsedAmounts, realExecutionPriceAsString, isInvertedRate]
   );
@@ -62,19 +65,19 @@ export function AdvancedStopLimitSwapDetails() {
         gelatoFeePercentage: undefined,
       };
 
-    // if (utils.isEthereumChain(chainId))
-    //   return {
-    //     minReturn: outputAmount,
-    //     slippagePercentage: undefined,
-    //     gelatoFeePercentage: undefined,
-    //   };
+    if (utils.isEthereumChain(chainId))
+      return {
+        minReturn: outputAmount,
+        slippagePercentage: undefined,
+        gelatoFeePercentage: undefined,
+      };
 
     const { minReturn } = library.getFeeAndSlippageAdjustedMinReturn(
-      rawOutputAmount, slippage
+      rawOutputAmount
     );
 
-    const slippagePercentage = slippage / 100;
-    const gelatoFeePercentage = GelatoStopLimitOrders.gelatoFeeBPS / 100;
+    const slippagePercentage = GelatoLimitOrders.slippageBPS / 100;
+    const gelatoFeePercentage = GelatoLimitOrders.gelatoFeeBPS / 100;
 
     const minReturnParsed = CurrencyAmount.fromRawAmount(
       outputAmount.currency,
@@ -131,12 +134,13 @@ export function AdvancedStopLimitSwapDetails() {
           <RowBetween>
             <RowFixed>
               <MouseoverTooltip
-                text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${realExecutionRateWithSymbols
-                  ? `Assuming current gas price it should execute when ` +
-                  realExecutionRateWithSymbols +
-                  "."
-                  : ""
-                  }`}
+                text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                  realExecutionRateWithSymbols
+                    ? `Assuming current gas price it should execute when ` +
+                      realExecutionRateWithSymbols +
+                      "."
+                    : ""
+                }`}
               >
                 <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
                   Real Execution Price (?)
@@ -164,8 +168,9 @@ export function AdvancedStopLimitSwapDetails() {
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
           {minReturn
-            ? `${minReturn.toSignificant(4)} ${outputAmount ? outputAmount.currency.symbol : "-"
-            }`
+            ? `${minReturn.toSignificant(4)} ${
+                outputAmount ? outputAmount.currency.symbol : "-"
+              }`
             : "-"}
         </TYPE.black>
       </RowBetween>

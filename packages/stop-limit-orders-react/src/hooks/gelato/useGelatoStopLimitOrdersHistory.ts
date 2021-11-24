@@ -31,7 +31,7 @@ export default function useGelatoStopLimitOrdersHistory(
     pending: StopLimitOrder[];
     confirmed: StopLimitOrder[];
   }>({ pending: [], confirmed: [] });
-  const [executedOrders, setExecutedOrders] = useState<Order[]>([]);
+  const [executedOrders, setExecutedOrders] = useState<StopLimitOrder[]>([]);
 
   const state = useSelector<AppState, AppState["gtransactions"]>(
     (state) => state.gtransactions
@@ -59,11 +59,9 @@ export default function useGelatoStopLimitOrdersHistory(
             saveOrder(chainId, account, order, false);
           });
 
-          const openOrdersLS = getLSOrders(
-            chainId,
-            account,
-            false
-          ).filter((order) => order.status === "open");
+          const openOrdersLS = getLSOrders(chainId, account, false).filter(
+            (order) => order.status === "open"
+          );
 
           const pendingOrdersLS = getLSOrders(chainId, account, true);
 
@@ -86,11 +84,9 @@ export default function useGelatoStopLimitOrdersHistory(
         })
         .catch((e) => {
           console.error("Error fetching open orders from subgraph", e);
-          const openOrdersLS = getLSOrders(
-            chainId,
-            account,
-            false
-          ).filter((order) => order.status === "open");
+          const openOrdersLS = getLSOrders(chainId, account, false).filter(
+            (order) => order.status === "open"
+          );
 
           const pendingOrdersLS = getLSOrders(chainId, account, true);
 
@@ -134,16 +130,15 @@ export default function useGelatoStopLimitOrdersHistory(
             }
           });
 
-          const cancelledOrdersLS = getLSOrders(
-            chainId,
-            account,
-            false
-          ).filter((order) => order.status === "cancelled");
+          const cancelledOrdersLS = getLSOrders(chainId, account, false).filter(
+            (order) => order.status === "cancelled"
+          );
 
           const pendingCancelledOrdersLS = getLSOrders(
             chainId,
             account,
-            true).filter((order) => order.status === "cancelled");
+            true
+          ).filter((order) => order.status === "cancelled");
 
           setCancelledOrders({
             confirmed: cancelledOrdersLS.sort(newOrdersFirst),
@@ -153,11 +148,9 @@ export default function useGelatoStopLimitOrdersHistory(
         .catch((e) => {
           console.error("Error fetching cancelled orders from subgraph", e);
 
-          const cancelledOrdersLS = getLSOrders(
-            chainId,
-            account,
-            false
-          ).filter((order) => order.status === "cancelled");
+          const cancelledOrdersLS = getLSOrders(chainId, account, false).filter(
+            (order) => order.status === "cancelled"
+          );
 
           const pendingCancelledOrdersLS = getLSOrders(
             chainId,
@@ -193,20 +186,17 @@ export default function useGelatoStopLimitOrdersHistory(
             }
           });
 
-          const executedOrdersLS = getLSOrders(
-            chainId,
-            account,
-            false
-          ).filter((order) => order.status === "executed");
+          const executedOrdersLS = getLSOrders(chainId, account, false).filter(
+            (order) => order.status === "executed"
+          );
 
           setExecutedOrders(executedOrdersLS.sort(newOrdersFirst));
         })
         .catch((e) => {
           console.error("Error fetching executed orders from subgraph", e);
-          const executedOrdersLS = getLSOrders(
-            chainId,
-            account,
-            false).filter((order) => order.status === "executed");
+          const executedOrdersLS = getLSOrders(chainId, account, false).filter(
+            (order) => order.status === "executed"
+          );
 
           setExecutedOrders(executedOrdersLS.sort(newOrdersFirst));
         });

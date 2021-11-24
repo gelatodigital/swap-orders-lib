@@ -9,7 +9,7 @@ import { useTradeExactIn } from "./useTrade";
 import { tryParseAmount } from "../state/gstoplimit/hooks";
 import { Currency, CurrencyAmount, Price } from "@uniswap/sdk-core";
 import JSBI from "jsbi";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isEthereumChain } from "@gelatonetwork/limit-orders-lib";
 import { Rate } from "../state/gstoplimit/actions";
 
 export default function useGasOverhead(
@@ -84,23 +84,23 @@ export default function useGasOverhead(
     else
       return rateType === Rate.DIV
         ? realInputAmount
-          .divide(outputAmount.asFraction)
-          ?.multiply(
-            JSBI.exponentiate(
-              JSBI.BigInt(10),
-              JSBI.BigInt(outputAmount.currency.decimals)
+            .divide(outputAmount.asFraction)
+            ?.multiply(
+              JSBI.exponentiate(
+                JSBI.BigInt(10),
+                JSBI.BigInt(outputAmount.currency.decimals)
+              )
             )
-          )
-          ?.toSignificant(6)
+            ?.toSignificant(6)
         : outputAmount
-          ?.divide(realInputAmount.asFraction)
-          ?.multiply(
-            JSBI.exponentiate(
-              JSBI.BigInt(10),
-              JSBI.BigInt(inputAmount.currency.decimals)
+            ?.divide(realInputAmount.asFraction)
+            ?.multiply(
+              JSBI.exponentiate(
+                JSBI.BigInt(10),
+                JSBI.BigInt(inputAmount.currency.decimals)
+              )
             )
-          )
-          ?.toSignificant(6);
+            ?.toSignificant(6);
   }, [
     rateType,
     realInputAmount,
@@ -112,8 +112,8 @@ export default function useGasOverhead(
   return chainId && isEthereumChain(chainId)
     ? { realExecutionPrice, gasPrice, realExecutionPriceAsString }
     : {
-      realExecutionPrice: undefined,
-      realExecutionPriceAsString: undefined,
-      gasPrice: undefined,
-    };
+        realExecutionPrice: undefined,
+        realExecutionPriceAsString: undefined,
+        gasPrice: undefined,
+      };
 }

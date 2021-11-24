@@ -32,12 +32,13 @@ export function RatePercentage({
         <span style={{ color: priceImpactColor }}>
           {rateType === Rate.MUL
             ? `Sell ${inputCurrency?.symbol ?? "-"} ${priceImpact.toSignificant(
-              3
-            )}% ${priceImpact.lessThan("0") ? "below" : "above"} market`
+                3
+              )}% ${priceImpact.lessThan("0") ? "below" : "above"} market`
             : `Buy ${outputCurrency?.symbol ?? "-"} ${priceImpact
-              .multiply(-1)
-              .toSignificant(3)}% ${priceImpact.lessThan("0") ? "above" : "below"
-            } market`}
+                .multiply(-1)
+                .toSignificant(3)}% ${
+                priceImpact.lessThan("0") ? "above" : "below"
+              } market`}
         </span>
       ) : (
         "-"

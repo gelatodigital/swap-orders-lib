@@ -11,7 +11,7 @@ import {
 import { useTokenContract } from "./useContract";
 import { useWeb3 } from "../web3";
 import { useTokenAllowance } from "./useTokenAllowance";
-import useGelatoLimitOrdersLib from "./gelato/useGelatoLimitOrdersLib";
+import useGelatoLimitOrdersLib from "./gelato/useGelatoStopLimitOrdersLib";
 
 export enum ApprovalState {
   UNKNOWN = "UNKNOWN",

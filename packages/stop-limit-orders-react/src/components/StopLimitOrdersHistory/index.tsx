@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-  useEffect,
-} from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components/macro";
 import { darken } from "polished";
 import { TYPE } from "../../theme";
