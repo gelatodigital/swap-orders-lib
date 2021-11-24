@@ -25,7 +25,7 @@ import { formatTokenAmount } from "../../utils/formatTokenAmount";
 import { MouseoverTooltip } from "../Tooltip";
 import HoverInlineText from "../HoverInlineText";
 import DropDown from "../../assets/images/dropdown.svg";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isEthereumChain } from "@gelatonetwork/limit-orders-lib";
 import { Pair } from "../../entities/pair";
 import TradePrice from "../order/TradePrice";
 import { RatePercentage } from "./RatePercentage";

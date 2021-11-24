@@ -628,7 +628,7 @@ export default function GelatoStopLimitOrder({
                       txHash: undefined,
                     });
                   }}
-                  id="limit-order-button"
+                  id="stop-limit-order-button"
                   disabled={!isValid}
                   error={false}
                 >

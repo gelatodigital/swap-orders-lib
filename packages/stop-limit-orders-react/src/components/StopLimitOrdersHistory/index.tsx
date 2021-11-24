@@ -47,20 +47,20 @@ const StyledNavLink = styled.div<{ active: boolean }>`
     background-color: ${theme.bg2};
   `}
 
-  :hover,
+  : hover,
   :focus {
     color: ${({ theme }) => darken(0.1, theme.text1)};
   }
 `;
 
 const HeaderTitles = styled(Row)`
-  justify-self: center;
-  background-color: ${({ theme }) => theme.bg0};
-  padding: 4px;
-  border-radius: 16px;
-  display: grid;
-  grid-auto-flow: column;
-  overflow: auto;
+justify - self: center;
+background - color: ${({ theme }) => theme.bg0};
+padding: 4px;
+border - radius: 16px;
+display: grid;
+grid - auto - flow: column;
+overflow: auto;
   ${({ theme }) => theme.mediaWidth.upToMedium`
     justify-self: center;
   `};
@@ -78,7 +78,7 @@ const LimitOrdersHistoryHeader = ({
   <StyledLimitOrderHistoryHeader>
     <TYPE.black fontWeight={500} fontSize={16}>
       <StyledNavLink
-        id={`order-history-nav-link`}
+        id={`order - history - nav - link`}
         active={active}
         onClick={onClick}
       >
