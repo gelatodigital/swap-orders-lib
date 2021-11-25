@@ -4,7 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
-import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
+// import { GelatoProvider } from '@gelatonetwork/limit-orders-react';
+import { GelatoProvider } from '@gelatonetwork/stop-limit-orders-react';
+
 import { Provider } from 'react-redux';
 import { NetworkContextName } from './constants/misc';
 import { useActiveWeb3React } from './hooks/web3';
@@ -39,10 +41,10 @@ ReactDOM.render(
       <Web3ProviderNetwork getLibrary={getLibrary}>
         <Provider store={store}>
           <ThemeProvider>
-          <ThemedGlobalStyle />
-          <Gelato>
-            <App />
-          </Gelato>
+            <ThemedGlobalStyle />
+            <Gelato>
+              <App />
+            </Gelato>
           </ThemeProvider>
         </Provider>
       </Web3ProviderNetwork>
