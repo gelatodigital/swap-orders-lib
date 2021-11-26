@@ -1,6 +1,5 @@
 {
   "name": "orders-lib",
-  "version": "2.0.0",
   "description": "GelatoNetwork orders library.",
   "main": "index.js",
   "author": "0mkar",
