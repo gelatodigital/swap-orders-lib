@@ -5,3 +5,5 @@ dist/
 
 # bundle analyzer
 stats.html
+
+.eslintcache
