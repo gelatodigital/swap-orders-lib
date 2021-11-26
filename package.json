@@ -21,9 +21,6 @@
     "start": "lerna run --parallel --no-bail start -- --noClean",
     "lint": "lerna run lint --parallel",
     "test": "lerna run test --parallel",
-    "ci:all": "yarn ci:stop-limit & yarn ci:limit & yarn ci:lib",
-    "ci:stop-limit": "yarn workspace @gelatonetwork/stop-limit-orders-react prepare",
-    "ci:limit": "yarn workspace @gelatonetwork/limit-orders-react prepare",
-    "ci:lib": "yarn workspace @gelatonetwork/limit-orders-lib prepare"
+    "prepare": "husky install"
   }
 }
