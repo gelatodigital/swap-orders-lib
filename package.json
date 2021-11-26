@@ -7,6 +7,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
+    "husky": "^7.0.0",
     "lerna": "^4.0.0"
   },
   "workspaces": [
@@ -19,6 +20,10 @@
     "build": "lerna run build",
     "start": "lerna run --parallel --no-bail start -- --noClean",
     "lint": "lerna run lint --parallel",
-    "test": "lerna run test --parallel"
+    "test": "lerna run test --parallel",
+    "prepare": "yarn prepare:stop-limit & yarn prepare:limit & yarn prepare:lib",
+    "prepare:stop-limit": "yarn workspace @gelatonetwork/stop-limit-orders-react prepare",
+    "prepare:limit": "yarn workspace @gelatonetwork/limit-orders-react prepare",
+    "prepare:lib": "yarn workspace @gelatonetwork/limit-orders-lib prepare"
   }
 }
