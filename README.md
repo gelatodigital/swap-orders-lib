@@ -22,3 +22,9 @@ yarn link @gelatonetwork/range-orders-react
 ```shell
 yarn workspace @gelatonetwork/limit-orders-react build
 ```
+
+## Publish packages
+```shell
+yarn publish:lerna # publish latest versions
+yarn publish:lerna:next # publish next versions
+```
