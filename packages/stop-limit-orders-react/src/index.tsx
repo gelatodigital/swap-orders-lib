@@ -2,7 +2,10 @@ import React from "react";
 import { Handler } from "@gelatonetwork/limit-orders-lib";
 export * from "@gelatonetwork/limit-orders-lib";
 
-import { gelatoReducers, GELATO_PERSISTED_KEYS } from "./state";
+import {
+  gelatoReducers as gelatoStopLimitReducers,
+  GELATO_PERSISTED_KEYS as GELATO_STOPLIMIT_PERSISTED_KEYS,
+} from "./state";
 import ApplicationUpdater from "./state/gapplication/updater";
 import ListsUpdater from "./state/glists/updater";
 import MulticallUpdater from "./state/gmulticall/updater";
@@ -92,8 +95,8 @@ export {
   GelatoStopLimitOrderPanel,
   GelatoStopLimitOrdersHistoryPanel,
   useGasPrice,
-  gelatoReducers,
-  GELATO_PERSISTED_KEYS,
+  gelatoStopLimitReducers,
+  GELATO_STOPLIMIT_PERSISTED_KEYS,
   clearAllTransactions,
   useUSDCValue,
   useCurrency,

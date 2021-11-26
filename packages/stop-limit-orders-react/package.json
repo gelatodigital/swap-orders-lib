@@ -35,6 +35,7 @@
     "format": "prettier --write .",
     "generate-contracts-typings": "typechain --target=ethers-v5 --outDir src/contracts/types './src/**/abis/*.json'",
     "lint": "eslint --cache .",
+    "pre-commit": "yarn prepare",
     "prepare": "yarn build && yarn format && yarn lint"
   },
   "lint-staged": {

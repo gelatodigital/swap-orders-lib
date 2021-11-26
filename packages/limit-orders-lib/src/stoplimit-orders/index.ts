@@ -156,13 +156,13 @@ export class GelatoStopLimitOrders extends GelatoBase {
 
     const encodedData = this.handlerAddress
       ? this.abiEncoder.encode(
-        ["address", "uint256", "address", "uint256"],
-        [outputToken, minReturn, this.handlerAddress, maxReturn]
-      )
+          ["address", "uint256", "address", "uint256"],
+          [outputToken, minReturn, this.handlerAddress, maxReturn]
+        )
       : this.abiEncoder.encode(
-        ["address", "uint256", "address", "uint256"],
-        [outputToken, minReturn, "", maxReturn]
-      );
+          ["address", "uint256", "address", "uint256"],
+          [outputToken, minReturn, "", maxReturn]
+        );
 
     return {
       payload,
@@ -211,13 +211,13 @@ export class GelatoStopLimitOrders extends GelatoBase {
 
     const encodedData = this.handlerAddress
       ? this.abiEncoder.encode(
-        ["address", "uint256", "address", "uint256"],
-        [outputToken, minReturn, this.handlerAddress, maxReturn]
-      )
+          ["address", "uint256", "address", "uint256"],
+          [outputToken, minReturn, this.handlerAddress, maxReturn]
+        )
       : this.abiEncoder.encode(
-        ["address", "uint256", "address", "uint256"],
-        [outputToken, minReturn, "", maxReturn]
-      );
+          ["address", "uint256", "address", "uint256"],
+          [outputToken, minReturn, "", maxReturn]
+        );
 
     let data, value, to;
     if (isNetworkGasToken(inputToken)) {
