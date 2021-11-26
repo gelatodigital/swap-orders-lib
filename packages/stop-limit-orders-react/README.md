@@ -25,7 +25,7 @@ Use Gelato's react component or hooks to place limit buy and sell orders on Ethe
 
 or
 
-`npm install --save-dev @gelatonetwork/limit-orders-react`
+`npm install --save-dev @gelatonetwork/stop-limit-orders-react`
 
 ## Getting started
 
@@ -37,20 +37,20 @@ In your store pass the gelato reducers:
 import { configureStore } from "@reduxjs/toolkit";
 import { save, load } from "redux-localstorage-simple";
 import {
-  gelatoReducers,
-  GELATO_PERSISTED_KEYS,
+  gelatoStopLimitReducers,
+  GELATO_STOPLIMIT_PERSISTED_KEYS,
 } from "@gelatonetwork/limit-orders-react";
 
 // OPTIONAL: set the gelato persisted keys
 // If don't use `redux-localstorage-simple` you can skip this step and only set the reducers
 // You can also skip you don't use the GelatoLimitOrderPanel component
-const PERSISTED_KEYS: string[] = ["your_keys", ...GELATO_PERSISTED_KEYS];
+const PERSISTED_KEYS: string[] = ["your_keys", ...GELATO_STOPLIMIT_PERSISTED_KEYS];
 
 const store = configureStore({
   reducer: {
     ...your_reducers,
     // Pass the gelato reducers
-    ...gelatoReducers,
+    ...gelatoStopLimitReducers,
   },
   middleware: [save({ states: PERSISTED_KEYS, debounce: 1000 })],
   preloadedState: load({ states: PERSISTED_KEYS }),
@@ -127,16 +127,16 @@ Using the Gelato react component is the easiest option to get limit orders into 
 ```tsx
 import React from "react";
 import {
-  GelatoLimitOrderPanel,
-  GelatoLimitOrdersHistoryPanel,
+  GelatoStopLimitOrderPanel,
+  GelatoStopLimitOrdersHistoryPanel,
 } from "@gelatonetwork/limit-orders-react";
 
 export default function LimitOrder() {
   return (
     <>
       {/*To hide common bases in search modal you can pass into the component `showCommonBases={false}` */}
-      <GelatoLimitOrderPanel />
-      <GelatoLimitOrdersHistoryPanel />
+      <GelatoStopLimitOrderPanel />
+      <GelatoStopLimitOrdersHistoryPanel />
     </>
   );
 }
@@ -148,20 +148,20 @@ Using the gelato hooks all logic and state updates are encapsulated and all your
 
 Hooks available:
 
-- `useGelatoLimitOrders()`
-- `useGelatoLimitOrdersHandlers()`
-- `useGelatoLimitOrdersHistory()`
-- `useGelatoLimitOrdersLib()`
+- `useGelatoStopLimitOrders()`
+- `useGelatoStopLimitOrdersHandlers()`
+- `useGelatoStopLimitOrdersHistory()`
+- `useGelatoStopLimitOrdersLib()`
 
 ```tsx
 import React from "react";
 import {
-  useGelatoLimitOrders,
-  GelatoLimitOrdersHistoryPanel,
-} from "@gelatonetwork/limit-orders-react";
+  useGelatoStopLimitOrders,
+  GelatoStopLimitOrdersHistoryPanel,
+} from "@gelatonetwork/stop-limit-orders-react";
 
 
-export default function LimitOrder() {
+export default function StopLimitOrder() {
   const {
     handlers: {
       handleInput,
@@ -180,9 +180,9 @@ export default function LimitOrder() {
       inputError,
     },
     orderState: { independentField, rateType, typedValue },
-  } = useGelatoLimitOrders();
+  } = useGelatoStopLimitOrders();
 
-  const { open, cancelled, executed } = useGelatoLimitOrdersHistory();
+  const { open, cancelled, executed } = useGelatoStopLimitOrdersHistory();
 
   ...
 }
@@ -204,13 +204,13 @@ Note: You can also import the following hooks and functions from the library:
 ### Types
 
 ```typescript
-useGelatoLimitOrders(): {
+useGelatoStopLimitOrders(): {
   handlers: GelatoLimitOrdersHandlers;
   derivedOrderInfo: DerivedOrderInfo;
   orderState: OrderState;
 }
 
-useGelatoLimitOrdersHandlers(): {
+useGelatoStopLimitOrdersHandlers(): {
   handleLimitOrderSubmission: (
     orderToSubmit: {
       inputToken: string;
@@ -246,13 +246,13 @@ useGelatoLimitOrdersHandlers(): {
 }
 
 // includeOrdersWithNullHandler defaults to false
-useGelatoLimitOrdersHistory(includeOrdersWithNullHandler?: boolean): {
+useGelatoStopLimitOrdersHistory(includeOrdersWithNullHandler?: boolean): {
   open: { pending: Order[]; confirmed: Order[] };
   cancelled: { pending: Order[]; confirmed: Order[] };
   executed: Order[];
 }
 
-useGelatoLimitOrdersLib(): GelatoLimitOrders | undefined
+useGelatoStopLimitOrdersLib(): GelatoStopLimitOrders | undefined
 ```
 
 ### Need help? Want to add a new handler?
