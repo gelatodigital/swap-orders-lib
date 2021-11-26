@@ -1,23 +1,23 @@
 {
   "name": "@gelatonetwork/stop-limit-orders-react",
-  "version": "1.6.0",
-  "description": "React Library for creating limit orders via Gelato",
+  "version": "1.0.0",
+  "description": "React Library for creating stop limit orders via Gelato",
   "keywords": [
     "ethereum",
     "uniswap",
-    "limit orders",
+    "stop limit orders",
     "solidity",
     "web3",
     "smart contracts",
     "gelato"
   ],
-  "homepage": "https://github.com/gelatodigital/limit-orders-lib#readme",
+  "homepage": "https://github.com/gelatodigital/swap-orders-lib/blob/master/packages/stop-limit-orders-react/README.md",
   "bugs": {
-    "url": "https://github.com/gelatodigital/limit-orders-lib/issues"
+    "url": "https://github.com/gelatodigital/swap-orders-lib/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gelatodigital/limit-orders-lib.git"
+    "url": "git+https://github.com/gelatodigital/swap-orders-lib.git"
   },
   "license": "GPL-3.0-only",
   "author": "Gelato Network",
