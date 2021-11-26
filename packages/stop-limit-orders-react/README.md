@@ -1,6 +1,6 @@
 [![npm version](https://badge.fury.io/js/%40gelatonetwork%2Flimit-orders-lib.svg)](https://badge.fury.io/js/%40gelatonetwork%2Flimit-orders-lib)
 
-# Gelato Limit Order React SDK
+# Gelato Stop Limit Order React SDK
 
 Use Gelato's react component or hooks to place limit buy and sell orders on Ethereum, Polygon and Fantom using Gelato Network.
 
