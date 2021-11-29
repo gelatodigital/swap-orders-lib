@@ -1,4 +1,5 @@
-import { BigNumberish, BytesLike } from "ethers";
+import { BytesLike } from "@ethersproject/bytes";
+import { BigNumberish } from "@ethersproject/bignumber";
 
 // mainnet | ropsten | goerli | bsc | matic | fantom | avalanche
 export type ChainId = 1 | 3 | 5 | 56 | 137 | 250 | 43114;
@@ -14,7 +15,7 @@ export type Handler =
   | "pancakeswap"
   | "traderjoe"
   | "defyswap"
-  | "quickswap_stoploss";
+  | "pangolin";
 
 export interface TransactionData {
   to: string;

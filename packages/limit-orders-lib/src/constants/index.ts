@@ -43,6 +43,7 @@ export const HANDLERS_ADDRESSES = {
   // UniswapV2Router02Handler
   [CHAIN_ID.AVAX]: {
     ["traderjoe"]: "0x88f8CCC064bA2D39cF08D57B6e7504a7B6bE8E4e",
+    ["pangolin"]: "0x8b206547cfe6f35a77ddab2d6d97260765a349ef",
   },
 };
 
@@ -59,10 +60,10 @@ export const NETWORK_NAME = {
 export const NETWORK_HANDLERS = {
   [CHAIN_ID.MAINNET]: ["uniswap"],
   [CHAIN_ID.ROPSTEN]: ["uniswap"],
-  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoploss"],
+  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap"],
   [CHAIN_ID.FANTOM]: ["spiritswap", "spookyswap", "bombswap", "defyswap"],
   [CHAIN_ID.BSC]: ["pancakeswap"],
-  [CHAIN_ID.AVAX]: ["traderjoe"],
+  [CHAIN_ID.AVAX]: ["traderjoe", "pangolin"],
 };
 
 export const OLD_SUBGRAPH_URL = {

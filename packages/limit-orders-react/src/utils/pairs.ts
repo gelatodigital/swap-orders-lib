@@ -42,6 +42,10 @@ const DEFYSWAP_FACTORY_ADDRESS = "0xAffdbEAE1ec595cba4C262Bdb52A6083aEc2e2a6";
 const DEFYSWAP_INIT_CODE_HASH =
   "0x28612bce471572b813dde946a942d1fee6ca4be6437ac8c23a7ca01a3b127ba6";
 
+const PANGOLIN_FACTORY_ADDRESS = "0xefa94DE7a4656D787667C749f7E1223D71E9FD88";
+const PANGOLIN_INIT_CODE_HASH =
+  "0x40231f6b438bce0797c9ada29b718a87ea0a5cea3fe9a771abdd76bd41a3e545";
+
 const getSpiritSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
     ? [tokenA, tokenB]
@@ -177,6 +181,21 @@ const getDefySwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   );
 };
 
+const getPangolinPairAddress = (tokenA: Token, tokenB: Token): string => {
+  const tokens = tokenA.sortsBefore(tokenB)
+    ? [tokenA, tokenB]
+    : [tokenB, tokenA]; // does safety checks
+
+  return getCreate2Address(
+    PANGOLIN_FACTORY_ADDRESS,
+    keccak256(
+      ["bytes"],
+      [pack(["address", "address"], [tokens[0].address, tokens[1].address])]
+    ),
+    PANGOLIN_INIT_CODE_HASH
+  );
+};
+
 export const calculatePairAddressByHandler = (
   tokenA: Token,
   tokenB: Token,
@@ -215,6 +234,8 @@ export const calculatePairAddressByHandler = (
     switch (handler) {
       case "traderjoe":
         return getTraderJoePairAddress(tokenA, tokenB);
+      case "pangolin":
+        return getPangolinPairAddress(tokenA, tokenB);
       default:
         return getTraderJoePairAddress(tokenA, tokenB);
     }
