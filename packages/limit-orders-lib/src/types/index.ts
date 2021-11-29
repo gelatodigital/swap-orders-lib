@@ -15,7 +15,8 @@ export type Handler =
   | "pancakeswap"
   | "traderjoe"
   | "defyswap"
-  | "pangolin";
+  | "pangolin"
+  | "quickswap_stoploss";
 
 export interface TransactionData {
   to: string;

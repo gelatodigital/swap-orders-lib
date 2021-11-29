@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gelatodigital/limit-orders-lib.git"
+    "url": "git+https://github.com/gelatodigital/swap-orders-lib.git"
   },
   "keywords": [
     "ethereum",
@@ -32,9 +32,9 @@
   "author": "Gelato Network",
   "license": "GPL-3.0-only",
   "bugs": {
-    "url": "https://github.com/gelatodigital/limit-orders-lib/issues"
+    "url": "https://github.com/gelatodigital/swap-orders-lib/issues"
   },
-  "homepage": "https://github.com/gelatodigital/limit-orders-lib#readme",
+  "homepage": "https://github.com/gelatodigital/swap-orders-lib/tree/master/packages/limit-orders-lib#readme",
   "dependencies": {
     "ethers": "^5.4.6",
     "graphql": "^15.5.3",
