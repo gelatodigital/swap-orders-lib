@@ -1,10 +1,9 @@
 {
-  "name": "orders-lib",
-  "description": "GelatoNetwork orders library.",
+  "name": "swap-orders-lib",
+  "description": "Gelato Network orders library",
   "main": "index.js",
-  "author": "0mkar",
-  "license": "MIT",
-  "private": true,
+  "author": "Gelato Network",
+  "license": "GPL-3.0-only",
   "devDependencies": {
     "husky": "^7.0.0",
     "lerna": "^4.0.0"
