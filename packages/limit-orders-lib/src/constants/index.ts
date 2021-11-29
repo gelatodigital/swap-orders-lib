@@ -25,7 +25,6 @@ export const HANDLERS_ADDRESSES = {
   // UniswapV2Router02Handler
   [CHAIN_ID.MATIC]: {
     ["quickswap"]: "0xaccbd2c6ad75ad3394dc5f4b1f606bf111e4eae3",
-    ["quickswap_stoploss"]: "0x6EA82C72732389c5149326e048A46Be9F8bec8E8",
     ["polydex"]: "0x00fc86d360162e4672ec6B427E12ed36F39f1f53",
     ["cafeswap"]: "0xd167afcee4e9a89e69646fd3c27e58b61d1b7f97",
   },
@@ -43,6 +42,7 @@ export const HANDLERS_ADDRESSES = {
   // UniswapV2Router02Handler
   [CHAIN_ID.AVAX]: {
     ["traderjoe"]: "0x88f8CCC064bA2D39cF08D57B6e7504a7B6bE8E4e",
+    ["pangolin"]: "0x8b206547cfe6f35a77ddab2d6d97260765a349ef",
   },
 };
 
@@ -59,10 +59,10 @@ export const NETWORK_NAME = {
 export const NETWORK_HANDLERS = {
   [CHAIN_ID.MAINNET]: ["uniswap"],
   [CHAIN_ID.ROPSTEN]: ["uniswap"],
-  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoploss"],
+  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap"],
   [CHAIN_ID.FANTOM]: ["spiritswap", "spookyswap", "bombswap", "defyswap"],
   [CHAIN_ID.BSC]: ["pancakeswap"],
-  [CHAIN_ID.AVAX]: ["traderjoe"],
+  [CHAIN_ID.AVAX]: ["traderjoe", "pangolin"],
 };
 
 export const OLD_SUBGRAPH_URL = {
