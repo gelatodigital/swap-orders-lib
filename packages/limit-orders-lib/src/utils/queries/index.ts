@@ -1,9 +1,14 @@
 import { request } from "graphql-request";
-import { OLD_SUBGRAPH_URL, SUBGRAPH_URL, GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS } from "../../constants";
+import {
+  OLD_SUBGRAPH_URL,
+  SUBGRAPH_URL,
+  GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS,
+} from "../../constants";
 import { Order } from "../../types";
 import { GET_ALL_ORDERS_BY_OWNER, GET_ORDER_BY_ID } from "./constants";
 
-const StopLimitModule = (chainId: number) => GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase()
+const StopLimitModule = (chainId: number) =>
+  GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase();
 
 export const queryOrder = async (
   orderId: string,
@@ -12,14 +17,14 @@ export const queryOrder = async (
   try {
     const dataFromOldSubgraph = OLD_SUBGRAPH_URL[chainId]
       ? await request(OLD_SUBGRAPH_URL[chainId], GET_ORDER_BY_ID, {
-        id: orderId.toLowerCase(),
-      })
+          id: orderId.toLowerCase(),
+        })
       : { orders: [] };
 
     const dataFromNewSubgraph = SUBGRAPH_URL[chainId]
       ? await request(SUBGRAPH_URL[chainId], GET_ORDER_BY_ID, {
-        id: orderId.toLowerCase(),
-      })
+          id: orderId.toLowerCase(),
+        })
       : { orders: [] };
 
     const allOrders = [
@@ -40,14 +45,14 @@ export const queryOrders = async (
   try {
     const dataFromOldSubgraph = OLD_SUBGRAPH_URL[chainId]
       ? await request(OLD_SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const dataFromNewSubgraph = SUBGRAPH_URL[chainId]
       ? await request(SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const allOrders = [
@@ -68,14 +73,14 @@ export const queryOpenOrders = async (
   try {
     const dataFromOldSubgraph = OLD_SUBGRAPH_URL[chainId]
       ? await request(OLD_SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const dataFromNewSubgraph = SUBGRAPH_URL[chainId]
       ? await request(SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const allOrders = [
@@ -98,14 +103,14 @@ export const queryPastOrders = async (
   try {
     const dataFromOldSubgraph = OLD_SUBGRAPH_URL[chainId]
       ? await request(OLD_SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const dataFromNewSubgraph = SUBGRAPH_URL[chainId]
       ? await request(SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const allOrders = [
@@ -128,14 +133,14 @@ export const queryExecutedOrders = async (
   try {
     const dataFromOldSubgraph = OLD_SUBGRAPH_URL[chainId]
       ? await request(OLD_SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const dataFromNewSubgraph = SUBGRAPH_URL[chainId]
       ? await request(SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const allOrders = [
@@ -158,14 +163,14 @@ export const queryCancelledOrders = async (
   try {
     const dataFromOldSubgraph = OLD_SUBGRAPH_URL[chainId]
       ? await request(OLD_SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const dataFromNewSubgraph = SUBGRAPH_URL[chainId]
       ? await request(SUBGRAPH_URL[chainId], GET_ALL_ORDERS_BY_OWNER, {
-        owner: owner.toLowerCase(),
-      })
+          owner: owner.toLowerCase(),
+        })
       : { orders: [] };
 
     const allOrders = [
@@ -181,9 +186,17 @@ export const queryCancelledOrders = async (
   }
 };
 
-const _getUniqueOrdersWithHandler = (allOrders: Order[], chainId: number): Order[] =>
-
-  [...new Map(allOrders.filter((order) => order.module !== StopLimitModule(chainId)).map((order) => [order.id, order])).values()]
+const _getUniqueOrdersWithHandler = (
+  allOrders: Order[],
+  chainId: number
+): Order[] =>
+  [
+    ...new Map(
+      allOrders
+        .filter((order) => order.module !== StopLimitModule(chainId))
+        .map((order) => [order.id, order])
+    ).values(),
+  ]
     // sort by `updatedAt` asc so that the most recent one will be used
     .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
     .map((order) => {

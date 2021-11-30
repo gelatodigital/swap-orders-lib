@@ -13,14 +13,14 @@ export const queryStopLimitOrders = async (
   try {
     const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
       ? await request(
-        STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
-        GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
-        {
-          owner: owner.toLowerCase(),
-          module:
-            GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
-        }
-      )
+          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
+          {
+            owner: owner.toLowerCase(),
+            module:
+              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+          }
+        )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
@@ -39,14 +39,14 @@ export const queryOpenStopLimitOrders = async (
   try {
     const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
       ? await request(
-        STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
-        GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
-        {
-          owner: owner.toLowerCase(),
-          module:
-            GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
-        }
-      )
+          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
+          {
+            owner: owner.toLowerCase(),
+            module:
+              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+          }
+        )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
@@ -66,14 +66,14 @@ export const queryStopLimitExecutedOrders = async (
   try {
     const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
       ? await request(
-        STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
-        GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
-        {
-          owner: owner.toLowerCase(),
-          module:
-            GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
-        }
-      )
+          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
+          {
+            owner: owner.toLowerCase(),
+            module:
+              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+          }
+        )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
@@ -93,14 +93,14 @@ export const queryStopLimitCancelledOrders = async (
   try {
     const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
       ? await request(
-        STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
-        GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
-        {
-          owner: owner.toLowerCase(),
-          module:
-            GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
-        }
-      )
+          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
+          {
+            owner: owner.toLowerCase(),
+            module:
+              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+          }
+        )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
@@ -120,14 +120,14 @@ export const queryPastOrders = async (
   try {
     const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
       ? await request(
-        STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
-        GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
-        {
-          owner: owner.toLowerCase(),
-          module:
-            GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
-        }
-      )
+          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
+          {
+            owner: owner.toLowerCase(),
+            module:
+              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+          }
+        )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
