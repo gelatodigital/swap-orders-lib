@@ -1,59 +1,356 @@
-0 silly argv {
-0 silly argv   _: [ 'version' ],
-0 silly argv   lernaVersion: '4.0.0',
-0 silly argv   '$0': '/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/.bin/lerna'
-0 silly argv }
-1 notice cli v4.0.0
-2 verbose rootPath /Users/harrytrippel/Desktop/gelato/swap-orders-lib
-3 info versioning independent
-4 silly isAnythingCommitted
-5 verbose isAnythingCommitted 1
-6 silly getCurrentBranch
-7 verbose currentBranch stop-limit-history-styled-component-fix
-8 silly remoteBranchExists
-9 silly isBehindUpstream
-10 silly isBehindUpstream stop-limit-history-styled-component-fix is behind origin/stop-limit-history-styled-component-fix by 0 commit(s) and ahead by 0
-11 silly hasTags
-12 verbose hasTags true
-13 silly git-describe.sync "@gelatonetwork/limit-orders-lib@3.1.0-1-g49910c9" => {"lastTagName":"@gelatonetwork/limit-orders-lib@3.1.0","lastVersion":"3.1.0","refCount":"1","sha":"49910c9","isDirty":false}
-14 info Looking for changed packages since @gelatonetwork/limit-orders-lib@3.1.0
-15 silly checking diff packages/limit-orders-lib
-16 silly no diff found in @gelatonetwork/limit-orders-lib
-17 silly checking diff packages/limit-orders-react
-18 silly no diff found in @gelatonetwork/limit-orders-react
-19 silly checking diff packages/stop-limit-orders-react
-20 silly found diff in packages/stop-limit-orders-react/src/components/StopLimitOrdersHistory/index.tsx
-21 verbose filtered diff [
-21 verbose filtered diff   'packages/stop-limit-orders-react/src/components/StopLimitOrdersHistory/index.tsx'
-21 verbose filtered diff ]
-22 verbose updated @gelatonetwork/stop-limit-orders-react
-23 verbose git-describe undefined => "@gelatonetwork/limit-orders-lib@3.1.0-1-g49910c9"
-24 silly git-describe parsed => {"lastTagName":"@gelatonetwork/limit-orders-lib@3.1.0","lastVersion":"3.1.0","refCount":"1","sha":"49910c9","isDirty":false}
-25 info execute Skipping releases
-26 silly lifecycle No script for "preversion" in "swap-orders-lib", continuing
-27 silly lifecycle No script for "preversion" in "@gelatonetwork/stop-limit-orders-react", continuing
-28 silly lifecycle No script for "version" in "@gelatonetwork/stop-limit-orders-react", continuing
-29 silly lifecycle No script for "version" in "swap-orders-lib", continuing
-30 silly gitAdd [ 'packages/stop-limit-orders-react/package.json' ]
-31 silly gitCommit Publish
-31 silly gitCommit
-31 silly gitCommit  - @gelatonetwork/stop-limit-orders-react@1.1.1
-32 verbose git [
-32 verbose git   'commit',
-32 verbose git   '-F',
-32 verbose git   '/private/var/folders/1b/c3fy337j3gzdkw7508cz1swr0000gn/T/b45a9870-821c-4eac-9099-a4e88eb8a498/lerna-commit.txt'
-32 verbose git ]
-33 silly gitTag @gelatonetwork/stop-limit-orders-react@1.1.1
-34 verbose git [
-34 verbose git   'tag',
-34 verbose git   '@gelatonetwork/stop-limit-orders-react@1.1.1',
-34 verbose git   '-m',
-34 verbose git   '@gelatonetwork/stop-limit-orders-react@1.1.1'
-34 verbose git ]
-35 error Error: Command failed with exit code 128: git tag @gelatonetwork/stop-limit-orders-react@1.1.1 -m @gelatonetwork/stop-limit-orders-react@1.1.1
-35 error fatal: tag '@gelatonetwork/stop-limit-orders-react@1.1.1' already exists
-35 error     at makeError (/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/execa/lib/error.js:60:11)
-35 error     at handlePromise (/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/execa/index.js:118:26)
-35 error     at processTicksAndRejections (internal/process/task_queues.js:93:5)
-35 error     at async Promise.all (index 0)
-35 error     at async Promise.all (index 0)
+44 error Error: Command failed with exit code 1: git commit -F /private/var/folders/1b/c3fy337j3gzdkw7508cz1swr0000gn/T/84b86e79-41a8-4c5c-ba0a-cf0f5bf580d1/lerna-commit.txt
+44 error lerna notice cli v4.0.0
+44 error lerna info versioning independent
+44 error lerna notice filter changed since "HEAD"
+44 error lerna notice filter excluding dependents
+44 error lerna info Looking for changed packages since HEAD
+44 error lerna info Executing command in 3 packages: "yarn run pre-commit"
+44 error @gelatonetwork/limit-orders-lib: $ yarn prepare
+44 error @gelatonetwork/limit-orders-lib: $ yarn build && yarn format && yarn lint
+44 error @gelatonetwork/limit-orders-lib: $ yarn generate-contracts-typings && tsc --project tsconfig.prod.json && yarn copy-contracts-types
+44 error @gelatonetwork/limit-orders-lib: $ typechain --target=ethers-v5 --out-dir src/contracts/types ./src/**/abis/*.json
+44 error @gelatonetwork/limit-orders-lib: Successfully generated 10 typings!
+44 error @gelatonetwork/limit-orders-lib: $ cp ./src/contracts/types/*.d.ts ./dist/contracts/types
+44 error @gelatonetwork/limit-orders-lib: $ prettier --write .
+44 error @gelatonetwork/limit-orders-lib: .eslintrc.json 10ms
+44 error @gelatonetwork/limit-orders-lib: package.json 3ms
+44 error @gelatonetwork/limit-orders-lib: README.md 71ms
+44 error @gelatonetwork/limit-orders-lib: src/constants/index.ts 26ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/abis/ERC20.json 10ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/abis/ERC20OrderRouter.json 5ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/abis/GelatoLimitOrders.json 10ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/abis/Multicall.json 7ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/common.d.ts 5ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/commons.ts 4ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/ERC20.d.ts 37ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/ERC20OrderRouter.d.ts 20ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/factories/ERC20__factory.ts 10ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/factories/ERC20OrderRouter__factory.ts 8ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/factories/GelatoLimitOrders__factory.ts 19ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/factories/Multicall__factory.ts 19ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/GelatoLimitOrders.d.ts 48ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/index.ts 2ms
+44 error @gelatonetwork/limit-orders-lib: src/contracts/types/Multicall.d.ts 37ms
+44 error @gelatonetwork/limit-orders-lib: src/index.ts 1ms
+44 error @gelatonetwork/limit-orders-lib: src/limit-orders/index.ts 62ms
+44 error @gelatonetwork/limit-orders-lib: src/stoplimit-orders/core.ts 28ms
+44 error @gelatonetwork/limit-orders-lib: src/stoplimit-orders/index.ts 21ms
+44 error @gelatonetwork/limit-orders-lib: src/types/index.ts 4ms
+44 error @gelatonetwork/limit-orders-lib: src/utils/index.ts 2ms
+44 error @gelatonetwork/limit-orders-lib: src/utils/queries/constants.ts 12ms
+44 error @gelatonetwork/limit-orders-lib: src/utils/queries/index.ts 9ms
+44 error @gelatonetwork/limit-orders-lib: src/utils/queries/stoplimit.ts 9ms
+44 error @gelatonetwork/limit-orders-lib: tsconfig.json 1ms
+44 error @gelatonetwork/limit-orders-lib: tsconfig.prod.json 1ms
+44 error @gelatonetwork/limit-orders-lib: $ eslint --cache .
+44 error @gelatonetwork/limit-orders-lib: /Users/harrytrippel/Desktop/gelato/swap-orders-lib/packages/limit-orders-lib/src/stoplimit-orders/core.ts
+44 error @gelatonetwork/limit-orders-lib:   107:21  warning  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+44 error @gelatonetwork/limit-orders-lib: ✖ 1 problem (0 errors, 1 warning)
+44 error @gelatonetwork/limit-orders-react: $ yarn prepare
+44 error @gelatonetwork/limit-orders-react: $ yarn build && yarn format && yarn lint
+44 error @gelatonetwork/limit-orders-react: $ npx rollup -c
+44 error @gelatonetwork/limit-orders-react: ./src/index.tsx → dist/index.umd.js...
+44 error @gelatonetwork/limit-orders-react: (!) Missing shims for Node.js built-ins
+44 error @gelatonetwork/limit-orders-react: Creating a browser bundle that depends on "buffer". You might need to include https://github.com/snowpackjs/rollup-plugin-polyfill-node
+44 error @gelatonetwork/limit-orders-react: (!) Unresolved dependencies
+44 error @gelatonetwork/limit-orders-react: https://rollupjs.org/guide/en/#warning-treating-module-as-external-dependency
+44 error @gelatonetwork/limit-orders-react: @gelatonetwork/limit-orders-lib (imported by src/index.tsx, src/hooks/gelato/useGelatoLimitOrdersLib.ts, src/components/order/AdvancedSwapDetails.tsx)
+44 error @gelatonetwork/limit-orders-react: @gelatonetwork/limit-orders-lib/dist/utils (imported by src/hooks/useGasPrice.ts, src/state/gmulticall/updater.tsx, src/hooks/usePairs.ts, src/hooks/useTokenAllowance.ts, src/state/gmulticall/hooks.ts, src/hooks/useGasOverhead.ts, src/hooks/gelato/useGelatoLimitOrdersHandlers.ts, src/components/order/AdvancedSwapDetails.tsx, src/components/LimitOrdersHistory/OrderCard/index.tsx, src/components/CurrencyInputPanel/index.tsx, src/components/CurrencyLogo/index.tsx, src/utils/pairs.ts)
+44 error @gelatonetwork/limit-orders-react: local-storage (imported by src/utils/localStorageOrders.ts)
+44 error @gelatonetwork/limit-orders-react: lodash.flatmap (imported by src/hooks/useAllCurrencyCombinations.ts, src/state/guser/hooks.ts)
+44 error @gelatonetwork/limit-orders-react: rebass/styled-components (imported by src/components/Row/index.tsx, src/components/Button/index.tsx, src/components/Card/index.tsx)
+44 error @gelatonetwork/limit-orders-react: ajv (imported by src/utils/getTokenList.ts)
+44 error @gelatonetwork/limit-orders-react: @reach/dialog/styles.css (imported by src/components/Modal/index.tsx)
+44 error @gelatonetwork/limit-orders-react: multicodec (imported by src/utils/contenthashToUri.ts)
+44 error @gelatonetwork/limit-orders-react: multihashes (imported by src/utils/contenthashToUri.ts)
+44 error @gelatonetwork/limit-orders-react: react-device-detect (imported by src/components/Modal/index.tsx)
+44 error @gelatonetwork/limit-orders-react: prop-types (imported by ../../node_modules/react-feather/dist/icons/align-center.js, ../../node_modules/react-feather/dist/icons/archive.js, ../../node_modules/react-feather/dist/icons/alert-octagon.js, ../../node_modules/react-feather/dist/icons/activity.js, ../../node_modules/react-feather/dist/icons/alert-circle.js, ../../node_modules/react-feather/dist/icons/airplay.js, ../../node_modules/react-feather/dist/icons/arrow-down-left.js, ../../node_modules/react-feather/dist/icons/arrow-right.js, ../../node_modules/react-feather/dist/icons/anchor.js, ../../node_modules/react-feather/dist/icons/arrow-right-circle.js, ../../node_modules/react-feather/dist/icons/arrow-up-right.js, ../../node_modules/react-feather/dist/icons/arrow-up-circle.js, ../../node_modules/react-feather/dist/icons/arrow-up-left.js, ../../node_modules/react-feather/dist/icons/align-left.js, ../../node_modules/react-feather/dist/icons/aperture.js, ../../node_modules/react-feather/dist/icons/arrow-left.js, ../../node_modules/react-feather/dist/icons/align-justify.js, ../../node_modules/react-feather/dist/icons/award.js, ../../node_modules/react-feather/dist/icons/arrow-down-right.js, ../../node_modules/react-feather/dist/icons/arrow-up.js, ../../node_modules/react-feather/dist/icons/arrow-down-circle.js, ../../node_modules/react-feather/dist/icons/align-right.js, ../../node_modules/react-feather/dist/icons/bar-chart-2.js, ../../node_modules/react-feather/dist/icons/battery-charging.js, ../../node_modules/react-feather/dist/icons/bell-off.js, ../../node_modules/react-feather/dist/icons/book-open.js, ../../node_modules/react-feather/dist/icons/at-sign.js, ../../node_modules/react-feather/dist/icons/alert-triangle.js, ../../node_modules/react-feather/dist/icons/bluetooth.js, ../../node_modules/react-feather/dist/icons/arrow-down.js, ../../node_modules/react-feather/dist/icons/briefcase.js, ../../node_modules/react-feather/dist/icons/battery.js, ../../node_modules/react-feather/dist/icons/bold.js, ../../node_modules/react-feather/dist/icons/check.js, ../../node_modules/react-feather/dist/icons/book.js, ../../node_modules/react-feather/dist/icons/bell.js, ../../node_modules/react-feather/dist/icons/check-circle.js, ../../node_modules/react-feather/dist/icons/bookmark.js, ../../node_modules/react-feather/dist/icons/arrow-left-circle.js, ../../node_modules/react-feather/dist/icons/circle.js, ../../node_modules/react-feather/dist/icons/check-square.js, ../../node_modules/react-feather/dist/icons/box.js, ../../node_modules/react-feather/dist/icons/chevron-right.js, ../../node_modules/react-feather/dist/icons/clipboard.js, ../../node_modules/react-feather/dist/icons/calendar.js, ../../node_modules/react-feather/dist/icons/bar-chart.js, ../../node_modules/react-feather/dist/icons/chevrons-up.js, ../../node_modules/react-feather/dist/icons/camera.js, ../../node_modules/react-feather/dist/icons/cast.js, ../../node_modules/react-feather/dist/icons/chevron-up.js, ../../node_modules/react-feather/dist/icons/chevron-down.js, ../../node_modules/react-feather/dist/icons/cloud-lightning.js, ../../node_modules/react-feather/dist/icons/camera-off.js, ../../node_modules/react-feather/dist/icons/chevrons-left.js, ../../node_modules/react-feather/dist/icons/cloud-snow.js, ../../node_modules/react-feather/dist/icons/copy.js, ../../node_modules/react-feather/dist/icons/clock.js, ../../node_modules/react-feather/dist/icons/code.js, ../../node_modules/react-feather/dist/icons/cloud-drizzle.js, ../../node_modules/react-feather/dist/icons/chevrons-right.js, ../../node_modules/react-feather/dist/icons/codesandbox.js, ../../node_modules/react-feather/dist/icons/columns.js, ../../node_modules/react-feather/dist/icons/codepen.js, ../../node_modules/react-feather/dist/icons/cpu.js, ../../node_modules/react-feather/dist/icons/chevron-left.js, ../../node_modules/react-feather/dist/icons/cloud-off.js, ../../node_modules/react-feather/dist/icons/coffee.js, ../../node_modules/react-feather/dist/icons/corner-down-left.js, ../../node_modules/react-feather/dist/icons/cloud-rain.js, ../../node_modules/react-feather/dist/icons/chevrons-down.js, ../../node_modules/react-feather/dist/icons/corner-up-left.js, ../../node_modules/react-feather/dist/icons/cloud.js, ../../node_modules/react-feather/dist/icons/chrome.js, ../../node_modules/react-feather/dist/icons/corner-down-right.js, ../../node_modules/react-feather/dist/icons/download.js, ../../node_modules/react-feather/dist/icons/disc.js, ../../node_modules/react-feather/dist/icons/corner-up-right.js, ../../node_modules/react-feather/dist/icons/compass.js, ../../node_modules/react-feather/dist/icons/download-cloud.js, ../../node_modules/react-feather/dist/icons/corner-left-up.js, ../../node_modules/react-feather/dist/icons/command.js, ../../node_modules/react-feather/dist/icons/corner-left-down.js, ../../node_modules/react-feather/dist/icons/corner-right-down.js, ../../node_modules/react-feather/dist/icons/divide-square.js, ../../node_modules/react-feather/dist/icons/crosshair.js, ../../node_modules/react-feather/dist/icons/divide-circle.js, ../../node_modules/react-feather/dist/icons/droplet.js, ../../node_modules/react-feather/dist/icons/corner-right-up.js, ../../node_modules/react-feather/dist/icons/database.js, ../../node_modules/react-feather/dist/icons/delete.js, ../../node_modules/react-feather/dist/icons/crop.js, ../../node_modules/react-feather/dist/icons/dollar-sign.js, ../../node_modules/react-feather/dist/icons/divide.js, ../../node_modules/react-feather/dist/icons/figma.js, ../../node_modules/react-feather/dist/icons/credit-card.js, ../../node_modules/react-feather/dist/icons/edit-3.js, ../../node_modules/react-feather/dist/icons/eye.js, ../../node_modules/react-feather/dist/icons/edit-2.js, ../../node_modules/react-feather/dist/icons/facebook.js, ../../node_modules/react-feather/dist/icons/fast-forward.js, ../../node_modules/react-feather/dist/icons/edit.js, ../../node_modules/react-feather/dist/icons/file.js, ../../node_modules/react-feather/dist/icons/dribbble.js, ../../node_modules/react-feather/dist/icons/film.js, ../../node_modules/react-feather/dist/icons/feather.js, ../../node_modules/react-feather/dist/icons/file-text.js, ../../node_modules/react-feather/dist/icons/external-link.js, ../../node_modules/react-feather/dist/icons/file-plus.js, ../../node_modules/react-feather/dist/icons/folder.js, ../../node_modules/react-feather/dist/icons/eye-off.js, ../../node_modules/react-feather/dist/icons/file-minus.js, ../../node_modules/react-feather/dist/icons/flag.js, ../../node_modules/react-feather/dist/icons/git-pull-request.js, ../../node_modules/react-feather/dist/icons/folder-minus.js, ../../node_modules/react-feather/dist/icons/gift.js, ../../node_modules/react-feather/dist/icons/framer.js, ../../node_modules/react-feather/dist/icons/image.js, ../../node_modules/react-feather/dist/icons/frown.js, ../../node_modules/react-feather/dist/icons/filter.js, ../../node_modules/react-feather/dist/icons/git-branch.js, ../../node_modules/react-feather/dist/icons/globe.js, ../../node_modules/react-feather/dist/icons/folder-plus.js, ../../node_modules/react-feather/dist/icons/gitlab.js, ../../node_modules/react-feather/dist/icons/grid.js, ../../node_modules/react-feather/dist/icons/github.js, ../../node_modules/react-feather/dist/icons/instagram.js, ../../node_modules/react-feather/dist/icons/git-commit.js, ../../node_modules/react-feather/dist/icons/hard-drive.js, ../../node_modules/react-feather/dist/icons/git-merge.js, ../../node_modules/react-feather/dist/icons/hexagon.js, ../../node_modules/react-feather/dist/icons/home.js, ../../node_modules/react-feather/dist/icons/heart.js, ../../node_modules/react-feather/dist/icons/info.js, ../../node_modules/react-feather/dist/icons/hash.js, ../../node_modules/react-feather/dist/icons/italic.js, ../../node_modules/react-feather/dist/icons/key.js, ../../node_modules/react-feather/dist/icons/help-circle.js, ../../node_modules/react-feather/dist/icons/headphones.js, ../../node_modules/react-feather/dist/icons/inbox.js, ../../node_modules/react-feather/dist/icons/link-2.js, ../../node_modules/react-feather/dist/icons/layout.js, ../../node_modules/react-feather/dist/icons/linkedin.js, ../../node_modules/react-feather/dist/icons/loader.js, ../../node_modules/react-feather/dist/icons/log-in.js, ../../node_modules/react-feather/dist/icons/map.js, ../../node_modules/react-feather/dist/icons/layers.js, ../../node_modules/react-feather/dist/icons/life-buoy.js, ../../node_modules/react-feather/dist/icons/list.js, ../../node_modules/react-feather/dist/icons/mic.js, ../../node_modules/react-feather/dist/icons/mail.js, ../../node_modules/react-feather/dist/icons/maximize-2.js, ../../node_modules/react-feather/dist/icons/link.js, ../../node_modules/react-feather/dist/icons/maximize.js, ../../node_modules/react-feather/dist/icons/mic-off.js, ../../node_modules/react-feather/dist/icons/menu.js, ../../node_modules/react-feather/dist/icons/monitor.js, ../../node_modules/react-feather/dist/icons/minus.js, ../../node_modules/react-feather/dist/icons/moon.js, ../../node_modules/react-feather/dist/icons/log-out.js, ../../node_modules/react-feather/dist/icons/lock.js, ../../node_modules/react-feather/dist/icons/message-square.js, ../../node_modules/react-feather/dist/icons/minimize-2.js, ../../node_modules/react-feather/dist/icons/meh.js, ../../node_modules/react-feather/dist/icons/move.js, ../../node_modules/react-feather/dist/icons/map-pin.js, ../../node_modules/react-feather/dist/icons/minus-square.js, ../../node_modules/react-feather/dist/icons/navigation-2.js, ../../node_modules/react-feather/dist/icons/mouse-pointer.js, ../../node_modules/react-feather/dist/icons/music.js, ../../node_modules/react-feather/dist/icons/message-circle.js, ../../node_modules/react-feather/dist/icons/paperclip.js, ../../node_modules/react-feather/dist/icons/minimize.js, ../../node_modules/react-feather/dist/icons/more-vertical.js, ../../node_modules/react-feather/dist/icons/package.js, ../../node_modules/react-feather/dist/icons/octagon.js, ../../node_modules/react-feather/dist/icons/minus-circle.js, ../../node_modules/react-feather/dist/icons/pause.js, ../../node_modules/react-feather/dist/icons/percent.js, ../../node_modules/react-feather/dist/icons/phone-incoming.js, ../../node_modules/react-feather/dist/icons/pause-circle.js, ../../node_modules/react-feather/dist/icons/phone-outgoing.js, ../../node_modules/react-feather/dist/icons/phone-call.js, ../../node_modules/react-feather/dist/icons/phone-forwarded.js, ../../node_modules/react-feather/dist/icons/phone.js, ../../node_modules/react-feather/dist/icons/pen-tool.js, ../../node_modules/react-feather/dist/icons/pie-chart.js, ../../node_modules/react-feather/dist/icons/phone-missed.js, ../../node_modules/react-feather/dist/icons/plus.js, ../../node_modules/react-feather/dist/icons/play.js, ../../node_modules/react-feather/dist/icons/plus-square.js, ../../node_modules/react-feather/dist/icons/plus-circle.js, ../../node_modules/react-feather/dist/icons/refresh-cw.js, ../../node_modules/react-feather/dist/icons/more-horizontal.js, ../../node_modules/react-feather/dist/icons/navigation.js, ../../node_modules/react-feather/dist/icons/power.js, ../../node_modules/react-feather/dist/icons/rewind.js, ../../node_modules/react-feather/dist/icons/refresh-ccw.js, ../../node_modules/react-feather/dist/icons/rotate-ccw.js, ../../node_modules/react-feather/dist/icons/repeat.js, ../../node_modules/react-feather/dist/icons/pocket.js, ../../node_modules/react-feather/dist/icons/play-circle.js, ../../node_modules/react-feather/dist/icons/printer.js, ../../node_modules/react-feather/dist/icons/radio.js, ../../node_modules/react-feather/dist/icons/rss.js, ../../node_modules/react-feather/dist/icons/shield.js, ../../node_modules/react-feather/dist/icons/rotate-cw.js, ../../node_modules/react-feather/dist/icons/save.js, ../../node_modules/react-feather/dist/icons/shopping-cart.js, ../../node_modules/react-feather/dist/icons/settings.js, ../../node_modules/react-feather/dist/icons/server.js, ../../node_modules/react-feather/dist/icons/share-2.js, ../../node_modules/react-feather/dist/icons/search.js, ../../node_modules/react-feather/dist/icons/shuffle.js, ../../node_modules/react-feather/dist/icons/scissors.js, ../../node_modules/react-feather/dist/icons/sidebar.js, ../../node_modules/react-feather/dist/icons/shopping-bag.js, ../../node_modules/react-feather/dist/icons/send.js, ../../node_modules/react-feather/dist/icons/slash.js, ../../node_modules/react-feather/dist/icons/smartphone.js, ../../node_modules/react-feather/dist/icons/skip-forward.js, ../../node_modules/react-feather/dist/icons/skip-back.js, ../../node_modules/react-feather/dist/icons/shield-off.js, ../../node_modules/react-feather/dist/icons/sliders.js, ../../node_modules/react-feather/dist/icons/square.js, ../../node_modules/react-feather/dist/icons/slack.js, ../../node_modules/react-feather/dist/icons/speaker.js, ../../node_modules/react-feather/dist/icons/terminal.js, ../../node_modules/react-feather/dist/icons/tablet.js, ../../node_modules/react-feather/dist/icons/stop-circle.js, ../../node_modules/react-feather/dist/icons/sunset.js, ../../node_modules/react-feather/dist/icons/star.js, ../../node_modules/react-feather/dist/icons/sunrise.js, ../../node_modules/react-feather/dist/icons/sun.js, ../../node_modules/react-feather/dist/icons/smile.js, ../../node_modules/react-feather/dist/icons/target.js, ../../node_modules/react-feather/dist/icons/share.js, ../../node_modules/react-feather/dist/icons/thumbs-down.js, ../../node_modules/react-feather/dist/icons/thumbs-up.js, ../../node_modules/react-feather/dist/icons/toggle-right.js, ../../node_modules/react-feather/dist/icons/thermometer.js, ../../node_modules/react-feather/dist/icons/trending-down.js, ../../node_modules/react-feather/dist/icons/trash-2.js, ../../node_modules/react-feather/dist/icons/trash.js, ../../node_modules/react-feather/dist/icons/toggle-left.js, ../../node_modules/react-feather/dist/icons/type.js, ../../node_modules/react-feather/dist/icons/tag.js, ../../node_modules/react-feather/dist/icons/triangle.js, ../../node_modules/react-feather/dist/icons/truck.js, ../../node_modules/react-feather/dist/icons/twitch.js, ../../node_modules/react-feather/dist/icons/tool.js, ../../node_modules/react-feather/dist/icons/underline.js, ../../node_modules/react-feather/dist/icons/trello.js, ../../node_modules/react-feather/dist/icons/upload-cloud.js, ../../node_modules/react-feather/dist/icons/unlock.js, ../../node_modules/react-feather/dist/icons/user-x.js, ../../node_modules/react-feather/dist/icons/user-minus.js, ../../node_modules/react-feather/dist/icons/twitter.js, ../../node_modules/react-feather/dist/icons/trending-up.js, ../../node_modules/react-feather/dist/icons/upload.js, ../../node_modules/react-feather/dist/icons/user-plus.js, ../../node_modules/react-feather/dist/icons/users.js, ../../node_modules/react-feather/dist/icons/umbrella.js, ../../node_modules/react-feather/dist/icons/voicemail.js, ../../node_modules/react-feather/dist/icons/user.js, ../../node_modules/react-feather/dist/icons/tv.js, ../../node_modules/react-feather/dist/icons/video-off.js, ../../node_modules/react-feather/dist/icons/video.js, ../../node_modules/react-feather/dist/icons/watch.js, ../../node_modules/react-feather/dist/icons/volume-x.js, ../../node_modules/react-feather/dist/icons/user-check.js, ../../node_modules/react-feather/dist/icons/wifi-off.js, ../../node_modules/react-feather/dist/icons/wind.js, ../../node_modules/react-feather/dist/icons/volume-2.js, ../../node_modules/react-feather/dist/icons/x-square.js, ../../node_modules/react-feather/dist/icons/x-circle.js, ../../node_modules/react-feather/dist/icons/volume.js, ../../node_modules/react-feather/dist/icons/x-octagon.js, ../../node_modules/react-feather/dist/icons/x.js, ../../node_modules/react-feather/dist/icons/volume-1.js, ../../node_modules/react-feather/dist/icons/wifi.js, ../../node_modules/react-feather/dist/icons/zoom-out.js, ../../node_modules/react-feather/dist/icons/youtube.js, ../../node_modules/react-feather/dist/icons/zap.js, ../../node_modules/react-feather/dist/icons/zap-off.js, ../../node_modules/react-feather/dist/icons/phone-off.js, ../../node_modules/react-feather/dist/icons/zoom-in.js, ../../node_modules/@reach/dialog/dist/reach-dialog.esm.js, ../../node_modules/react-focus-lock/dist/es2015/AutoFocusInside.js, ../../node_modules/react-focus-lock/dist/es2015/FreeFocusInside.js, ../../node_modules/react-focus-lock/dist/es2015/MoveFocusInside.js, ../../node_modules/react-focus-lock/dist/es2015/Trap.js, ../../node_modules/react-focus-lock/dist/es2015/FocusGuard.js, ../../node_modules/react-focus-lock/dist/es2015/Lock.js)
+44 error @gelatonetwork/limit-orders-react: react-dom (imported by ../../node_modules/@reach/portal/dist/reach-portal.esm.js)
+44 error @gelatonetwork/limit-orders-react: js-sha3 (imported by ../../node_modules/@ethersproject/keccak256/lib.esm/index.js)
+44 error @gelatonetwork/limit-orders-react: react-fast-compare (imported by ../../node_modules/react-popper/lib/esm/usePopper.js)
+44 error @gelatonetwork/limit-orders-react: wcag-contrast (imported by src/hooks/useColor.ts)
+44 error @gelatonetwork/limit-orders-react: node-vibrant (imported by src/hooks/useColor.ts)
+44 error @gelatonetwork/limit-orders-react: hash.js (imported by ../../node_modules/@ethersproject/sha2/lib.esm/sha2.js, ../../node_modules/@ethersproject/signing-key/lib.esm/elliptic.js)
+44 error @gelatonetwork/limit-orders-react: (!) Missing global variable names
+44 error @gelatonetwork/limit-orders-react: Use output.globals to specify browser global variable names corresponding to external modules
+44 error @gelatonetwork/limit-orders-react: react/jsx-runtime (guessing 'jsxRuntime')
+44 error @gelatonetwork/limit-orders-react: @gelatonetwork/limit-orders-lib (guessing 'limitOrdersLib')
+44 error @gelatonetwork/limit-orders-react: @reduxjs/toolkit (guessing 'toolkit')
+44 error @gelatonetwork/limit-orders-react: local-storage (guessing 'localStorage')
+44 error @gelatonetwork/limit-orders-react: react (guessing 'React')
+44 error @gelatonetwork/limit-orders-react: react-redux (guessing 'reactRedux')
+44 error @gelatonetwork/limit-orders-react: js-sha3 (guessing 'sha3')
+44 error @gelatonetwork/limit-orders-react: buffer (guessing 'require$$0')
+44 error @gelatonetwork/limit-orders-react: jsbi (guessing 'JSBI')
+44 error @gelatonetwork/limit-orders-react: ajv (guessing 'Ajv')
+44 error @gelatonetwork/limit-orders-react: cids (guessing 'CID')
+44 error @gelatonetwork/limit-orders-react: multicodec (guessing 'multicodec')
+44 error @gelatonetwork/limit-orders-react: multihashes (guessing 'multihashes')
+44 error @gelatonetwork/limit-orders-react: @gelatonetwork/limit-orders-lib/dist/utils (guessing 'utils')
+44 error @gelatonetwork/limit-orders-react: lodash.flatmap (guessing 'flatMap')
+44 error @gelatonetwork/limit-orders-react: styled-components (guessing '_styled$1')
+44 error @gelatonetwork/limit-orders-react: prop-types (guessing 'PropTypes')
+44 error @gelatonetwork/limit-orders-react: rebass/styled-components (guessing 'styledComponents')
+44 error @gelatonetwork/limit-orders-react: react-fast-compare (guessing 'isEqual$1')
+44 error @gelatonetwork/limit-orders-react: react-dom (guessing 'reactDom')
+44 error @gelatonetwork/limit-orders-react: react-device-detect (guessing 'reactDeviceDetect')
+44 error @gelatonetwork/limit-orders-react: node-vibrant (guessing 'Vibrant')
+44 error @gelatonetwork/limit-orders-react: (!) `this` has been rewritten to `undefined`
+44 error @gelatonetwork/limit-orders-react: https://rollupjs.org/guide/en/#error-this-is-undefined
+44 error @gelatonetwork/limit-orders-react: ../../node_modules/@ethersproject/contracts/lib.esm/index.js
+44 error @gelatonetwork/limit-orders-react: 1: "use strict";
+44 error @gelatonetwork/limit-orders-react: 2: var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+44 error @gelatonetwork/limit-orders-react:                     ^
+44 error @gelatonetwork/limit-orders-react: 3:     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+44 error @gelatonetwork/limit-orders-react: 4:     return new (P || (P = Promise))(function (resolve, reject) {
+44 error @gelatonetwork/limit-orders-react: ...and 1 other occurrence
+44 error @gelatonetwork/limit-orders-react: ../../node_modules/@ethersproject/properties/lib.esm/index.js
+44 error @gelatonetwork/limit-orders-react: 1: "use strict";
+44 error @gelatonetwork/limit-orders-react: 2: var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+44 error @gelatonetwork/limit-orders-react:                     ^
+44 error @gelatonetwork/limit-orders-react: 3:     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+44 error @gelatonetwork/limit-orders-react: 4:     return new (P || (P = Promise))(function (resolve, reject) {
+44 error @gelatonetwork/limit-orders-react: ...and 1 other occurrence
+44 error @gelatonetwork/limit-orders-react: ../../node_modules/@ethersproject/abstract-provider/lib.esm/index.js
+44 error @gelatonetwork/limit-orders-react: 1: "use strict";
+44 error @gelatonetwork/limit-orders-react: 2: var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+44 error @gelatonetwork/limit-orders-react:                     ^
+44 error @gelatonetwork/limit-orders-react: 3:     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+44 error @gelatonetwork/limit-orders-react: 4:     return new (P || (P = Promise))(function (resolve, reject) {
+44 error @gelatonetwork/limit-orders-react: ...and 1 other occurrence
+44 error @gelatonetwork/limit-orders-react: ../../node_modules/@ethersproject/abstract-signer/lib.esm/index.js
+44 error @gelatonetwork/limit-orders-react: 1: "use strict";
+44 error @gelatonetwork/limit-orders-react: 2: var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+44 error @gelatonetwork/limit-orders-react:                     ^
+44 error @gelatonetwork/limit-orders-react: 3:     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+44 error @gelatonetwork/limit-orders-react: 4:     return new (P || (P = Promise))(function (resolve, reject) {
+44 error @gelatonetwork/limit-orders-react: ...and 1 other occurrence
+44 error @gelatonetwork/limit-orders-react: ../../node_modules/@ethersproject/hash/lib.esm/typed-data.js
+44 error @gelatonetwork/limit-orders-react: 1: var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+44 error @gelatonetwork/limit-orders-react:                     ^
+44 error @gelatonetwork/limit-orders-react: 2:     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+44 error @gelatonetwork/limit-orders-react: 3:     return new (P || (P = Promise))(function (resolve, reject) {
+44 error @gelatonetwork/limit-orders-react: ...and 1 other occurrence
+44 error @gelatonetwork/limit-orders-react: (!) Circular dependencies
+44 error @gelatonetwork/limit-orders-react: src/hooks/Tokens.ts -> src/state/guser/hooks.ts -> src/hooks/Tokens.ts
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/CurrencySearchModal.tsx -> src/components/SearchModal/Manage.tsx -> src/components/SearchModal/ManageLists.tsx -> src/components/SearchModal/CurrencySearchModal.tsx
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/CurrencySearchModal.tsx -> src/components/SearchModal/Manage.tsx -> src/components/SearchModal/ManageTokens.tsx -> src/components/SearchModal/CurrencySearchModal.tsx
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/CurrencySearchModal.tsx -> src/components/SearchModal/Manage.tsx -> src/components/SearchModal/CurrencySearchModal.tsx
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/CurrencySearchModal.tsx -> src/components/SearchModal/ImportList.tsx -> src/components/SearchModal/CurrencySearchModal.tsx
+44 error @gelatonetwork/limit-orders-react: (!) Plugin node-resolve: preferring built-in module 'buffer' over local alternative at '/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/buffer/index.js', pass 'preferBuiltins: false' to disable this behavior or 'preferBuiltins: true' to disable this warning
+44 error @gelatonetwork/limit-orders-react: created dist/index.umd.js in 12.9s
+44 error @gelatonetwork/limit-orders-react: $ prettier --write .
+44 error @gelatonetwork/limit-orders-react: .eslintrc.json 18ms
+44 error @gelatonetwork/limit-orders-react: package.json 7ms
+44 error @gelatonetwork/limit-orders-react: README.md 124ms
+44 error @gelatonetwork/limit-orders-react: rollup.config.js 9ms
+44 error @gelatonetwork/limit-orders-react: src/abis/argent-wallet-detector.json 10ms
+44 error @gelatonetwork/limit-orders-react: src/abis/eip_2612.json 3ms
+44 error @gelatonetwork/limit-orders-react: src/abis/ens-public-resolver.json 30ms
+44 error @gelatonetwork/limit-orders-react: src/abis/ens-registrar.json 16ms
+44 error @gelatonetwork/limit-orders-react: src/abis/erc20_bytes32.json 3ms
+44 error @gelatonetwork/limit-orders-react: src/abis/erc20.json 11ms
+44 error @gelatonetwork/limit-orders-react: src/abis/IUniswapV2Pair.json 31ms
+44 error @gelatonetwork/limit-orders-react: src/abis/multicall.json 7ms
+44 error @gelatonetwork/limit-orders-react: src/abis/multicall2.json 8ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/ArgentWalletDetector.d.ts 44ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/commons.ts 8ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/Eip2612.d.ts 11ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/EnsPublicResolver.d.ts 62ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/EnsRegistrar.d.ts 36ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/Erc20.d.ts 21ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/Erc20Bytes32.d.ts 8ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/index.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/Multicall.d.ts 31ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/Multicall2.d.ts 23ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/Unisocks.d.ts 38ms
+44 error @gelatonetwork/limit-orders-react: src/abis/types/Weth.d.ts 20ms
+44 error @gelatonetwork/limit-orders-react: src/abis/unisocks.json 7ms
+44 error @gelatonetwork/limit-orders-react: src/abis/weth.json 5ms
+44 error @gelatonetwork/limit-orders-react: src/components/Button/index.tsx 78ms
+44 error @gelatonetwork/limit-orders-react: src/components/Card/index.tsx 17ms
+44 error @gelatonetwork/limit-orders-react: src/components/Column/index.tsx 5ms
+44 error @gelatonetwork/limit-orders-react: src/components/CurrencyInputPanel/FiatValue.tsx 6ms
+44 error @gelatonetwork/limit-orders-react: src/components/CurrencyInputPanel/index.tsx 40ms
+44 error @gelatonetwork/limit-orders-react: src/components/CurrencyInputPanel/RatePercentage.tsx 6ms
+44 error @gelatonetwork/limit-orders-react: src/components/CurrencyLogo/index.tsx 10ms
+44 error @gelatonetwork/limit-orders-react: src/components/DoubleLogo/index.tsx 7ms
+44 error @gelatonetwork/limit-orders-react: src/components/GelatoLimitOrder/AppBody.tsx 5ms
+44 error @gelatonetwork/limit-orders-react: src/components/GelatoLimitOrder/index.tsx 41ms
+44 error @gelatonetwork/limit-orders-react: src/components/HoverInlineText/index.tsx 8ms
+44 error @gelatonetwork/limit-orders-react: src/components/LimitOrdersHistory/ConfirmCancellationModal.tsx 7ms
+44 error @gelatonetwork/limit-orders-react: src/components/LimitOrdersHistory/index.tsx 13ms
+44 error @gelatonetwork/limit-orders-react: src/components/LimitOrdersHistory/OrderCard/index.tsx 37ms
+44 error @gelatonetwork/limit-orders-react: src/components/ListLogo/index.tsx 3ms
+44 error @gelatonetwork/limit-orders-react: src/components/Loader/index.tsx 5ms
+44 error @gelatonetwork/limit-orders-react: src/components/Logo/index.tsx 3ms
+44 error @gelatonetwork/limit-orders-react: src/components/Modal/index.tsx 13ms
+44 error @gelatonetwork/limit-orders-react: src/components/NumericalInput/index.tsx 7ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/AdvancedSwapDetails.tsx 10ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/confirmPriceImpactWithoutFee.ts 4ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/ConfirmSwapModal.tsx 6ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/FormattedPriceImpact.tsx 3ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/styleds.tsx 15ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/SwapHeader.tsx 9ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/SwapModalFooter.tsx 2ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/SwapModalHeader.tsx 15ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/SwapRoute.tsx 4ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/TradePrice.tsx 5ms
+44 error @gelatonetwork/limit-orders-react: src/components/order/UnsupportedCurrencyFooter.tsx 11ms
+44 error @gelatonetwork/limit-orders-react: src/components/Popover/index.tsx 9ms
+44 error @gelatonetwork/limit-orders-react: src/components/QuestionHelper/index.tsx 7ms
+44 error @gelatonetwork/limit-orders-react: src/components/Row/index.tsx 6ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/CommonBases.tsx 5ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/CurrencyList.tsx 19ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/CurrencySearch.tsx 12ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/CurrencySearchModal.tsx 9ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/filtering.ts 5ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/ImportList.tsx 11ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/ImportRow.tsx 6ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/ImportToken.tsx 9ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/Manage.tsx 7ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/ManageLists.tsx 23ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/ManageTokens.tsx 10ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/SortButton.tsx 3ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/sorting.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/components/SearchModal/styleds.tsx 12ms
+44 error @gelatonetwork/limit-orders-react: src/components/Toggle/index.tsx 6ms
+44 error @gelatonetwork/limit-orders-react: src/components/Toggle/ListToggle.tsx 5ms
+44 error @gelatonetwork/limit-orders-react: src/components/Toggle/MultiToggle.tsx 6ms
+44 error @gelatonetwork/limit-orders-react: src/components/TokenWarningModal/index.tsx 2ms
+44 error @gelatonetwork/limit-orders-react: src/components/Tooltip/index.tsx 5ms
+44 error @gelatonetwork/limit-orders-react: src/components/TransactionConfirmationModal/index.tsx 12ms
+44 error @gelatonetwork/limit-orders-react: src/constants/addresses.ts 5ms
+44 error @gelatonetwork/limit-orders-react: src/constants/index.ts 8ms
+44 error @gelatonetwork/limit-orders-react: src/constants/lists.ts 4ms
+44 error @gelatonetwork/limit-orders-react: src/constants/misc.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/constants/routing.ts 8ms
+44 error @gelatonetwork/limit-orders-react: src/constants/tokens.avax.ts 4ms
+44 error @gelatonetwork/limit-orders-react: src/constants/tokens.bsc.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/constants/tokens.fantom.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/constants/tokens.matic.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/constants/tokens.ts 5ms
+44 error @gelatonetwork/limit-orders-react: src/custom.d.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/entities/errors.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/entities/pair.ts 16ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/Balances.ts 11ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/gelato/index.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/gelato/useGelatoLimitOrders.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/gelato/useGelatoLimitOrdersHandlers.ts 12ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/gelato/useGelatoLimitOrdersHistory.ts 11ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/gelato/useGelatoLimitOrdersLib.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/Tokens.ts 20ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useAllCurrencyCombinations.ts 6ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useApproveCallback.ts 8ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useColor.ts 13ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useContract.ts 7ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useDebounce.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useDebouncedChangeHandler.tsx 3ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useFetchListCallback.ts 4ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useGasOverhead.ts 7ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useGasPrice.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useHttpLocations.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useInterval.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useIsArgentWallet.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useIsSwapUnsupported.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useIsWindowVisible.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useLast.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useOnClickOutside.tsx 2ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/usePairs.ts 6ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/usePrevious.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useTheme.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useToggle.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useTokenAllowance.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useTrade.ts 9ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useUSDCPrice.ts 9ms
+44 error @gelatonetwork/limit-orders-react: src/hooks/useWindowSize.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/index.tsx 4ms
+44 error @gelatonetwork/limit-orders-react: src/state/gapplication/actions.ts 0ms
+44 error @gelatonetwork/limit-orders-react: src/state/gapplication/hooks.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/state/gapplication/reducer.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/state/gapplication/updater.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/state/glists/actions.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/state/glists/hooks.ts 6ms
+44 error @gelatonetwork/limit-orders-react: src/state/glists/reducer.ts 7ms
+44 error @gelatonetwork/limit-orders-react: src/state/glists/updater.ts 8ms
+44 error @gelatonetwork/limit-orders-react: src/state/glists/wrappedTokenInfo.ts 5ms
+44 error @gelatonetwork/limit-orders-react: src/state/gmulticall/actions.ts 4ms
+44 error @gelatonetwork/limit-orders-react: src/state/gmulticall/hooks.ts 18ms
+44 error @gelatonetwork/limit-orders-react: src/state/gmulticall/reducer.ts 9ms
+44 error @gelatonetwork/limit-orders-react: src/state/gmulticall/updater.tsx 16ms
+44 error @gelatonetwork/limit-orders-react: src/state/gorder/actions.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/state/gorder/hooks.ts 16ms
+44 error @gelatonetwork/limit-orders-react: src/state/gorder/reducer.ts 5ms
+44 error @gelatonetwork/limit-orders-react: src/state/gtransactions/actions.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/state/gtransactions/hooks.tsx 5ms
+44 error @gelatonetwork/limit-orders-react: src/state/gtransactions/reducer.ts 6ms
+44 error @gelatonetwork/limit-orders-react: src/state/gtransactions/updater.tsx 4ms
+44 error @gelatonetwork/limit-orders-react: src/state/guser/actions.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/state/guser/hooks.ts 9ms
+44 error @gelatonetwork/limit-orders-react: src/state/guser/reducer.ts 4ms
+44 error @gelatonetwork/limit-orders-react: src/state/index.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/theme/components.tsx 24ms
+44 error @gelatonetwork/limit-orders-react: src/theme/index.tsx 32ms
+44 error @gelatonetwork/limit-orders-react: src/theme/styled.d.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/types/index.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/utils/chunkArray.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/utils/computeFiatValuePriceImpact.tsx 1ms
+44 error @gelatonetwork/limit-orders-react: src/utils/constructSameAddressMap.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/utils/contenthashToUri.ts 4ms
+44 error @gelatonetwork/limit-orders-react: src/utils/currencyId.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/utils/formatTokenAmount.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/utils/getExplorerLink.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/utils/getTokenList.ts 7ms
+44 error @gelatonetwork/limit-orders-react: src/utils/index.ts 6ms
+44 error @gelatonetwork/limit-orders-react: src/utils/isTradeBetter.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/utils/isZero.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/utils/listVersionLabel.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/utils/localStorageOrders.ts 9ms
+44 error @gelatonetwork/limit-orders-react: src/utils/maxAmountSpend.ts 2ms
+44 error @gelatonetwork/limit-orders-react: src/utils/pairs.ts 10ms
+44 error @gelatonetwork/limit-orders-react: src/utils/parseENSAddress.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/utils/prices.ts 4ms
+44 error @gelatonetwork/limit-orders-react: src/utils/resolveENSContentHash.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/utils/retry.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/utils/supportedChainId.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/utils/unwrappedToken.ts 1ms
+44 error @gelatonetwork/limit-orders-react: src/utils/uriToHttp.ts 3ms
+44 error @gelatonetwork/limit-orders-react: src/web3/index.tsx 3ms
+44 error @gelatonetwork/limit-orders-react: stats.html 658ms
+44 error @gelatonetwork/limit-orders-react: tsconfig.json 1ms
+44 error @gelatonetwork/limit-orders-react: $ eslint --cache .
+44 error @gelatonetwork/stop-limit-orders-react: $ yarn prepare
+44 error @gelatonetwork/stop-limit-orders-react: $ yarn build && yarn format && yarn lint
+44 error @gelatonetwork/stop-limit-orders-react: $ npx rollup -c
+44 error @gelatonetwork/stop-limit-orders-react: [!] Error: Cannot find module '@rollup/plugin-typescript'
+44 error @gelatonetwork/stop-limit-orders-react: Require stack:
+44 error @gelatonetwork/stop-limit-orders-react: - /Users/harrytrippel/Desktop/gelato/swap-orders-lib/packages/stop-limit-orders-react/rollup.config.js
+44 error @gelatonetwork/stop-limit-orders-react: - /Users/harrytrippel/.npm/_npx/1ee1cf83ded2a161/node_modules/rollup/dist/shared/loadConfigFile.js
+44 error @gelatonetwork/stop-limit-orders-react: - /Users/harrytrippel/.npm/_npx/1ee1cf83ded2a161/node_modules/rollup/dist/bin/rollup
+44 error @gelatonetwork/stop-limit-orders-react: Error: Cannot find module '@rollup/plugin-typescript'
+44 error @gelatonetwork/stop-limit-orders-react: Require stack:
+44 error @gelatonetwork/stop-limit-orders-react: - /Users/harrytrippel/Desktop/gelato/swap-orders-lib/packages/stop-limit-orders-react/rollup.config.js
+44 error @gelatonetwork/stop-limit-orders-react: - /Users/harrytrippel/.npm/_npx/1ee1cf83ded2a161/node_modules/rollup/dist/shared/loadConfigFile.js
+44 error @gelatonetwork/stop-limit-orders-react: - /Users/harrytrippel/.npm/_npx/1ee1cf83ded2a161/node_modules/rollup/dist/bin/rollup
+44 error @gelatonetwork/stop-limit-orders-react:     at Function.Module._resolveFilename (node:internal/modules/cjs/loader:933:15)
+44 error @gelatonetwork/stop-limit-orders-react:     at Function.Module._load (node:internal/modules/cjs/loader:778:27)
+44 error @gelatonetwork/stop-limit-orders-react:     at Module.require (node:internal/modules/cjs/loader:1005:19)
+44 error @gelatonetwork/stop-limit-orders-react:     at require (node:internal/modules/cjs/helpers:102:18)
+44 error @gelatonetwork/stop-limit-orders-react:     at Object.<anonymous> (/Users/harrytrippel/Desktop/gelato/swap-orders-lib/packages/stop-limit-orders-react/rollup.config.js:8:18)
+44 error @gelatonetwork/stop-limit-orders-react:     at Module._compile (node:internal/modules/cjs/loader:1101:14)
+44 error @gelatonetwork/stop-limit-orders-react:     at Object.require.extensions.<computed> [as .js] (/Users/harrytrippel/.npm/_npx/1ee1cf83ded2a161/node_modules/rollup/dist/shared/loadConfigFile.js:560:20)
+44 error @gelatonetwork/stop-limit-orders-react:     at Module.load (node:internal/modules/cjs/loader:981:32)
+44 error @gelatonetwork/stop-limit-orders-react:     at Function.Module._load (node:internal/modules/cjs/loader:822:12)
+44 error @gelatonetwork/stop-limit-orders-react:     at Module.require (node:internal/modules/cjs/loader:1005:19)
+44 error @gelatonetwork/stop-limit-orders-react: error Command failed with exit code 1.
+44 error @gelatonetwork/stop-limit-orders-react: info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+44 error @gelatonetwork/stop-limit-orders-react: error Command failed with exit code 1.
+44 error @gelatonetwork/stop-limit-orders-react: info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+44 error @gelatonetwork/stop-limit-orders-react: error Command failed with exit code 1.
+44 error @gelatonetwork/stop-limit-orders-react: info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+44 error lerna ERR! yarn run pre-commit exited 1 in '@gelatonetwork/stop-limit-orders-react'
+44 error husky - pre-commit hook exited with code 1 (error)
+44 error     at makeError (/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/execa/lib/error.js:60:11)
+44 error     at handlePromise (/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/execa/index.js:118:26)
+44 error     at processTicksAndRejections (node:internal/process/task_queues:96:5)
+44 error     at async Promise.all (index 0)
