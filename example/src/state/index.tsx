@@ -3,9 +3,9 @@ import { save, load } from 'redux-localstorage-simple'
 import application from './application/reducer'
 import user from './user/reducer'
 import { gelatoReducers, GELATO_PERSISTED_KEYS } from '@gelatonetwork/limit-orders-react'
-import { gelatoReducers as gelatoStopReducers, GELATO_PERSISTED_KEYS as GELATO_STOP_PERSISTED_KEYS } from '@gelatonetwork/stop-limit-orders-react'
+import { gelatoStopReducers, GELATO_STOPLIMIT_PERSISTED_KEYS } from '@gelatonetwork/stop-limit-orders-react'
 
-const PERSISTED_KEYS: string[] = ['user', ...GELATO_PERSISTED_KEYS, ...GELATO_STOP_PERSISTED_KEYS]
+const PERSISTED_KEYS: string[] = ['user', ...GELATO_PERSISTED_KEYS, ...GELATO_STOPLIMIT_PERSISTED_KEYS]
 
 const store = configureStore({
   reducer: {

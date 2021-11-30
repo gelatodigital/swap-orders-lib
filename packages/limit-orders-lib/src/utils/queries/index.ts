@@ -1,7 +1,14 @@
 import { request } from "graphql-request";
-import { OLD_SUBGRAPH_URL, SUBGRAPH_URL } from "../../constants";
+import {
+  OLD_SUBGRAPH_URL,
+  SUBGRAPH_URL,
+  GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS,
+} from "../../constants";
 import { Order } from "../../types";
 import { GET_ALL_ORDERS_BY_OWNER, GET_ORDER_BY_ID } from "./constants";
+
+const StopLimitModule = (chainId: number) =>
+  GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase();
 
 export const queryOrder = async (
   orderId: string,
@@ -25,7 +32,7 @@ export const queryOrder = async (
       ...dataFromNewSubgraph.orders,
     ];
 
-    return _getUniqueOrdersWithHandler(allOrders).pop() ?? null;
+    return _getUniqueOrdersWithHandler(allOrders, chainId).pop() ?? null;
   } catch (error) {
     throw new Error("Could not query subgraph for all orders");
   }
@@ -53,7 +60,7 @@ export const queryOrders = async (
       ...dataFromNewSubgraph.orders,
     ];
 
-    return _getUniqueOrdersWithHandler(allOrders);
+    return _getUniqueOrdersWithHandler(allOrders, chainId);
   } catch (error) {
     throw new Error("Could not query subgraph for all orders");
   }
@@ -81,7 +88,7 @@ export const queryOpenOrders = async (
       ...dataFromNewSubgraph.orders,
     ];
 
-    return _getUniqueOrdersWithHandler(allOrders).filter(
+    return _getUniqueOrdersWithHandler(allOrders, chainId).filter(
       (order) => order.status === "open"
     );
   } catch (error) {
@@ -111,7 +118,7 @@ export const queryPastOrders = async (
       ...dataFromNewSubgraph.orders,
     ];
 
-    return _getUniqueOrdersWithHandler(allOrders).filter(
+    return _getUniqueOrdersWithHandler(allOrders, chainId).filter(
       (order) => order.status !== "open"
     );
   } catch (error) {
@@ -141,7 +148,7 @@ export const queryExecutedOrders = async (
       ...dataFromNewSubgraph.orders,
     ];
 
-    return _getUniqueOrdersWithHandler(allOrders).filter(
+    return _getUniqueOrdersWithHandler(allOrders, chainId).filter(
       (order) => order.status === "executed"
     );
   } catch (error) {
@@ -171,7 +178,7 @@ export const queryCancelledOrders = async (
       ...dataFromNewSubgraph.orders,
     ];
 
-    return _getUniqueOrdersWithHandler(allOrders).filter(
+    return _getUniqueOrdersWithHandler(allOrders, chainId).filter(
       (order) => order.status === "cancelled"
     );
   } catch (error) {
@@ -179,8 +186,17 @@ export const queryCancelledOrders = async (
   }
 };
 
-const _getUniqueOrdersWithHandler = (allOrders: Order[]): Order[] =>
-  [...new Map(allOrders.map((order) => [order.id, order])).values()]
+const _getUniqueOrdersWithHandler = (
+  allOrders: Order[],
+  chainId: number
+): Order[] =>
+  [
+    ...new Map(
+      allOrders
+        .filter((order) => order.module !== StopLimitModule(chainId))
+        .map((order) => [order.id, order])
+    ).values(),
+  ]
     // sort by `updatedAt` asc so that the most recent one will be used
     .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
     .map((order) => {
