@@ -90,7 +90,7 @@ function Gelato({ children }: { children?: React.ReactNode }) {
 
       // By default `useDefaultTheme`and `useDarkMode` are set to true
       // Optionally, if you can try to use and pass your own theme by setting `useDefaultTheme`={false}
-      // as long as it conforms with our theme definitions (you can check our `ThemeProvider` [here](https://github.com/gelatodigital/limit-orders-lib/tree/master/packages/limit-orders-react/theme/index.tsx))
+      // as long as it conforms with our theme definitions (you can check our `ThemeProvider` [here](https://github.com/gelatodigital/swap-orders-lib/tree/master/packages/stop-limit-orders-react/theme/index.tsx))
       // Optionally, if your main theme does not comply with our definitions, you can also wrap `GelatoProvider`
       // with a custom `ThemeProvider` with your own custom definitions. (check our `ThemeProvider` as an example)
       // useDefaultTheme={false}
