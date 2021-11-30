@@ -1,6 +1,6 @@
 {
   "name": "@gelatonetwork/stop-limit-orders-react",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "React Library for creating stop limit orders via Gelato",
   "keywords": [
     "ethereum",
