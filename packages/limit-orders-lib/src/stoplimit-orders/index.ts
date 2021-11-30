@@ -29,6 +29,7 @@ import {
   queryStopLimitOrders,
   queryStopLimitExecutedOrders,
   queryStopLimitCancelledOrders,
+  queryPastOrders
 } from "../utils/queries/stoplimit";
 
 export class GelatoStopLimitOrders extends GelatoBase {
@@ -156,13 +157,13 @@ export class GelatoStopLimitOrders extends GelatoBase {
 
     const encodedData = this.handlerAddress
       ? this.abiEncoder.encode(
-          ["address", "uint256", "address", "uint256"],
-          [outputToken, minReturn, this.handlerAddress, maxReturn]
-        )
+        ["address", "uint256", "address", "uint256"],
+        [outputToken, minReturn, this.handlerAddress, maxReturn]
+      )
       : this.abiEncoder.encode(
-          ["address", "uint256", "address", "uint256"],
-          [outputToken, minReturn, "", maxReturn]
-        );
+        ["address", "uint256", "address", "uint256"],
+        [outputToken, minReturn, "", maxReturn]
+      );
 
     return {
       payload,
@@ -211,13 +212,13 @@ export class GelatoStopLimitOrders extends GelatoBase {
 
     const encodedData = this.handlerAddress
       ? this.abiEncoder.encode(
-          ["address", "uint256", "address", "uint256"],
-          [outputToken, minReturn, this.handlerAddress, maxReturn]
-        )
+        ["address", "uint256", "address", "uint256"],
+        [outputToken, minReturn, this.handlerAddress, maxReturn]
+      )
       : this.abiEncoder.encode(
-          ["address", "uint256", "address", "uint256"],
-          [outputToken, minReturn, "", maxReturn]
-        );
+        ["address", "uint256", "address", "uint256"],
+        [outputToken, minReturn, "", maxReturn]
+      );
 
     let data, value, to;
     if (isNetworkGasToken(inputToken)) {
@@ -332,6 +333,28 @@ export class GelatoStopLimitOrders extends GelatoBase {
       .map((order) => ({
         ...order,
         adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      }))
+      .filter((order) => {
+        if (this._handler && !order.handler) {
+          return includeOrdersWithNullHandler ? true : false;
+        } else {
+          return this._handler ? order.handler === this._handlerAddress : true;
+        }
+      });
+  }
+
+  public async getPastOrders(
+    owner: string,
+    includeOrdersWithNullHandler = false
+  ): Promise<StopLimitOrder[]> {
+    const isEthereumNetwork = isEthereumChain(this._chainId);
+    const orders = await queryPastOrders(owner, this._chainId);
+    return orders
+      .map((order) => ({
+        ...order,
+        adjustedMinReturn: isEthereumNetwork
+          ? order.minReturn
+          : this.getAdjustedMinReturn(order.minReturn),
       }))
       .filter((order) => {
         if (this._handler && !order.handler) {
