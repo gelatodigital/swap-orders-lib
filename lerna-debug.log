@@ -1,0 +1,59 @@
+0 silly argv {
+0 silly argv   _: [ 'version' ],
+0 silly argv   lernaVersion: '4.0.0',
+0 silly argv   '$0': '/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/.bin/lerna'
+0 silly argv }
+1 notice cli v4.0.0
+2 verbose rootPath /Users/harrytrippel/Desktop/gelato/swap-orders-lib
+3 info versioning independent
+4 silly isAnythingCommitted
+5 verbose isAnythingCommitted 1
+6 silly getCurrentBranch
+7 verbose currentBranch stop-limit-history-styled-component-fix
+8 silly remoteBranchExists
+9 silly isBehindUpstream
+10 silly isBehindUpstream stop-limit-history-styled-component-fix is behind origin/stop-limit-history-styled-component-fix by 0 commit(s) and ahead by 0
+11 silly hasTags
+12 verbose hasTags true
+13 silly git-describe.sync "@gelatonetwork/limit-orders-lib@3.1.0-1-g49910c9" => {"lastTagName":"@gelatonetwork/limit-orders-lib@3.1.0","lastVersion":"3.1.0","refCount":"1","sha":"49910c9","isDirty":false}
+14 info Looking for changed packages since @gelatonetwork/limit-orders-lib@3.1.0
+15 silly checking diff packages/limit-orders-lib
+16 silly no diff found in @gelatonetwork/limit-orders-lib
+17 silly checking diff packages/limit-orders-react
+18 silly no diff found in @gelatonetwork/limit-orders-react
+19 silly checking diff packages/stop-limit-orders-react
+20 silly found diff in packages/stop-limit-orders-react/src/components/StopLimitOrdersHistory/index.tsx
+21 verbose filtered diff [
+21 verbose filtered diff   'packages/stop-limit-orders-react/src/components/StopLimitOrdersHistory/index.tsx'
+21 verbose filtered diff ]
+22 verbose updated @gelatonetwork/stop-limit-orders-react
+23 verbose git-describe undefined => "@gelatonetwork/limit-orders-lib@3.1.0-1-g49910c9"
+24 silly git-describe parsed => {"lastTagName":"@gelatonetwork/limit-orders-lib@3.1.0","lastVersion":"3.1.0","refCount":"1","sha":"49910c9","isDirty":false}
+25 info execute Skipping releases
+26 silly lifecycle No script for "preversion" in "swap-orders-lib", continuing
+27 silly lifecycle No script for "preversion" in "@gelatonetwork/stop-limit-orders-react", continuing
+28 silly lifecycle No script for "version" in "@gelatonetwork/stop-limit-orders-react", continuing
+29 silly lifecycle No script for "version" in "swap-orders-lib", continuing
+30 silly gitAdd [ 'packages/stop-limit-orders-react/package.json' ]
+31 silly gitCommit Publish
+31 silly gitCommit
+31 silly gitCommit  - @gelatonetwork/stop-limit-orders-react@1.1.1
+32 verbose git [
+32 verbose git   'commit',
+32 verbose git   '-F',
+32 verbose git   '/private/var/folders/1b/c3fy337j3gzdkw7508cz1swr0000gn/T/b45a9870-821c-4eac-9099-a4e88eb8a498/lerna-commit.txt'
+32 verbose git ]
+33 silly gitTag @gelatonetwork/stop-limit-orders-react@1.1.1
+34 verbose git [
+34 verbose git   'tag',
+34 verbose git   '@gelatonetwork/stop-limit-orders-react@1.1.1',
+34 verbose git   '-m',
+34 verbose git   '@gelatonetwork/stop-limit-orders-react@1.1.1'
+34 verbose git ]
+35 error Error: Command failed with exit code 128: git tag @gelatonetwork/stop-limit-orders-react@1.1.1 -m @gelatonetwork/stop-limit-orders-react@1.1.1
+35 error fatal: tag '@gelatonetwork/stop-limit-orders-react@1.1.1' already exists
+35 error     at makeError (/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/execa/lib/error.js:60:11)
+35 error     at handlePromise (/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/execa/index.js:118:26)
+35 error     at processTicksAndRejections (internal/process/task_queues.js:93:5)
+35 error     at async Promise.all (index 0)
+35 error     at async Promise.all (index 0)
