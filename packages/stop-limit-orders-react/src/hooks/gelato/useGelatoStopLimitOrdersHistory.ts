@@ -42,7 +42,7 @@ export default function useGelatoStopLimitOrdersHistory(
       gelatoLimitOrders
         .getOpenOrders(account.toLowerCase(), includeOrdersWithNullHandler)
         .then(async (orders) => {
-          const ordersLS = getLSOrders(chainId, account, false);
+          const ordersLS = getLSOrders(chainId, account);
           orders.forEach((order: StopLimitOrder) => {
             const orderExists = ordersLS.find(
               (confOrder) =>
@@ -54,12 +54,11 @@ export default function useGelatoStopLimitOrdersHistory(
               (orderExists &&
                 Number(orderExists.updatedAt) < Number(order.updatedAt))
             ) {
-              saveOrder(chainId, account, order, false);
+              saveOrder(chainId, account, order);
             }
-            saveOrder(chainId, account, order, false);
           });
 
-          const openOrdersLS = getLSOrders(chainId, account, false).filter(
+          const openOrdersLS = getLSOrders(chainId, account).filter(
             (order) => order.status === "open"
           );
 
@@ -84,11 +83,11 @@ export default function useGelatoStopLimitOrdersHistory(
         })
         .catch((e) => {
           console.error("Error fetching open orders from subgraph", e);
-          const openOrdersLS = getLSOrders(chainId, account, false).filter(
+          const openOrdersLS = getLSOrders(chainId, account).filter(
             (order) => order.status === "open"
           );
 
-          const pendingOrdersLS = getLSOrders(chainId, account, true);
+          const pendingOrdersLS = getLSOrders(chainId, account);
 
           setOpenOrders({
             confirmed: openOrdersLS
@@ -114,7 +113,7 @@ export default function useGelatoStopLimitOrdersHistory(
       gelatoLimitOrders
         .getCancelledOrders(account.toLowerCase(), includeOrdersWithNullHandler)
         .then(async (orders) => {
-          const ordersLS = getLSOrders(chainId, account, false);
+          const ordersLS = getLSOrders(chainId, account);
 
           orders.forEach((order: StopLimitOrder) => {
             const orderExists = ordersLS.find(
@@ -126,11 +125,11 @@ export default function useGelatoStopLimitOrdersHistory(
               (orderExists &&
                 Number(orderExists.updatedAt) < Number(order.updatedAt))
             ) {
-              saveOrder(chainId, account, order, false);
+              saveOrder(chainId, account, order);
             }
           });
 
-          const cancelledOrdersLS = getLSOrders(chainId, account, false).filter(
+          const cancelledOrdersLS = getLSOrders(chainId, account).filter(
             (order) => order.status === "cancelled"
           );
 
@@ -148,7 +147,7 @@ export default function useGelatoStopLimitOrdersHistory(
         .catch((e) => {
           console.error("Error fetching cancelled orders from subgraph", e);
 
-          const cancelledOrdersLS = getLSOrders(chainId, account, false).filter(
+          const cancelledOrdersLS = getLSOrders(chainId, account).filter(
             (order) => order.status === "cancelled"
           );
 
@@ -170,7 +169,7 @@ export default function useGelatoStopLimitOrdersHistory(
       gelatoLimitOrders
         .getExecutedOrders(account.toLowerCase(), includeOrdersWithNullHandler)
         .then(async (orders) => {
-          const ordersLS = getLSOrders(chainId, account, false);
+          const ordersLS = getLSOrders(chainId, account);
 
           orders.forEach((order: StopLimitOrder) => {
             const orderExists = ordersLS.find(
@@ -182,11 +181,11 @@ export default function useGelatoStopLimitOrdersHistory(
               (orderExists &&
                 Number(orderExists.updatedAt) < Number(order.updatedAt))
             ) {
-              saveOrder(chainId, account, order, false);
+              saveOrder(chainId, account, order);
             }
           });
 
-          const executedOrdersLS = getLSOrders(chainId, account, false).filter(
+          const executedOrdersLS = getLSOrders(chainId, account).filter(
             (order) => order.status === "executed"
           );
 
@@ -194,7 +193,7 @@ export default function useGelatoStopLimitOrdersHistory(
         })
         .catch((e) => {
           console.error("Error fetching executed orders from subgraph", e);
-          const executedOrdersLS = getLSOrders(chainId, account, false).filter(
+          const executedOrdersLS = getLSOrders(chainId, account).filter(
             (order) => order.status === "executed"
           );
 
