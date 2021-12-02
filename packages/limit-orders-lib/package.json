@@ -63,5 +63,6 @@
   "lint-staged": {
     "*.{js,json,md,ts,yaml,yml}": "prettier --write",
     "*.{ts,js}": "eslint -c .eslintrc.json"
-  }
+  },
+  "gitHead": "0716bb8869fc8c1922cd0f0b5c50c0404b127049"
 }

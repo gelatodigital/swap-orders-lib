@@ -125,5 +125,6 @@
     "rebass": "^4.0.7",
     "tslib": "^2.3.1",
     "wcag-contrast": "^3.0.0"
-  }
+  },
+  "gitHead": "0716bb8869fc8c1922cd0f0b5c50c0404b127049"
 }
