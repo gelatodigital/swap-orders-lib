@@ -1,7 +1,7 @@
-import { DEFAULT_DEADLINE_FROM_NOW } from '../../constants/misc'
 import { createReducer } from '@reduxjs/toolkit'
 import {
   updateMatchesDarkMode,
+  SerializedToken,
   updateUserDarkMode,
 } from './actions'
 
@@ -14,12 +14,18 @@ export interface UserState {
   userDarkMode: boolean | null // the user's choice for dark mode or light mode
   matchesDarkMode: boolean // whether the dark mode media query matches
   timestamp: number
+  tokens: {
+    [chainId: number]: {
+      [address: string]: SerializedToken
+    }
+  }
 }
 
 export const initialState: UserState = {
   userDarkMode: null,
   matchesDarkMode: false,
   timestamp: currentTimestamp(),
+  tokens: {},
 }
 
 export default createReducer(initialState, (builder) =>
