@@ -1,0 +1,408 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract IWETH",
+        "name": "_weth",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IGUniPool",
+        "name": "_pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0Max",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1Max",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_receiver",
+        "type": "address"
+      }
+    ],
+    "name": "addLiquidity",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount0",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "mintAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IGUniPool",
+        "name": "_pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0Max",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1Max",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_receiver",
+        "type": "address"
+      }
+    ],
+    "name": "addLiquidityETH",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount0",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "mintAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_token0",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_token1",
+        "type": "address"
+      }
+    ],
+    "name": "isToken0Weth",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "wethToken0",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IGUniPool",
+        "name": "_pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0In",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1In",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amountSwap",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_zeroForOne",
+        "type": "bool"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_swapActions",
+        "type": "address[]"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "_swapDatas",
+        "type": "bytes[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_receiver",
+        "type": "address"
+      }
+    ],
+    "name": "rebalanceAndAddLiquidity",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount0",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "mintAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IGUniPool",
+        "name": "_pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0In",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1In",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amountSwap",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_zeroForOne",
+        "type": "bool"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_swapActions",
+        "type": "address[]"
+      },
+      {
+        "internalType": "bytes[]",
+        "name": "_swapDatas",
+        "type": "bytes[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_receiver",
+        "type": "address"
+      }
+    ],
+    "name": "rebalanceAndAddLiquidityETH",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount0",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "mintAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IGUniPool",
+        "name": "_pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_burnAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "_receiver",
+        "type": "address"
+      }
+    ],
+    "name": "removeLiquidity",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount0",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint128",
+        "name": "liquidityBurned",
+        "type": "uint128"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IGUniPool",
+        "name": "_pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_burnAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount0Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount1Min",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_receiver",
+        "type": "address"
+      }
+    ],
+    "name": "removeLiquidityETH",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount0",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint128",
+        "name": "liquidityBurned",
+        "type": "uint128"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "weth",
+    "outputs": [
+      {
+        "internalType": "contract IWETH",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
+  }
+]

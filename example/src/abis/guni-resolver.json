@@ -1,0 +1,41 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract IGUniPool",
+        "name": "pool",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount0In",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount1In",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price18Decimals",
+        "type": "uint256"
+      }
+    ],
+    "name": "getRebalanceParams",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "zeroForOne",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "swapAmount",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
