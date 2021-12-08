@@ -303,6 +303,7 @@ export default function GelatoStopLimitOrder({
     rawAmounts.input,
     rawAmounts.output,
     account,
+    slippage,
   ]);
 
   const [showInverted, setShowInverted] = useState<boolean>(false);

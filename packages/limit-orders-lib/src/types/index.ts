@@ -62,12 +62,12 @@ export interface Order {
   data: string;
   inputData: string;
   handler: string | null;
+  isExpired: boolean;
 }
 
 export interface StopLimitOrder extends Order {
   maxReturn: string;
 }
-
 export interface PartialOrder {
   id: string;
   owner: string;

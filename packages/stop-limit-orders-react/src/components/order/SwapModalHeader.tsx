@@ -1,6 +1,6 @@
-import { Currency, TradeType } from "@uniswap/sdk-core";
+import { Currency, TradeType, Price, CurrencyAmount } from "@uniswap/sdk-core";
 import { Trade } from "@uniswap/v2-sdk";
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { ArrowDown, AlertTriangle } from "react-feather";
 import { Text } from "rebass";
 import styled from "styled-components";
@@ -19,7 +19,10 @@ import { LightCard } from "../Card";
 import { DarkGreyCard } from "../Card";
 import TradePrice from "../order/TradePrice";
 import useTheme from "../../hooks/useTheme";
-import { useGelatoStopLimitOrders } from "../../hooks/gelato";
+import {
+  useGelatoStopLimitOrders,
+  useGelatoStopLimitOrdersLib,
+} from "../../hooks/gelato";
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -53,8 +56,16 @@ export default function SwapModalHeader({
   const [showInverted, setShowInverted] = useState<boolean>(false);
 
   const {
-    derivedOrderInfo: { price, parsedAmounts },
+    derivedOrderInfo: {
+      price,
+      parsedAmounts,
+      slippage,
+      rawAmounts,
+      currencies,
+    },
   } = useGelatoStopLimitOrders();
+
+  const library = useGelatoStopLimitOrdersLib();
 
   const inputAmount = parsedAmounts.input;
   const outputAmount = parsedAmounts.output;
@@ -62,7 +73,42 @@ export default function SwapModalHeader({
   const fiatValueInput = useUSDCValue(inputAmount);
   const fiatValueOutput = useUSDCValue(outputAmount);
 
-  if (!inputAmount || !outputAmount) return null;
+  const rawOutputAmount = rawAmounts.output ?? "0";
+
+  const { minReturn } = useMemo(() => {
+    if (!outputAmount || !library)
+      return {
+        minReturn: undefined,
+      };
+
+    const { minReturn } = library.getFeeAndSlippageAdjustedMinReturn(
+      rawOutputAmount,
+      slippage
+    );
+
+    const minReturnParsed = CurrencyAmount.fromRawAmount(
+      outputAmount.currency,
+      minReturn
+    );
+
+    return {
+      minReturn: minReturnParsed,
+    };
+  }, [outputAmount, library, rawOutputAmount, slippage]);
+
+  const limitPrice = useMemo(
+    () =>
+      minReturn && minReturn.greaterThan(0) && inputAmount
+        ? new Price({
+            quoteAmount: minReturn,
+            baseAmount: inputAmount,
+          })
+        : undefined,
+    [inputAmount, minReturn]
+  );
+
+  if (!inputAmount || !outputAmount || !outputAmount || !library || !slippage)
+    return null;
 
   return (
     <AutoColumn gap={"4px"} style={{ marginTop: "1rem" }}>
@@ -142,7 +188,7 @@ export default function SwapModalHeader({
       </DarkGreyCard>
       <RowBetween style={{ marginTop: "0.25rem", padding: "0 1rem" }}>
         <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
-          {"Limit Price:"}
+          {"Stop Price:"}
         </TYPE.body>
         <TradePrice
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -151,7 +197,17 @@ export default function SwapModalHeader({
           setShowInverted={setShowInverted}
         />
       </RowBetween>
-
+      <RowBetween style={{ marginTop: "0.15rem", padding: "0 1rem" }}>
+        <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
+          {"Limit Price:"}
+        </TYPE.body>
+        <TradePrice
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          price={limitPrice!}
+          showInverted={showInverted}
+          setShowInverted={setShowInverted}
+        />
+      </RowBetween>
       <LightCard style={{ padding: ".75rem", marginTop: "0.5rem" }}>
         <AdvancedSwapDetails />
       </LightCard>

@@ -3,6 +3,7 @@ import {
   OLD_SUBGRAPH_URL,
   SUBGRAPH_URL,
   GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS,
+  MAX_LIFETIME,
 } from "../../constants";
 import { Order } from "../../types";
 import { GET_ALL_ORDERS_BY_OWNER, GET_ORDER_BY_ID } from "./constants";
@@ -186,13 +187,21 @@ export const queryCancelledOrders = async (
   }
 };
 
+const checkExpiration = (allOrders: Order[]): Order[] =>
+  allOrders.map((order: Order) => {
+    order.isExpired =
+      Date.now() < (parseInt(order.createdAt) + MAX_LIFETIME) * 1000;
+    return { ...order };
+  });
+
 const _getUniqueOrdersWithHandler = (
   allOrders: Order[],
   chainId: number
 ): Order[] =>
   [
     ...new Map(
-      allOrders
+      checkExpiration(allOrders)
+        // filter out wrong module
         .filter((order) => order.module !== StopLimitModule(chainId))
         .map((order) => [order.id, order])
     ).values(),
