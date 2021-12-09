@@ -10,6 +10,7 @@ import UserUpdater from './state/user/updater'
 import ThemeProvider, { FixedGlobalStyle, ThemedGlobalStyle } from './theme'
 import getLibrary from './utils/getLibrary'
 import { GelatoProvider } from '@gelatonetwork/limit-orders-react'
+import { GelatoProvider as StopLimitProvider } from '@gelatonetwork/stop-limit-orders-react'
 import { useActiveWeb3React } from './hooks/web3'
 import { useWalletModalToggle } from './state/application/hooks'
 import ApplicationUpdater from './state/application/updater'
@@ -41,7 +42,15 @@ function Gelato({ children }: { children?: React.ReactNode }) {
       toggleWalletModal={toggleWalletModal}
       useDefaultTheme={false}
     >
-      {children}
+      <StopLimitProvider
+        library={library}
+        chainId={chainId}
+        account={account ?? undefined}
+        toggleWalletModal={toggleWalletModal}
+        useDefaultTheme={false}
+      >
+        {children}
+      </StopLimitProvider>
     </GelatoProvider>
   )
 }
