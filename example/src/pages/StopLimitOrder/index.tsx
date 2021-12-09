@@ -4,9 +4,8 @@ import { GelatoStopLimitOrderPanel, GelatoStopLimitOrdersHistoryPanel } from '@g
 export default function StopLimitOrder() {
   return (
     <>
-      {/* TODO: stop limit orders are broke */}
-      {/* <GelatoStopLimitOrderPanel /> */}
-      {/* <GelatoStopLimitOrdersHistoryPanel /> */}
+      <GelatoStopLimitOrderPanel />
+      <GelatoStopLimitOrdersHistoryPanel />
     </>
   )
 }
