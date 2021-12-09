@@ -1,0 +1,52 @@
+{
+  "name": "@gelatonetwork/range-orders-react",
+  "version": "0.0.1",
+  "description": "React Library for creating range orders via Gelato",
+  "keywords": [
+    "ethereum",
+    "uniswap",
+    "range orders",
+    "solidity",
+    "web3",
+    "smart contracts",
+    "gelato"
+  ],
+  "homepage": "https://github.com/gelatodigital/swap-orders-lib/tree/master/packages/range-orders-react#readme",
+  "bugs": {
+    "url": "https://github.com/gelatodigital/swap-orders-lib/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gelatodigital/swap-orders-lib.git"
+  },
+  "license": "MIT",
+  "author": "0mkar <0mkar@protonmail.com>",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "browser": "dist/index.umd.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "npx rollup -c",
+    "copy-contracts-types": "cp ./src/contracts/types/*.d.ts ./dist/src/contracts/types",
+    "copy-assets": "cp ./src/react/assets/**/*.png ./dist/src/react/assets",
+    "format": "prettier --write .",
+    "generate-contracts-typings": "typechain --target=ethers-v5 --outDir src/contracts/types './src/**/abis/*.json'",
+    "lint": "eslint --cache .",
+    "prepare": "yarn build && yarn format && yarn lint",
+    "pre-commit": "yarn prepare"
+  },
+  "lint-staged": {
+    "*.{js,json,md,ts,yaml,yml}": "yarn format",
+    "*.{ts,js}": "eslint -c .eslintrc.json"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^8.3.0"
+  },
+  "dependencies": {
+    "eslint-plugin-react": "^7.27.1",
+    "eslint-plugin-react-hooks": "^4.3.0"
+  }
+}
