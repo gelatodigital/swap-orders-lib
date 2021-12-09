@@ -2,26 +2,23 @@
 
 # Gelato Stop Limit Order React SDK
 
-Use Gelato's react component or hooks to place limit buy and sell orders on Ethereum, Polygon and Fantom using Gelato Network.
+Use Gelato's react component or hooks to place stop limit orders on Ethereum, Polygon and Fantom using Gelato Network.
 
 - To hook it up in simple and direct way, using our default style, just use our react component (uniswap trade style widget). It's as is as a couple of lines of code.
 - If your want to build your custom UI you can use our react hooks and plug them in into your components. Check the steps below.
 
-> :warning: :warning: :warning: **Warning** :warning: :warning: :warning: :
-> Version 1.0.0 introduced new features and our system changed to an approval/transferFrom flow. You should use the latest version available (>= 1.0.0). If you are using an old version you should update to the latest version immediately. Versions below 1.0.0 are being deprecated.
+## [Demo](https://www.sorbet.finance/#/stoplimit-order)
 
-## [Demo](https://www.sorbet.finance)
-
-<a href="https://www.sorbet.finance" target="_blank">
-     <img src="https://i.imgur.com/xE5RKRH.png"
-          alt="Gelato Limit orders"
+<a href="https://www.sorbet.finance/#/stoplimit-order" target="_blank">
+     <img src="https://imgur.com/a/JTwNHkB"
+          alt="Gelato Stop Limit orders"
           style="width: 440px;"
      />
 </a>
 
 ## Installation
 
-`yarn add -D @gelatonetwork/limit-orders-react`
+`yarn add -D @gelatonetwork/stop-limit-orders-react`
 
 or
 
@@ -39,7 +36,7 @@ import { save, load } from "redux-localstorage-simple";
 import {
   gelatoStopLimitReducers,
   GELATO_STOPLIMIT_PERSISTED_KEYS,
-} from "@gelatonetwork/limit-orders-react";
+} from "@gelatonetwork/stop-limit-orders-react";
 
 // OPTIONAL: set the gelato persisted keys
 // If don't use `redux-localstorage-simple` you can skip this step and only set the reducers
@@ -67,7 +64,7 @@ In your main file wrap your app with `GelatoProvider`:
 ```tsx
 import React from "react";
 import ReactDOM from "react-dom";
-import { GelatoProvider } from "@gelatonetwork/limit-orders-react";
+import { GelatoProvider } from "@gelatonetwork/stop-limit-orders-react";
 import { useActiveWeb3React } from "hooks/web3";
 
 function Gelato({ children }: { children?: React.ReactNode }) {
@@ -90,7 +87,7 @@ function Gelato({ children }: { children?: React.ReactNode }) {
 
       // By default `useDefaultTheme`and `useDarkMode` are set to true
       // Optionally, if you can try to use and pass your own theme by setting `useDefaultTheme`={false}
-      // as long as it conforms with our theme definitions (you can check our `ThemeProvider` [here](https://github.com/gelatodigital/limit-orders-lib/tree/master/packages/limit-orders-react/theme/index.tsx))
+      // as long as it conforms with our theme definitions (you can check our `ThemeProvider` [here](https://github.com/gelatodigital/swap-orders-lib/blob/master/packages/stop-limit-orders-react/theme/index.tsx))
       // Optionally, if your main theme does not comply with our definitions, you can also wrap `GelatoProvider`
       // with a custom `ThemeProvider` with your own custom definitions. (check our `ThemeProvider` as an example)
       // useDefaultTheme={false}
@@ -122,7 +119,37 @@ ReactDOM.render(
   document.getElementById("root")
 );
 ```
+!Important, if you already use `GelatoProvider` with "@gelatonetwork/limit-orders-react", simply import `GelatoProvider`  as `StopLimitProvider` and nest it under `GelatoProvider`
 
+
+```tsx
+import React from "react";
+import ReactDOM from "react-dom";
+import { GelatoProvider } from "@gelatonetwork/limit-orders-react";
+import { GelatoProvider as StopLimitProvider } from "@gelatonetwork/stop-limit-orders-react";
+
+import { useActiveWeb3React } from "hooks/web3";
+
+function Gelato({ children }: { children?: React.ReactNode }) {
+  const { library, chainId, account } = useActiveWeb3React();
+  return (
+    <GelatoProvider
+      library={library}
+      chainId={chainId}
+      account={account ?? undefined}
+    >
+      <StopLimitProvider
+         library={library}
+        chainId={chainId}
+        account={account ?? undefined}
+        >
+        {children}
+      </StopLimitProvider>
+    </GelatoProvider>
+  );
+}
+.....
+```
 ## Use the Gelato react component
 
 Using the Gelato react component is the easiest option to get limit orders into your app.
@@ -132,7 +159,7 @@ import React from "react";
 import {
   GelatoStopLimitOrderPanel,
   GelatoStopLimitOrdersHistoryPanel,
-} from "@gelatonetwork/limit-orders-react";
+} from "@gelatonetwork/stop-limit-orders-react";
 
 export default function LimitOrder() {
   return (
@@ -191,7 +218,7 @@ export default function StopLimitOrder() {
 }
 ```
 
-See complete integration example [here](https://github.com/gelatodigital/limit-orders-lib/tree/master/packages/limit-orders-react/src/components/GelatoLimitOrder/index.tsx#L81).
+See complete integration example [here](https://github.com/gelatodigital/swap-orders-lib/blob/master/packages/stop-limit-orders-react/src/components/GelatoStopLimitOrder/index.tsx).
 
 Note: You can also import the following hooks and functions from the library:
 
