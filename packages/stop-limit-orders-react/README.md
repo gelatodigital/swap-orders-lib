@@ -119,8 +119,8 @@ ReactDOM.render(
   document.getElementById("root")
 );
 ```
-!Important, if you already use `GelatoProvider` with "@gelatonetwork/limit-orders-react", simply import `GelatoProvider`  as `StopLimitProvider` and nest it under `GelatoProvider`
 
+!Important, if you already use `GelatoProvider` with "@gelatonetwork/limit-orders-react", simply import `GelatoProvider` as `StopLimitProvider` and nest it under `GelatoProvider`
 
 ```tsx
 import React from "react";
@@ -150,6 +150,7 @@ function Gelato({ children }: { children?: React.ReactNode }) {
 }
 .....
 ```
+
 ## Use the Gelato react component
 
 Using the Gelato react component is the easiest option to get limit orders into your app.
