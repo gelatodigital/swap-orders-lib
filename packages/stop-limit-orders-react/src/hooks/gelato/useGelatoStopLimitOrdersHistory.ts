@@ -87,7 +87,7 @@ export default function useGelatoStopLimitOrdersHistory(
             (order) => order.status === "open"
           );
 
-          const pendingOrdersLS = getLSOrders(chainId, account);
+          const pendingOrdersLS = getLSOrders(chainId, account, true);
 
           setOpenOrders({
             confirmed: openOrdersLS
