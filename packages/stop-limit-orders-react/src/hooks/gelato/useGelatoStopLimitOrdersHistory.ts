@@ -204,6 +204,7 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
     state,
   ]);
 
+
   useEffect(() => {
     fetchOpenOrders();
     fetchCancelledOrders();
