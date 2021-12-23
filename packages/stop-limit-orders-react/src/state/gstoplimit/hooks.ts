@@ -298,6 +298,8 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       input: independentField === Field.INPUT ? parsedAmount : inputAmount,
       output:
         independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+      minOutput:
+        independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
     }),
     [independentField, parsedAmount, inputAmount, trade]
   );
@@ -314,6 +316,24 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     inputError = inputError ?? "Select a token";
   }
 
+  // const adjustedMinRetun = useMemo(
+  //   () => library && slippage && rawOutputAmount ?
+  //     library.getFeeAndSlippageAdjustedMinReturn(
+  //       awAmounts.input,
+  //       slippage
+  //     ) : undefined,
+  //   [slippage, rawAmounts.input, library]
+  // );
+
+  // const limiPrice = useMemo(() => {
+  //   if (!parsedAmounts.input || !parsedAmounts.output) return undefined;
+
+  //   return new Price({
+  //     baseAmount: parsedAmounts.input,
+  //     quoteAmount: parsedAmounts.output,
+  //   });
+  // }, [parsedAmounts.input, parsedAmounts.minOutput]);
+
   const price = useMemo(() => {
     if (!parsedAmounts.input || !parsedAmounts.output) return undefined;
 
@@ -324,7 +344,14 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   }, [parsedAmounts.input, parsedAmounts.output]);
 
   if (price && trade) {
-    // if (
+    if (
+      price.greaterThan(trade.executionPrice.asFraction) ||
+      price.equalTo(trade.executionPrice.asFraction)
+    )
+      inputError =
+        inputError ??
+        "Only possible to place stop limit order below market rate";
+
     //   rateType === Rate.MUL &&
     //   (price.lessThan(trade.executionPrice.asFraction) ||
     //     price.equalTo(trade.executionPrice.asFraction))
@@ -332,13 +359,13 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     //   inputError =
     //     inputError ?? "Only possible to place sell orders above market rate";
 
-    if (
-      rateType === Rate.DIV &&
-      (price.invert().greaterThan(trade.executionPrice.invert().asFraction) ||
-        price.invert().equalTo(trade.executionPrice.invert().asFraction))
-    )
-      inputError =
-        inputError ?? "Only possible to place buy orders below market rate";
+    // if (
+    //   rateType === Rate.DIV &&
+    //   (price.invert().greaterThan(trade.executionPrice.invert().asFraction) ||
+    //     price.invert().equalTo(trade.executionPrice.invert().asFraction))
+    // )
+    //   inputError =
+    //     inputError ?? "Only possible to place buy orders below market rate";
   }
 
   // compare input to balance

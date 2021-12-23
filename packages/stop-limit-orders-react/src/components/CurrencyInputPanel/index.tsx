@@ -394,7 +394,6 @@ export default function CurrencyInputPanel({
                   priceImpact={priceImpact}
                   rateType={rateType}
                   inputCurrency={otherCurrency}
-                  outputCurrency={currency}
                 />
               )}
             </RowBetween>

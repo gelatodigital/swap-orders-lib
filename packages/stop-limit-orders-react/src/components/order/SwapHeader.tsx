@@ -21,17 +21,35 @@ const StyledInfo = styled(Info)`
   }
 `;
 
+const LimitPrice = styled.b`
+  color: ${({ theme }) => theme.primary2};
+`;
+const PrimaryText = styled.b`
+  color: ${({ theme }) => theme.primary2};
+`;
+
 const ToolTipText = () => (
   <>
-    A stop-limit order triggers the submission of a limit order, once the stock
-    reaches, or breaks through, a specified stop price. A stop-limit order
-    consists of two prices: the stop price and the limit price. The stop price
-    is the price that activates the limit order and is based on the last trade
-    price. The limit price is the price constraint required to execute the
-    order, once triggered. Just as with limit orders, there is no guarantee that
-    a stop-limit order, once triggered, will result in an order execution. This
-    is an important point that is worth repeating. A stop-limit order doesn’t
-    guarantee that any trade will occur.
+    <p>
+      {" "}
+      A stop-limit order triggers the submission of a limit order, once the
+      stock reaches, or breaks through, a specified stop price.
+    </p>
+    <p>
+      A stop-limit order consists of two prices: the{" "}
+      <PrimaryText>stop price</PrimaryText> and the{" "}
+      <LimitPrice>limit price</LimitPrice>.
+    </p>
+    <p>
+      The <PrimaryText>stop price</PrimaryText> is the price that activates the
+      limit order and is based on the last trade price. The{" "}
+      <PrimaryText>limit price</PrimaryText> is the price constraint required to
+      execute the order, once triggered. Just as with limit orders, there is no
+      guarantee that a stop-limit order, once triggered, will result in an order
+      execution. This is an important point that is worth repeating. A
+      stop-limit order{" "}
+      <PrimaryText>doesn’t guarantee that any trade will occur</PrimaryText>.
+    </p>
   </>
 );
 
