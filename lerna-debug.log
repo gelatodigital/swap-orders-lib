@@ -1,8 +1,8 @@
 52 warn complete Waiting for 2 child processes to exit. CTRL-C to exit immediately.
-53 error Error: Command failed with exit code 128: git tag @gelatonetwork/limit-orders-react@2.1.0-alpha.1 -m @gelatonetwork/limit-orders-react@2.1.0-alpha.1
-53 error fatal: tag '@gelatonetwork/limit-orders-react@2.1.0-alpha.1' already exists
+53 error Error: Command failed with exit code 128: git tag @gelatonetwork/limit-orders-lib@3.1.1-beta.4 -m @gelatonetwork/limit-orders-lib@3.1.1-beta.4
+53 error fatal: tag '@gelatonetwork/limit-orders-lib@3.1.1-beta.4' already exists
 53 error     at makeError (/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/execa/lib/error.js:60:11)
 53 error     at handlePromise (/Users/harrytrippel/Desktop/gelato/swap-orders-lib/node_modules/execa/index.js:118:26)
 53 error     at processTicksAndRejections (internal/process/task_queues.js:93:5)
-53 error     at async Promise.all (index 1)
+53 error     at async Promise.all (index 0)
 53 error     at async Promise.all (index 0)
