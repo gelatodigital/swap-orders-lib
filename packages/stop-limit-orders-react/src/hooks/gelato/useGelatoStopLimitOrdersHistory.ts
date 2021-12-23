@@ -17,7 +17,6 @@ function newOrdersFirst(a: StopLimitOrder, b: StopLimitOrder) {
 }
 
 export default function useGelatoStopLimitOrdersHistory(
-  includeOrdersWithNullHandler = false
 ): GelatoStopLimitOrdersHistory {
   const { account, chainId } = useWeb3();
 
@@ -42,7 +41,6 @@ export default function useGelatoStopLimitOrdersHistory(
       gelatoStopLimitOrders
         .getOpenStopLimitOrders(
           account.toLowerCase(),
-          includeOrdersWithNullHandler
         )
         .then(async (orders: StopLimitOrder[]) => {
           const ordersLS = getLSOrders(chainId, account);
@@ -109,14 +107,13 @@ export default function useGelatoStopLimitOrdersHistory(
               .sort(newOrdersFirst),
           });
         });
-  }, [gelatoStopLimitOrders, account, chainId, includeOrdersWithNullHandler]);
+  }, [gelatoStopLimitOrders, account, chainId]);
 
   const fetchCancelledOrders = useCallback(() => {
     if (gelatoStopLimitOrders && account && chainId)
       gelatoStopLimitOrders
         .getCancelledStopLimitOrders(
           account.toLowerCase(),
-          includeOrdersWithNullHandler
         )
         .then(async (orders: StopLimitOrder[]) => {
           const ordersLS = getLSOrders(chainId, account);
@@ -168,12 +165,12 @@ export default function useGelatoStopLimitOrdersHistory(
             pending: pendingCancelledOrdersLS.sort(newOrdersFirst),
           });
         });
-  }, [gelatoStopLimitOrders, account, chainId, includeOrdersWithNullHandler]);
+  }, [gelatoStopLimitOrders, account, chainId]);
 
   const fetchExecutedOrders = useCallback(async () => {
     if (gelatoStopLimitOrders && account && chainId)
       gelatoStopLimitOrders
-        .getExecutedStopLimitOrders(account, includeOrdersWithNullHandler)
+        .getExecutedStopLimitOrders(account)
         .then(async (orders: StopLimitOrder[]) => {
           const ordersLS = getLSOrders(chainId, account);
 
