@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { GelatoStopLimitOrders, utils } from "@gelatonetwork/limit-orders-lib";
+import { GelatoStopLimitOrders } from "@gelatonetwork/limit-orders-lib";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { formatUnits } from "@ethersproject/units";
@@ -65,13 +65,6 @@ export function AdvancedSwapDetails() {
         gelatoFeePercentage: undefined,
       };
 
-    // if (utils.isEthereumChain(chainId))
-    //   return {
-    //     minReturn: outputAmount,
-    //     slippagePercentage: undefined,
-    //     gelatoFeePercentage: undefined,
-    //   };
-
     const { minReturn } = library.getFeeAndSlippageAdjustedMinReturn(
       rawOutputAmount,
       slippage
@@ -90,7 +83,7 @@ export function AdvancedSwapDetails() {
       slippagePercentage,
       gelatoFeePercentage,
     };
-  }, [outputAmount, chainId, library, rawOutputAmount]);
+  }, [outputAmount, chainId, library, rawOutputAmount, slippage]);
 
   return !chainId ? null : (
     <AutoColumn gap="8px">
