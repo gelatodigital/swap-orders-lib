@@ -17,7 +17,7 @@ import {
   GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER,
   NETWORK_HANDLERS,
   SLIPPAGE_BPS,
-  SUBGRAPH_URL,
+  STOP_LIMIT_ORDER_SUBGRAPH_URL,
   TWO_BPS_GELATO_FEE,
 } from "../constants";
 import {
@@ -120,7 +120,7 @@ export class GelatoBase {
     }
 
     this._chainId = chainId;
-    this._subgraphUrl = SUBGRAPH_URL[chainId];
+    this._subgraphUrl = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
       ? signerOrProvider
       : undefined;
@@ -199,7 +199,7 @@ export class GelatoBase {
     };
   }
 
-  public async cancelLimitOrder(
+  public async cancelStopLimitOrder(
     order: StopLimitOrder,
     checkIsActiveOrder?: boolean,
     overrides?: Overrides
@@ -384,7 +384,7 @@ export class GelatoBase {
     }
   }
 
-  public async getPastOrders(
+  public async getPastStopLimitOrders(
     owner: string,
     includeOrdersWithNullHandler = false
   ): Promise<StopLimitOrder[]> {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
+import { Order, StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
 import { useWeb3 } from "../../web3";
-import { getLSOrders, saveOrder } from "../../utils/localStorageOrders";
+import { getLSOrders, saveStopOrder } from "../../utils/localStorageStopOrders";
 import useInterval from "../useInterval";
 import { useSelector } from "react-redux";
 import { AppState } from "../../state";
@@ -21,7 +21,7 @@ export default function useGelatoStopLimitOrdersHistory(
 ): GelatoStopLimitOrdersHistory {
   const { account, chainId } = useWeb3();
 
-  const gelatoLimitOrders = useGelatoStopLimitOrdersLib();
+  const gelatoStopLimitOrders = useGelatoStopLimitOrdersLib();
 
   const [openOrders, setOpenOrders] = useState<{
     pending: StopLimitOrder[];
@@ -38,10 +38,13 @@ export default function useGelatoStopLimitOrdersHistory(
   ) as any;
 
   const fetchOpenOrders = useCallback(() => {
-    if (gelatoLimitOrders && account && chainId)
-      gelatoLimitOrders
-        .getOpenOrders(account.toLowerCase(), includeOrdersWithNullHandler)
-        .then(async (orders) => {
+    if (gelatoStopLimitOrders && account && chainId)
+      gelatoStopLimitOrders
+        .getOpenStopLimitOrders(
+          account.toLowerCase(),
+          includeOrdersWithNullHandler
+        )
+        .then(async (orders: StopLimitOrder[]) => {
           const ordersLS = getLSOrders(chainId, account);
           orders.forEach((order: StopLimitOrder) => {
             const orderExists = ordersLS.find(
@@ -54,7 +57,7 @@ export default function useGelatoStopLimitOrdersHistory(
               (orderExists &&
                 Number(orderExists.updatedAt) < Number(order.updatedAt))
             ) {
-              saveOrder(chainId, account, order);
+              saveStopOrder(chainId, account, order);
             }
           });
 
@@ -81,7 +84,7 @@ export default function useGelatoStopLimitOrdersHistory(
               .sort(newOrdersFirst),
           });
         })
-        .catch((e) => {
+        .catch((e: Error) => {
           console.error("Error fetching open orders from subgraph", e);
           const openOrdersLS = getLSOrders(chainId, account).filter(
             (order) => order.status === "open"
@@ -106,13 +109,16 @@ export default function useGelatoStopLimitOrdersHistory(
               .sort(newOrdersFirst),
           });
         });
-  }, [gelatoLimitOrders, account, chainId, includeOrdersWithNullHandler]);
+  }, [gelatoStopLimitOrders, account, chainId, includeOrdersWithNullHandler]);
 
   const fetchCancelledOrders = useCallback(() => {
-    if (gelatoLimitOrders && account && chainId)
-      gelatoLimitOrders
-        .getCancelledOrders(account.toLowerCase(), includeOrdersWithNullHandler)
-        .then(async (orders) => {
+    if (gelatoStopLimitOrders && account && chainId)
+      gelatoStopLimitOrders
+        .getCancelledStopLimitOrders(
+          account.toLowerCase(),
+          includeOrdersWithNullHandler
+        )
+        .then(async (orders: StopLimitOrder[]) => {
           const ordersLS = getLSOrders(chainId, account);
 
           orders.forEach((order: StopLimitOrder) => {
@@ -125,7 +131,7 @@ export default function useGelatoStopLimitOrdersHistory(
               (orderExists &&
                 Number(orderExists.updatedAt) < Number(order.updatedAt))
             ) {
-              saveOrder(chainId, account, order);
+              saveStopOrder(chainId, account, order);
             }
           });
 
@@ -144,7 +150,7 @@ export default function useGelatoStopLimitOrdersHistory(
             pending: pendingCancelledOrdersLS.sort(newOrdersFirst),
           });
         })
-        .catch((e) => {
+        .catch((e: Error) => {
           console.error("Error fetching cancelled orders from subgraph", e);
 
           const cancelledOrdersLS = getLSOrders(chainId, account).filter(
@@ -162,13 +168,13 @@ export default function useGelatoStopLimitOrdersHistory(
             pending: pendingCancelledOrdersLS.sort(newOrdersFirst),
           });
         });
-  }, [gelatoLimitOrders, account, chainId, includeOrdersWithNullHandler]);
+  }, [gelatoStopLimitOrders, account, chainId, includeOrdersWithNullHandler]);
 
-  const fetchExecutedOrders = useCallback(() => {
-    if (gelatoLimitOrders && account && chainId)
-      gelatoLimitOrders
-        .getExecutedOrders(account.toLowerCase(), includeOrdersWithNullHandler)
-        .then(async (orders) => {
+  const fetchExecutedOrders = useCallback(async () => {
+    if (gelatoStopLimitOrders && account && chainId)
+      gelatoStopLimitOrders
+        .getExecutedStopLimitOrders(account, includeOrdersWithNullHandler)
+        .then(async (orders: StopLimitOrder[]) => {
           const ordersLS = getLSOrders(chainId, account);
 
           orders.forEach((order: StopLimitOrder) => {
@@ -181,7 +187,7 @@ export default function useGelatoStopLimitOrdersHistory(
               (orderExists &&
                 Number(orderExists.updatedAt) < Number(order.updatedAt))
             ) {
-              saveOrder(chainId, account, order);
+              saveStopOrder(chainId, account, order);
             }
           });
 
@@ -191,7 +197,7 @@ export default function useGelatoStopLimitOrdersHistory(
 
           setExecutedOrders(executedOrdersLS.sort(newOrdersFirst));
         })
-        .catch((e) => {
+        .catch((e: Error) => {
           console.error("Error fetching executed orders from subgraph", e);
           const executedOrdersLS = getLSOrders(chainId, account).filter(
             (order) => order.status === "executed"
@@ -199,7 +205,7 @@ export default function useGelatoStopLimitOrdersHistory(
 
           setExecutedOrders(executedOrdersLS.sort(newOrdersFirst));
         });
-  }, [gelatoLimitOrders, account, chainId, includeOrdersWithNullHandler]);
+  }, [gelatoStopLimitOrders, account, chainId, includeOrdersWithNullHandler]);
 
   const transactions = useMemo(() => (chainId ? state[chainId] ?? {} : {}), [
     chainId,

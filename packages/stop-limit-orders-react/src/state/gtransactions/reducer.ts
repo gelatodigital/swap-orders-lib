@@ -3,8 +3,8 @@ import { createReducer } from "@reduxjs/toolkit";
 import {
   confirmOrderCancellation,
   confirmOrderSubmission,
-  saveOrder,
-} from "../../utils/localStorageOrders";
+  saveStopOrder,
+} from "../../utils/localStorageStopOrders";
 import {
   addTransaction,
   checkedTransaction,
@@ -60,7 +60,7 @@ export default createReducer(initialState, (builder) =>
         };
 
         transactions[chainId] = txs;
-        if (order) saveOrder(chainId, from, order, true);
+        if (order) saveStopOrder(chainId, from, order, true);
       }
     )
     .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {

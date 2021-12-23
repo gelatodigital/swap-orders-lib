@@ -1,35 +1,41 @@
-import { StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
+import { StopLimitOrder, constants } from "@gelatonetwork/limit-orders-lib";
 import { get, set, clear } from "local-storage";
 
-const LS_ORDERS = "gorders_stop_";
+const LS_STOP_ORDERS = "gstoplimit_";
+const { GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS } = constants;
 
 export function clearOrdersLocalStorage() {
   return clear();
 }
 
-export function lsKey(key: string, account: string, chainId: number) {
+export function lsStopKey(key: string, account: string, chainId: number) {
   return key + account.toString() + chainId.toString();
 }
 
 export function getLSOrders(chainId: number, account: string, pending = false) {
   const key = pending
-    ? lsKey(LS_ORDERS + "pending_", account, chainId)
-    : lsKey(LS_ORDERS, account, chainId);
+    ? lsStopKey(LS_STOP_ORDERS + "pending_", account, chainId)
+    : lsStopKey(LS_STOP_ORDERS, account, chainId);
 
   const orders = get<StopLimitOrder[]>(key);
 
   return orders ? getUniqueOrders(orders) : [];
 }
 
-export function saveOrder(
+export function saveStopOrder(
   chainId: number,
   account: string,
   order: StopLimitOrder,
   pending = false
 ) {
+  if (
+    order.module !==
+    GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase()
+  )
+    return;
   const key = pending
-    ? lsKey(LS_ORDERS + "pending_", account, chainId)
-    : lsKey(LS_ORDERS, account, chainId);
+    ? lsStopKey(LS_STOP_ORDERS + "pending_", account, chainId)
+    : lsStopKey(LS_STOP_ORDERS, account, chainId);
 
   if (!pending) {
     removeOrder(chainId, account, order, true);
@@ -52,8 +58,8 @@ export function removeOrder(
   pending = false
 ) {
   const key = pending
-    ? lsKey(LS_ORDERS + "pending_", account, chainId)
-    : lsKey(LS_ORDERS, account, chainId);
+    ? lsStopKey(LS_STOP_ORDERS + "pending_", account, chainId)
+    : lsStopKey(LS_STOP_ORDERS, account, chainId);
 
   const prev = get<StopLimitOrder[]>(key);
 
@@ -75,7 +81,7 @@ export function confirmOrderCancellation(
   success = true
 ) {
   const cancelHash = cancellationHash.toLowerCase();
-  const pendingKey = lsKey(LS_ORDERS + "pending_", account, chainId);
+  const pendingKey = lsStopKey(LS_STOP_ORDERS + "pending_", account, chainId);
   const pendingOrders = get<StopLimitOrder[]>(pendingKey);
   const confirmedOrder = pendingOrders.find(
     (order) => order.cancelledTxHash?.toLowerCase() === cancelHash
@@ -84,7 +90,7 @@ export function confirmOrderCancellation(
   if (confirmedOrder) removeOrder(chainId, account, confirmedOrder, true);
 
   if (success && confirmedOrder) {
-    const ordersKey = lsKey(LS_ORDERS, account, chainId);
+    const ordersKey = lsStopKey(LS_STOP_ORDERS, account, chainId);
     const orders = get<StopLimitOrder[]>(ordersKey);
     if (orders) {
       const ordersToSave = removeOrder(chainId, account, confirmedOrder);
@@ -111,7 +117,7 @@ export function confirmOrderSubmission(
   success = true
 ) {
   const creationHash = submissionHash.toLowerCase();
-  const pendingKey = lsKey(LS_ORDERS + "pending_", account, chainId);
+  const pendingKey = lsStopKey(LS_STOP_ORDERS + "pending_", account, chainId);
   const pendingOrders = get<StopLimitOrder[]>(pendingKey);
   const confirmedOrder = pendingOrders.find(
     (order) => order.createdTxHash?.toLowerCase() === creationHash
@@ -120,7 +126,7 @@ export function confirmOrderSubmission(
   if (confirmedOrder) removeOrder(chainId, account, confirmedOrder, true);
 
   if (success && confirmedOrder) {
-    const ordersKey = lsKey(LS_ORDERS, account, chainId);
+    const ordersKey = lsStopKey(LS_STOP_ORDERS, account, chainId);
     const orders = get<StopLimitOrder[]>(ordersKey);
     if (orders) {
       const ordersToSave = removeOrder(chainId, account, {

@@ -41,7 +41,8 @@ export class GelatoStopLimitOrders extends GelatoBase {
     if (handler && !isValidChainIdAndHandler(chainId, handler)) {
       throw new Error("Invalid chainId and handler");
     }
-    const sotplossHandlers = ["quickswap_stoploss"];
+
+    const sotplossHandlers = ["quickswap_stoplimit"];
 
     if (handler && !sotplossHandlers.includes(handler)) {
       throw new Error("Wrong handler");
@@ -52,7 +53,7 @@ export class GelatoStopLimitOrders extends GelatoBase {
     if (!moduleAddress) throw new Error("Invalid chainId and handler");
 
     const handlerAddress =
-      handler === "quickswap_stoploss"
+      handler === "quickswap_stoplimit"
         ? HANDLERS_ADDRESSES[chainId][handler]?.toLowerCase()
         : undefined;
     super(chainId, moduleAddress, signerOrProvider, handler, handlerAddress);
@@ -265,103 +266,56 @@ export class GelatoStopLimitOrders extends GelatoBase {
     return { data, value, to };
   }
 
-  public async getOpenOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
+  public async getOpenStopLimitOrders(
+    owner: string
   ): Promise<StopLimitOrder[]> {
     const orders = await queryStopLimitOrders(owner, this._chainId);
 
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+    }));
   }
 
-  public async getOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
-  ): Promise<StopLimitOrder[]> {
+  public async getStopLimitOrders(owner: string): Promise<StopLimitOrder[]> {
     const orders = await queryStopLimitOrders(owner, this._chainId);
 
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+    }));
   }
 
-  public async getExecutedOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
+  public async getExecutedStopLimitOrders(
+    owner: string
   ): Promise<StopLimitOrder[]> {
     const orders = await queryStopLimitExecutedOrders(owner, this._chainId);
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+    }));
   }
 
-  public async getCancelledOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
+  public async getCancelledStopLimitOrders(
+    owner: string
   ): Promise<StopLimitOrder[]> {
     const orders = await queryStopLimitCancelledOrders(owner, this._chainId);
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+    }));
   }
 
-  public async getPastOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
+  public async getPastStopLimitOrders(
+    owner: string
   ): Promise<StopLimitOrder[]> {
     const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryPastOrders(owner, this._chainId);
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: isEthereumNetwork
-          ? order.minReturn
-          : this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: isEthereumNetwork
+        ? order.minReturn
+        : this.getAdjustedMinReturn(order.minReturn),
+    }));
   }
 }

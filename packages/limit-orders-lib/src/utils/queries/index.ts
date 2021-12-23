@@ -190,7 +190,7 @@ export const queryCancelledOrders = async (
 const checkExpiration = (allOrders: Order[]): Order[] =>
   allOrders.map((order: Order) => {
     order.isExpired =
-      Date.now() < (parseInt(order.createdAt) + MAX_LIFETIME) * 1000;
+      Date.now() > (parseInt(order.createdAt) + MAX_LIFETIME) * 1000;
     return { ...order };
   });
 

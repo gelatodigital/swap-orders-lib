@@ -24,7 +24,7 @@ export const queryStopLimitOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders);
   } catch (error) {
@@ -50,7 +50,7 @@ export const queryOpenStopLimitOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders).filter(
       (order) => order.status === "open"
@@ -77,7 +77,7 @@ export const queryStopLimitExecutedOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders).filter(
       (order) => order.status === "executed"
@@ -104,7 +104,7 @@ export const queryStopLimitCancelledOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders).filter(
       (order) => order.status === "cancelled"
@@ -131,7 +131,7 @@ export const queryPastOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders).filter(
       (order) => order.status !== "open"
@@ -144,7 +144,7 @@ export const queryPastOrders = async (
 const checkExpiration = (allOrders: StopLimitOrder[]): StopLimitOrder[] =>
   allOrders.map((order: StopLimitOrder) => {
     order.isExpired =
-      Date.now() < (parseInt(order.createdAt) + MAX_LIFETIME) * 1000;
+      Date.now() > (parseInt(order.createdAt) + MAX_LIFETIME) * 1000;
     return { ...order };
   });
 
@@ -153,7 +153,9 @@ export const _getUniqueOrdersWithHandler = (
 ): StopLimitOrder[] =>
   [
     ...new Map(
-      checkExpiration(allOrders).map((order) => [order.id, order])
+      checkExpiration(allOrders)
+        // filter out wrong module
+        .map((order) => [order.id, order])
     ).values(),
   ]
     // sort by `updatedAt` asc so that the most recent one will be used

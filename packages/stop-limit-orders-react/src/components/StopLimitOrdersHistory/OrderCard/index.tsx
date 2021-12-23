@@ -416,7 +416,7 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
             <Dots />
           )}
           <Spacer />
-          {order.isExpired ? <ExpiredText>Order expired</ExpiredText> : ""}
+          {order.isExpired ? <ExpiredText>Order expired </ExpiredText> : ""}
 
           <span></span>
           {showStatusButton ? (

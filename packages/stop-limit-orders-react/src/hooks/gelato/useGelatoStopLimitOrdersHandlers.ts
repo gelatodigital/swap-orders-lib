@@ -155,7 +155,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
           orderToCancel.data
       );
 
-      const tx = await gelatoStopLimitOrders.cancelLimitOrder(
+      const tx = await gelatoStopLimitOrders.cancelStopLimitOrder(
         orderToCancel,
         checkIfOrderExists,
         overrides ?? { gasPrice, gasLimit: 600000 }
@@ -164,7 +164,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
       const now = Math.round(Date.now() / 1000);
 
       const summary = orderDetails
-        ? `Order cancellation: Stoploss ${orderDetails.inputAmount} ${orderDetails.inputTokenSymbol} valid at ${orderDetails.maxOutputAmount} ${orderDetails.outputTokenSymbol}`
+        ? `Order cancellation: Stop Limit ${orderDetails.inputAmount} ${orderDetails.inputTokenSymbol} valid at ${orderDetails.maxOutputAmount} ${orderDetails.outputTokenSymbol}`
         : "Order cancellation";
 
       addTransaction(tx, {

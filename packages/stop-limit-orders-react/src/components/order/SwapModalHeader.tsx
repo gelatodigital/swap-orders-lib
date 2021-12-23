@@ -53,7 +53,7 @@ export default function SwapModalHeader({
 }) {
   const theme = useTheme();
 
-  const [showInverted, setShowInverted] = useState<boolean>(false);
+  const [showInverted, setShowInverted] = useState<boolean>(true);
 
   const {
     derivedOrderInfo: {
