@@ -197,7 +197,7 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
 
           setExecutedOrders(executedOrdersLS.sort(newOrdersFirst));
         });
-  }, [gelatoStopLimitOrders, account, chainId, includeOrdersWithNullHandler]);
+  }, [gelatoStopLimitOrders, account, chainId]);
 
   const transactions = useMemo(() => (chainId ? state[chainId] ?? {} : {}), [
     chainId,
