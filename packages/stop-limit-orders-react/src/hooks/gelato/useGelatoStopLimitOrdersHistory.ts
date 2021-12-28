@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Order, StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
+import { StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
 import { useWeb3 } from "../../web3";
 import { getLSOrders, saveStopOrder } from "../../utils/localStorageStopOrders";
 import useInterval from "../useInterval";
@@ -31,8 +31,8 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
   }>({ pending: [], confirmed: [] });
   const [executedOrders, setExecutedOrders] = useState<StopLimitOrder[]>([]);
 
-  const state = useSelector<AppState, AppState["gtransactions"]>(
-    (state) => state.gtransactions
+  const state = useSelector<AppState, AppState["gstoplimittransactions"]>(
+    (state) => state.gstoplimittransactions
   ) as any;
 
   const transactions = useMemo(() => (chainId ? state[chainId] ?? {} : {}), [

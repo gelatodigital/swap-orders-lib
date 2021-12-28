@@ -35,8 +35,8 @@ export default function Updater(): null {
   const lastBlockNumber = useBlockNumber(chainId);
 
   const dispatch = useDispatch<AppDispatch>();
-  const state = useSelector<AppState, AppState["gtransactions"]>(
-    (state) => state.gtransactions
+  const state = useSelector<AppState, AppState["gstoplimittransactions"]>(
+    (state) => state.gstoplimittransactions
   );
 
   const transactions = useMemo(() => (chainId ? state[chainId] ?? {} : {}), [

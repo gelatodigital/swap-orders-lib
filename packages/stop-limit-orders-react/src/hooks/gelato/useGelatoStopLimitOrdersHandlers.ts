@@ -8,7 +8,7 @@ import { Field } from "../../types";
 import { Currency, Price } from "@uniswap/sdk-core";
 import { Rate } from "../../state/gstoplimit/actions";
 import { useWeb3 } from "../../web3";
-import { useTransactionAdder } from "../../state/gtransactions/hooks";
+import { useTransactionAdder } from "../../state/gstoplimittransactions/hooks";
 import useGasPrice from "../useGasPrice";
 import useGelatoStopLimitOrdersLib from "./useGelatoStopLimitOrdersLib";
 
@@ -48,7 +48,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
 
   const gelatoStopLimitOrders = useGelatoStopLimitOrdersLib();
 
-  const addTransaction = useTransactionAdder();
+  const addStopLimitTransaction = useTransactionAdder();
 
   const gasPrice = useGasPrice();
 
@@ -106,7 +106,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
 
       const now = Math.round(Date.now() / 1000);
 
-      addTransaction(tx, {
+      addStopLimitTransaction(tx, {
         summary: `Order submission`,
         type: "submission",
         order: {
@@ -120,7 +120,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
 
       return tx;
     },
-    [addTransaction, chainId, gasPrice, gelatoStopLimitOrders]
+    [addStopLimitTransaction, chainId, gasPrice, gelatoStopLimitOrders]
   );
 
   const handleStopLimitOrderCancellation = useCallback(
@@ -149,10 +149,10 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
 
       const checkIfOrderExists = Boolean(
         orderToCancel.module &&
-          orderToCancel.inputToken &&
-          orderToCancel.owner &&
-          orderToCancel.witness &&
-          orderToCancel.data
+        orderToCancel.inputToken &&
+        orderToCancel.owner &&
+        orderToCancel.witness &&
+        orderToCancel.data
       );
 
       const tx = await gelatoStopLimitOrders.cancelStopLimitOrder(
@@ -167,7 +167,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
         ? `Order cancellation: Stop Limit ${orderDetails.inputAmount} ${orderDetails.inputTokenSymbol} valid at ${orderDetails.maxOutputAmount} ${orderDetails.outputTokenSymbol}`
         : "Order cancellation";
 
-      addTransaction(tx, {
+      addStopLimitTransaction(tx, {
         summary,
         type: "cancellation",
         order: {
@@ -180,7 +180,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
 
       return tx;
     },
-    [gelatoStopLimitOrders, chainId, account, gasPrice, addTransaction]
+    [gelatoStopLimitOrders, chainId, account, gasPrice, addStopLimitTransaction]
   );
 
   const handleInput = useCallback(
