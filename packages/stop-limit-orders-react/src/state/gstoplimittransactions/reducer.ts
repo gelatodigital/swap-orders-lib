@@ -14,7 +14,6 @@ import {
   TransactionType,
 } from "./actions";
 
-
 const now = () => new Date().getTime();
 
 export interface TransactionDetails {

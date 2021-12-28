@@ -116,14 +116,14 @@ const OrderStatus = styled.span<{ status: string; clickable: boolean }>`
     content: "Reply!";
     border: 1px solid
       ${({ status, theme, clickable }) =>
-    clickable
-      ? handleColorType("cancelled", theme)
-      : handleColorType(status, theme)};
+        clickable
+          ? handleColorType("cancelled", theme)
+          : handleColorType(status, theme)};
 
     color: ${({ status, theme, clickable }) =>
-    clickable
-      ? handleColorType("cancelled", theme)
-      : handleColorType(status, theme)};
+      clickable
+        ? handleColorType("cancelled", theme)
+        : handleColorType(status, theme)};
   }
 `;
 
@@ -138,7 +138,7 @@ export const ArrowWrapper = styled.div`
   border: 4px solid ${({ theme }) => theme.bg1};
 `;
 
-const CurrencySelect = styled(ButtonGray) <{
+const CurrencySelect = styled(ButtonGray)<{
   selected: boolean;
   hideInput?: boolean;
 }>`
@@ -164,11 +164,11 @@ const CurrencySelect = styled(ButtonGray) <{
   &:focus {
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
     background-color: ${({ selected, theme }) =>
-    selected ? theme.bg0 : theme.primary1};
+      selected ? theme.bg0 : theme.primary1};
   }
   :hover {
     background-color: ${({ selected, theme }) =>
-    selected ? theme.bg0 : theme.primary1};
+      selected ? theme.bg0 : theme.primary1};
   }
 `;
 
@@ -225,10 +225,10 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
       order.adjustedMinReturn
         ? order.adjustedMinReturn
         : gelatoLibrary && chainId && order.maxReturn
-          ? isEthereum
-            ? order.maxReturn
-            : gelatoLibrary.getAdjustedMinReturn(order.maxReturn)
-          : undefined,
+        ? isEthereum
+          ? order.maxReturn
+          : gelatoLibrary.getAdjustedMinReturn(order.maxReturn)
+        : undefined,
     [
       chainId,
       gelatoLibrary,
@@ -263,9 +263,9 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
     () =>
       outputAmount && outputAmount.greaterThan(0) && inputAmount
         ? new Price({
-          baseAmount: outputAmount,
-          quoteAmount: inputAmount,
-        })
+            baseAmount: outputAmount,
+            quoteAmount: inputAmount,
+          })
         : undefined,
     [inputAmount, outputAmount]
   );
@@ -274,9 +274,9 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
     () =>
       maxOutputAmount && maxOutputAmount.greaterThan(0) && inputAmount
         ? new Price({
-          baseAmount: maxOutputAmount,
-          quoteAmount: inputAmount,
-        })
+            baseAmount: maxOutputAmount,
+            quoteAmount: inputAmount,
+          })
         : undefined,
     [inputAmount, maxOutputAmount]
   );
@@ -339,12 +339,12 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
     const orderDetails =
       inputToken?.symbol && outputToken?.symbol && inputAmount && outputAmount
         ? {
-          inputTokenSymbol: inputToken.symbol,
-          outputTokenSymbol: outputToken.symbol,
-          inputAmount: inputAmount.toSignificant(4),
-          outputAmount: outputAmount.toSignificant(4),
-          maxOutputAmount: maxOutputAmount?.toSignificant(4),
-        }
+            inputTokenSymbol: inputToken.symbol,
+            outputTokenSymbol: outputToken.symbol,
+            inputAmount: inputAmount.toSignificant(4),
+            outputAmount: outputAmount.toSignificant(4),
+            maxOutputAmount: maxOutputAmount?.toSignificant(4),
+          }
         : undefined;
 
     handleStopLimitOrderCancellation(order, orderDetails)
@@ -469,10 +469,10 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
               {isSubmissionPending
                 ? "pending"
                 : isCancellationPending
-                  ? "cancelling"
-                  : order.status === "open"
-                    ? "cancel"
-                    : order.status}
+                ? "cancelling"
+                : order.status === "open"
+                ? "cancel"
+                : order.status}
               {isSubmissionPending || isCancellationPending ? <Dots /> : null}
             </OrderStatus>
           ) : null}
@@ -482,9 +482,11 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
           <OrderRow>
             <RowBetween>
               <Text fontWeight={500} fontSize={14} color={theme.text1}>
-                {`Stop Limit trigger price at ${inputAmount ? inputAmount.toSignificant(4) : "-"
-                  } ${inputAmount?.currency.symbol ?? ""} for ${maxOutputAmount ? maxOutputAmount?.toSignificant(4) : "-"
-                  } ${maxOutputAmount?.currency.symbol ?? ""}`}
+                {`Stop Limit trigger price at ${
+                  inputAmount ? inputAmount.toSignificant(4) : "-"
+                } ${inputAmount?.currency.symbol ?? ""} for ${
+                  maxOutputAmount ? maxOutputAmount?.toSignificant(4) : "-"
+                } ${maxOutputAmount?.currency.symbol ?? ""}`}
               </Text>
             </RowBetween>
           </OrderRow>
@@ -562,11 +564,13 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
                     isEthereum ? (
                       <>
                         <MouseoverTooltip
-                          text={`The execution price takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled, so that the minimum you receive is ${outputAmount ? outputAmount.toSignificant(4) : "-"
-                            } ${outputAmount?.currency.symbol ?? ""
-                            }. It fluctuates according to gas prices. Current gas price: ${parseFloat(
-                              gasPrice ? formatUnits(gasPrice, "gwei") : "-"
-                            ).toFixed(0)} GWEI.`}
+                          text={`The execution price takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled, so that the minimum you receive is ${
+                            outputAmount ? outputAmount.toSignificant(4) : "-"
+                          } ${
+                            outputAmount?.currency.symbol ?? ""
+                          }. It fluctuates according to gas prices. Current gas price: ${parseFloat(
+                            gasPrice ? formatUnits(gasPrice, "gwei") : "-"
+                          ).toFixed(0)} GWEI.`}
                         >
                           {ethereumExecutionPrice ? (
                             <TradePrice
