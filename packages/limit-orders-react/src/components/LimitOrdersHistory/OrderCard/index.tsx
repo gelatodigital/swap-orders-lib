@@ -58,7 +58,8 @@ const OrderPanel = styled.div`
 
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? "16px" : "20px")};
-  border: 1px solid ${" transparent"};
+  border: 1px solid
+    ${({ theme, hideInput }) => (hideInput ? " transparent" : theme.bg2)};
   background-color: ${({ theme }) => theme.bg1};
   width: ${({ hideInput }) => (hideInput ? "100%" : "initial")};
   :focus,
@@ -336,11 +337,13 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const OrderCard = ({
     showStatusButton = true,
+    hideInput = false,
   }: {
     showStatusButton?: boolean;
+    hideInput?: boolean;
   }) => (
     <OrderPanel>
-      <Container hideInput={true}>
+      <Container hideInput={hideInput}>
         <RowBetween padding="10px">
           {inputToken ? (
             <CurrencySelect selected={true}>
@@ -554,7 +557,8 @@ export default function OrderCard({ order }: { order: Order }) {
         topContent={() => (
           <>
             <br />
-            <OrderCard showStatusButton={false} />
+            <OrderCard showStatusButton={false} hideInput={true} />
+            <br />
           </>
         )}
       />
