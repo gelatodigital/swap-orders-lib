@@ -45,7 +45,6 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
       gelatoStopLimitOrders
         .getOpenStopLimitOrders(account.toLowerCase())
         .then(async (orders: StopLimitOrder[]) => {
-
           const ordersLS = getLSOrders(chainId, account);
           orders.forEach((order: StopLimitOrder) => {
             const orderExists = ordersLS.find(
