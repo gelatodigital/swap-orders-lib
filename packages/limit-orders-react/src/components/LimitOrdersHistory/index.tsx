@@ -183,9 +183,7 @@ export default function LimitOrdersHistory() {
                 clearLocalStorageAndRefetchDataFromSubgraph();
               }}
             >
-              <MouseoverTooltip
-                text={`Clear orders local storage and refetch data from subgraph.`}
-              >
+              <MouseoverTooltip text={`Refresh your limit orders.`}>
                 <RefreshCcw size="18" />
               </MouseoverTooltip>
             </RefreshIconWrapper>
