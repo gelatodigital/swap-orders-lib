@@ -21,7 +21,7 @@ const BA_LIST =
   "https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json";
 
 const QUICKSWAP_LIST =
-  "https://unpkg.com/quickswap-default-token-list@1.0.91/build/quickswap-default.tokenlist.json";
+  "https://unpkg.com/quickswap-default-token-list@1.2.18/build/quickswap-default.tokenlist.json";
 
 const PANCAKESWAP_LIST =
   "https://tokens.pancakeswap.finance/pancakeswap-extended.json";
