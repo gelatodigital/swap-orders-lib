@@ -337,11 +337,13 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const OrderCard = ({
     showStatusButton = true,
+    hideInput = false,
   }: {
     showStatusButton?: boolean;
+    hideInput?: boolean;
   }) => (
     <OrderPanel>
-      <Container hideInput={false}>
+      <Container hideInput={hideInput}>
         <RowBetween padding="10px">
           {inputToken ? (
             <CurrencySelect selected={true}>
@@ -555,7 +557,8 @@ export default function OrderCard({ order }: { order: Order }) {
         topContent={() => (
           <>
             <br />
-            <OrderCard showStatusButton={false} />
+            <OrderCard showStatusButton={false} hideInput={true} />
+            <br />
           </>
         )}
       />
