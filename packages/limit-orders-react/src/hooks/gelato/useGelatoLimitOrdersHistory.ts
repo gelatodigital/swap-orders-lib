@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Order } from "@gelatonetwork/limit-orders-lib";
 import { useWeb3 } from "../../web3";
-import { getLSOrders, saveOrder } from "../../utils/localStorageOrders";
+import {
+  clearOrdersLocalStorage,
+  getLSOrders,
+  saveOrder,
+} from "../../utils/localStorageOrders";
 import useInterval from "../useInterval";
 import { useSelector } from "react-redux";
 import { AppState } from "../../state";
@@ -11,7 +15,9 @@ export interface GelatoLimitOrdersHistory {
   open: { pending: Order[]; confirmed: Order[] };
   cancelled: { pending: Order[]; confirmed: Order[] };
   executed: Order[];
+  clearLocalStorageAndRefetchDataFromSubgraph: () => void;
 }
+
 function newOrdersFirst(a: Order, b: Order) {
   return Number(b.updatedAt) - Number(a.updatedAt);
 }
@@ -152,7 +158,6 @@ export default function useGelatoLimitOrdersHistory(
         })
         .catch((e) => {
           console.error("Error fetching cancelled orders from subgraph", e);
-
           const cancelledOrdersLS = getLSOrders(chainId, account).filter(
             (order) => order.status === "cancelled"
           );
@@ -207,6 +212,25 @@ export default function useGelatoLimitOrdersHistory(
         });
   }, [gelatoLimitOrders, account, chainId, includeOrdersWithNullHandler]);
 
+  const clearLocalStorageAndRefetchDataFromSubgraph = useCallback(() => {
+    clearOrdersLocalStorage();
+
+    setExecutedOrders([]);
+    setCancelledOrders({
+      confirmed: [],
+      pending: [],
+    });
+
+    setOpenOrders({
+      confirmed: [],
+      pending: [],
+    });
+
+    fetchOpenOrders();
+    fetchCancelledOrders();
+    fetchExecutedOrders();
+  }, [fetchCancelledOrders, fetchExecutedOrders, fetchOpenOrders]);
+
   useEffect(() => {
     fetchOpenOrders();
     fetchCancelledOrders();
@@ -218,13 +242,14 @@ export default function useGelatoLimitOrdersHistory(
     transactions,
   ]);
 
-  useInterval(fetchOpenOrders, 60000);
-  useInterval(fetchCancelledOrders, 60000);
-  useInterval(fetchExecutedOrders, 60000);
+  useInterval(fetchOpenOrders, 120_000);
+  useInterval(fetchCancelledOrders, 120_000);
+  useInterval(fetchExecutedOrders, 120_000);
 
   return {
     open: openOrders,
     cancelled: cancelledOrders,
     executed: executedOrders,
+    clearLocalStorageAndRefetchDataFromSubgraph,
   };
 }

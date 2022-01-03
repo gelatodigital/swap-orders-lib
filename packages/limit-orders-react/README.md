@@ -250,6 +250,7 @@ useGelatoLimitOrdersHistory(includeOrdersWithNullHandler?: boolean): {
   open: { pending: Order[]; confirmed: Order[] };
   cancelled: { pending: Order[]; confirmed: Order[] };
   executed: Order[];
+  clearLocalStorageAndRefetchDataFromSubgraph: () => void
 }
 
 useGelatoLimitOrdersLib(): GelatoLimitOrders | undefined

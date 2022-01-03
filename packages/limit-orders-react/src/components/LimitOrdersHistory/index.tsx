@@ -1,16 +1,36 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components/macro";
+import { RefreshCcw } from "react-feather";
 import { darken } from "polished";
 import { TYPE } from "../../theme";
 import { AutoColumn } from "../Column";
 import { Wrapper } from "../order/styleds";
 import AppBody from "../GelatoLimitOrder/AppBody";
-import Row from "../Row";
+import Row, { RowBetween, RowFixed } from "../Row";
 import { useGelatoLimitOrdersHistory } from "../../hooks/gelato";
 import useTheme from "../../hooks/useTheme";
 import OrderCard from "./OrderCard/index";
 import { FixedSizeList } from "react-window";
 import { useWeb3 } from "../../web3";
+import { MouseoverTooltip } from "../Tooltip";
+
+const RefreshIconWrapper = styled.a`
+  text-decoration: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  justify-self: flex-end;
+  padding-right: 1.3rem;
+  padding-top: 0.6rem;
+  color: ${({ theme }) => theme.text3};
+
+  :hover {
+    color: ${({ theme }) => theme.text1};
+    opacity: 0.7;
+    text-decoration: none;
+  }
+`;
 
 const TopSection = styled(AutoColumn)`
   max-width: 640px;
@@ -97,7 +117,12 @@ export default function LimitOrdersHistory() {
 
   const theme = useTheme();
 
-  const { open, cancelled, executed } = useGelatoLimitOrdersHistory();
+  const {
+    open,
+    cancelled,
+    executed,
+    clearLocalStorageAndRefetchDataFromSubgraph,
+  } = useGelatoLimitOrdersHistory();
 
   const fixedListRef = useRef<FixedSizeList>();
 
@@ -131,23 +156,41 @@ export default function LimitOrdersHistory() {
   return account ? (
     <>
       <AppBody>
-        <HeaderTitles>
-          <LimitOrdersHistoryHeader
-            title={"Open"}
-            active={orderTab === "open"}
-            onClick={() => handleActiveHeader("open")}
-          />
-          <LimitOrdersHistoryHeader
-            title={"Cancelled"}
-            active={orderTab === "cancelled"}
-            onClick={() => handleActiveHeader("cancelled")}
-          />
-          <LimitOrdersHistoryHeader
-            title={"Executed"}
-            active={orderTab === "executed"}
-            onClick={() => handleActiveHeader("executed")}
-          />
-        </HeaderTitles>
+        <RowBetween>
+          <RowFixed>
+            <HeaderTitles>
+              <LimitOrdersHistoryHeader
+                title={"Open"}
+                active={orderTab === "open"}
+                onClick={() => handleActiveHeader("open")}
+              />
+              <LimitOrdersHistoryHeader
+                title={"Cancelled"}
+                active={orderTab === "cancelled"}
+                onClick={() => handleActiveHeader("cancelled")}
+              />
+              <LimitOrdersHistoryHeader
+                title={"Executed"}
+                active={orderTab === "executed"}
+                onClick={() => handleActiveHeader("executed")}
+              />
+            </HeaderTitles>
+          </RowFixed>
+
+          <RowFixed>
+            <RefreshIconWrapper
+              onClick={() => {
+                clearLocalStorageAndRefetchDataFromSubgraph();
+              }}
+            >
+              <MouseoverTooltip
+                text={`Clear orders local storage and refetch data from subgraph.`}
+              >
+                <RefreshCcw size="18" />
+              </MouseoverTooltip>
+            </RefreshIconWrapper>
+          </RowFixed>
+        </RowBetween>
 
         <Wrapper id="limit-order-history">
           <TopSection gap="sm">
