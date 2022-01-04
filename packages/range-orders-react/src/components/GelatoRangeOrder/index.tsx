@@ -14,10 +14,7 @@ import { useGelatoRangeOrders } from "../../hooks/gelato";
 import { Field } from "../../state/gorder/actions";
 import { maxAmountSpend } from "../../utils/maxAmountSpend";
 import { useUSDCValue } from "../../hooks/useUSDCPrice";
-import {
-  Divide,
-  X,
-} from "react-feather";
+import { Divide, X } from "react-feather";
 import useTheme from "../../hooks/useTheme";
 
 interface GelatoRangeOrderProps {
@@ -29,7 +26,9 @@ enum Rate {
   MUL = "MUL",
 }
 
-export default function GelatoRangeOrder({ showCommonBases = true }: GelatoRangeOrderProps) {
+export default function GelatoRangeOrder({
+  showCommonBases = true,
+}: GelatoRangeOrderProps) {
   const theme = useTheme();
   const [activeTab, setActiveTab] = useState<"sell" | "buy">("sell");
   const {
@@ -57,7 +56,7 @@ export default function GelatoRangeOrder({ showCommonBases = true }: GelatoRange
     maxInputAmount?.greaterThan(0) &&
       !parsedAmounts.input?.equalTo(maxInputAmount)
   );
-  
+
   const handleActiveTab = (tab: "sell" | "buy") => {
     if (activeTab === tab) return;
     handleRateType(rateType, price);
