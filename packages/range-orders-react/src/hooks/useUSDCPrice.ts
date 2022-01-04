@@ -18,9 +18,7 @@ export default function useUSDCPrice(
   const { chainId, handler } = useWeb3();
   const v2USDCTrade = useTradeExactOut(
     currency,
-    chainId === 1
-      ? usdcCurrencyAmount
-      : undefined,
+    chainId === 1 ? usdcCurrencyAmount : undefined,
     handler,
     {
       maxHops: 2,
@@ -60,9 +58,7 @@ export default function useUSDCPrice(
       const { numerator, denominator } = v2USDCTrade.route.midPrice;
       return new Price(
         currency,
-        chainId === 1
-          ? USDC
-          : USDC,
+        chainId === 1 ? USDC : USDC,
         denominator,
         numerator
       );
