@@ -8,7 +8,7 @@ import { configureStore } from "@reduxjs/toolkit";
 
 export const GELATO_PERSISTED_KEYS: string[] = [
   "gtransactions",
-  // "glists",
+  "glists",
   "guser",
 ];
 
