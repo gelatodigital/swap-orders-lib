@@ -1,6 +1,6 @@
 import React from "react";
 import { Handler } from "@gelatonetwork/limit-orders-lib";
-import { GELATO_RANGE_PERSISTED_KEYS } from "./state";
+import { gelatoRangeOrderReducers, GELATO_RANGE_PERSISTED_KEYS } from "./state";
 import GelatoRangeOrderPanel from "./components/GelatoRangeOrder";
 import GelatoRangeOrderHistoryPanel from "./components/RangeOrdersHistory";
 import ThemeProvider, { ThemedGlobalStyle } from "./theme";
@@ -55,4 +55,5 @@ export {
   GelatoRangeOrderPanel,
   GelatoRangeOrderHistoryPanel,
   GELATO_RANGE_PERSISTED_KEYS,
+  gelatoRangeOrderReducers,
 };
