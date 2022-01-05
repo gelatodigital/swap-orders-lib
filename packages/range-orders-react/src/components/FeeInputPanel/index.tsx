@@ -49,11 +49,11 @@ export default function FeeInputPanel({
   return (
     <InputPanel id={id} hideInput={hideInput} {...rest}>
       <Container hideInput={hideInput}>
-        <InputRow style={hideInput ? { padding: "0", borderRadius: "8px" } : {}}>
+        <InputRow
+          style={hideInput ? { padding: "0", borderRadius: "8px" } : {}}
+        >
           <RowFixed style={{ height: "17px" }}>
-            <MouseoverTooltip
-              text={`Max fees you want to put in.`}
-            >
+            <MouseoverTooltip text={`Max fees you want to put in.`}>
               <TYPE.main>{"Max fee"}</TYPE.main>
             </MouseoverTooltip>
           </RowFixed>
@@ -70,5 +70,5 @@ export default function FeeInputPanel({
         </InputRow>
       </Container>
     </InputPanel>
-  )
+  );
 }

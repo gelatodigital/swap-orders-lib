@@ -48,7 +48,7 @@ export default function GelatoRangeOrder({
       formattedAmounts,
       currencyBalances,
       price,
-      trade
+      trade,
     },
     orderState: { independentField, rateType },
   } = useGelatoRangeOrders();
@@ -104,7 +104,7 @@ export default function GelatoRangeOrder({
     [handleInput]
   );
   const handleFeeInput = useCallback((value: string) => {
-    console.log(value)
+    console.log(value);
   }, []);
   const handleTypeOutput = useCallback(
     (value: string) => {
@@ -194,7 +194,11 @@ export default function GelatoRangeOrder({
                   }
                 />
               </ArrowWrapper>
-              <FeeInputPanel id="range-order-fee" onUserInput={handleFeeInput} value="" />
+              <FeeInputPanel
+                id="range-order-fee"
+                onUserInput={handleFeeInput}
+                value=""
+              />
               <ArrowWrapper clickable={false}>
                 <ArrowDown
                   size="16"
