@@ -120,7 +120,8 @@ const PriceSelect = styled(ButtonGray)<{
   :hover {
     background-color: ${({ theme }) => theme.bg0};
     border: ${({ selected }) => (selected ? "1px solid" : "none")};
-    border-color: ${({ selected, theme }) => selected ? theme.primary1 : "none"};
+    border-color: ${({ selected, theme }) =>
+      selected ? theme.primary1 : "none"};
     box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
   }
 `;
@@ -399,7 +400,14 @@ export default function CurrencyInputPanel({
               }}
             />
           )}
-          {showRange && (<TYPE.main style={{ paddingLeft: 2, paddingRight: 2 }} fontSize={14}>{otherCurrency?.symbol}</TYPE.main>)}
+          {showRange && (
+            <TYPE.main
+              style={{ paddingLeft: 2, paddingRight: 2 }}
+              fontSize={14}
+            >
+              {otherCurrency?.symbol}
+            </TYPE.main>
+          )}
         </InputRow>
         {!hideInput && !hideBalance && !showRate && (
           <FiatRow>
@@ -462,7 +470,7 @@ export default function CurrencyInputPanel({
                     fontSize={14}
                     style={{ display: "inline", cursor: "pointer" }}
                   >
-                    Range order prices
+                    Range order price
                   </TYPE.body>
                 </MouseoverTooltip>
               </RowBetween>
@@ -477,9 +485,7 @@ export default function CurrencyInputPanel({
                   setSelectPriceB(false);
                 }}
               >
-                <PriceAligner>
-                  4000
-                </PriceAligner>
+                <PriceAligner>4000</PriceAligner>
               </PriceSelect>
               <PriceSelect
                 selected={selectPriceB}
@@ -490,9 +496,7 @@ export default function CurrencyInputPanel({
                   setSelectPriceB(true);
                 }}
               >
-                <PriceAligner>
-                  4010
-                </PriceAligner>
+                <PriceAligner>4010</PriceAligner>
               </PriceSelect>
             </PriceRow>
           </Fragment>
