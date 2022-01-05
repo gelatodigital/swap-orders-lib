@@ -7,7 +7,7 @@ import {
 } from "@uniswap/sdk-core";
 import React, { useState, useCallback, Fragment, useMemo } from "react";
 import styled from "styled-components/macro";
-import { darken } from "polished";
+import { darken, lighten } from "polished";
 import { useCurrencyBalance } from "../../hooks/Balances";
 import CurrencySearchModal from "../SearchModal/CurrencySearchModal";
 import CurrencyLogo from "../CurrencyLogo";
@@ -23,11 +23,9 @@ import { AutoColumn } from "../Column";
 import { FiatValue } from "./FiatValue";
 import { formatTokenAmount } from "../../utils/formatTokenAmount";
 import { MouseoverTooltip } from "../Tooltip";
-import HoverInlineText from "../HoverInlineText";
 import DropDown from "../../assets/images/dropdown.svg";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { Pair } from "../../entities/pair";
-import TradePrice from "../order/TradePrice";
 import { RatePercentage } from "./RatePercentage";
 import { Rate } from "../../state/gorder/actions";
 
@@ -97,6 +95,36 @@ const CurrencySelect = styled(ButtonGray)<{
   }
 `;
 
+const PriceSelect = styled(ButtonGray)<{
+  selected: boolean;
+  hideInput?: boolean;
+}>`
+  align-items: center;
+  font-size: 24px;
+  font-weight: 500;
+  background-color: ${({ theme }) => theme.bg1};
+  color: ${({ theme }) => theme.text1};
+  border-radius: 8px;
+  box-shadow: ${({ selected }) =>
+    selected ? "0px 6px 10px rgba(0, 0, 0, 0.075)" : "none"};
+  outline: none;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid ${({ theme }) => lighten(0.05, theme.bg3)};
+  height: ${({ hideInput }) => (hideInput ? "2.8rem" : "2.4rem")};
+  width: ${({ hideInput }) => (hideInput ? "100%" : "50%")};
+  padding: 0 8px;
+  justify-content: space-between;
+  margin-right: ${({ hideInput }) => (hideInput ? "0" : "12px")};
+  :focus,
+  :hover {
+    background-color: ${({ theme }) => theme.bg0};
+    border: ${({ selected }) => (selected ? "1px solid" : "none")};
+    border-color: ${({ selected, theme }) => selected ? theme.primary1 : "none"};
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
+  }
+`;
+
 const InputRow = styled.div<{ selected: boolean }>`
   ${({ theme }) => theme.flexRowNoWrap}
   align-items: center;
@@ -121,10 +149,21 @@ const FiatRow = styled(LabelRow)`
   justify-content: flex-end;
 `;
 
+const PriceRow = styled(LabelRow)`
+  justify-content: space-between;
+`;
+
 const Aligner = styled.span`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
+`;
+
+const PriceAligner = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
 `;
 
@@ -188,6 +227,7 @@ interface CurrencyInputPanelProps {
   locked?: boolean;
   showCurrencySelector?: boolean;
   showRate?: boolean;
+  showRange?: boolean;
   isInvertedRate?: boolean;
   realExecutionPrice?: Price<Currency, Currency> | undefined;
   realExecutionPriceAsString?: string | undefined;
@@ -214,14 +254,16 @@ export default function CurrencyInputPanel({
   locked = false,
   showCurrencySelector = true,
   showRate = false,
+  showRange = false,
   isInvertedRate = false,
-  realExecutionPrice,
   realExecutionPriceAsString,
   rateType,
   ...rest
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false);
   const [showInverted, setShowInverted] = useState<boolean>(true);
+  const [selectPriceA, setSelectPriceA] = useState<boolean>(false);
+  const [selectPriceB, setSelectPriceB] = useState<boolean>(false);
 
   const { account, chainId } = useWeb3();
   const selectedCurrencyBalance = useCurrencyBalance(
@@ -335,8 +377,7 @@ export default function CurrencyInputPanel({
               </Aligner>
             </CurrencySelect>
           ) : null}
-
-          {showRate && (
+          {showRange && (
             <RowFixed style={{ height: "17px" }}>
               <MouseoverTooltip
                 text={`The virtual price that will determine your output amount. ${
@@ -345,11 +386,10 @@ export default function CurrencyInputPanel({
                     : ""
                 } ${rate ? rate + "." : ""}`}
               >
-                <TYPE.main>{"Price"}</TYPE.main>
+                <TYPE.main>{"Enter a price"}</TYPE.main>
               </MouseoverTooltip>
             </RowFixed>
           )}
-
           {!hideInput && (
             <NumericalInput
               className="token-amount-input"
@@ -359,6 +399,7 @@ export default function CurrencyInputPanel({
               }}
             />
           )}
+          {showRange && (<TYPE.main style={{ paddingLeft: 2, paddingRight: 2 }} fontSize={14}>{otherCurrency?.symbol}</TYPE.main>)}
         </InputRow>
         {!hideInput && !hideBalance && !showRate && (
           <FiatRow>
@@ -401,58 +442,59 @@ export default function CurrencyInputPanel({
           </FiatRow>
         )}
 
-        {showRate && value && currency && otherCurrency && isEthereum && (
+        {value && currency && otherCurrency && isEthereum && showRange && (
           <Fragment>
             <FiatRow>
               <RowBetween>
-                {currency && otherCurrency ? (
-                  <MouseoverTooltip
-                    text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
-                      rate
-                        ? `Assuming current gas price it should execute when ` +
-                          realExecutionRateExplainer +
-                          "."
-                        : ""
-                    }`}
-                  >
-                    <TYPE.body
-                      onClick={onMax}
-                      color={theme.text2}
-                      fontWeight={400}
-                      fontSize={14}
-                      style={{ display: "inline", cursor: "pointer" }}
-                    >
-                      Real execution price (?)
-                    </TYPE.body>
-                  </MouseoverTooltip>
-                ) : (
-                  "-"
-                )}
-                {realExecutionPrice ? (
-                  <TradePrice
-                    price={realExecutionPrice}
-                    showInverted={showInverted}
-                    setShowInverted={setShowInverted}
-                  />
-                ) : (
+                <MouseoverTooltip
+                  text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                    rate
+                      ? `Assuming current gas price it should execute when ` +
+                        realExecutionRateExplainer +
+                        "."
+                      : ""
+                  }`}
+                >
                   <TYPE.body
+                    onClick={onMax}
+                    color={theme.text2}
+                    fontWeight={400}
                     fontSize={14}
-                    color={
-                      realExecutionRateExplainer ? theme.text2 : theme.text4
-                    }
+                    style={{ display: "inline", cursor: "pointer" }}
                   >
-                    {/* {realExecutionRateExplainer ? "~" : ""} */}
-                    <HoverInlineText
-                      text={
-                        realExecutionRateExplainer
-                          ? realExecutionRateExplainer
-                          : "-"
-                      }
-                    />
+                    Range order prices
                   </TYPE.body>
-                )}
+                </MouseoverTooltip>
               </RowBetween>
             </FiatRow>
+            <PriceRow>
+              <PriceSelect
+                selected={selectPriceA}
+                hideInput={hideInput}
+                className="select-range-price"
+                onClick={() => {
+                  setSelectPriceA(true);
+                  setSelectPriceB(false);
+                }}
+              >
+                <PriceAligner>
+                  4000
+                </PriceAligner>
+              </PriceSelect>
+              <PriceSelect
+                selected={selectPriceB}
+                hideInput={hideInput}
+                className="select-range-price"
+                onClick={() => {
+                  setSelectPriceA(false);
+                  setSelectPriceB(true);
+                }}
+              >
+                <PriceAligner>
+                  4010
+                </PriceAligner>
+              </PriceSelect>
+            </PriceRow>
           </Fragment>
         )}
       </Container>
