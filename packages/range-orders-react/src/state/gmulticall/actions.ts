@@ -46,26 +46,26 @@ export const addMulticallListeners = createAction<{
   chainId: number;
   calls: Call[];
   options?: ListenerOptions;
-}>("rmulticall/addMulticallListeners");
+}>("gmulticall/addMulticallListeners");
 export const removeMulticallListeners = createAction<{
   chainId: number;
   calls: Call[];
   options?: ListenerOptions;
-}>("rmulticall/removeMulticallListeners");
+}>("gmulticall/removeMulticallListeners");
 export const fetchingMulticallResults = createAction<{
   chainId: number;
   calls: Call[];
   fetchingBlockNumber: number;
-}>("rmulticall/fetchingMulticallResults");
+}>("gmulticall/fetchingMulticallResults");
 export const errorFetchingMulticallResults = createAction<{
   chainId: number;
   calls: Call[];
   fetchingBlockNumber: number;
-}>("rmulticall/errorFetchingMulticallResults");
+}>("gmulticall/errorFetchingMulticallResults");
 export const updateMulticallResults = createAction<{
   chainId: number;
   blockNumber: number;
   results: {
     [callKey: string]: string | null;
   };
-}>("rmulticall/updateMulticallResults");
+}>("gmulticall/updateMulticallResults");

@@ -1,4 +1,4 @@
-import useGelatoLimitOrdersHandlers, {
+import useGelatoRangeOrdersHandlers, {
   GelatoRangeOrdersHandlers,
 } from "./useGelatoRangeOrdersHandlers";
 import {
@@ -17,7 +17,7 @@ export default function useGelatoRangeOrders(): {
 
   const orderState = useOrderState();
 
-  const handlers = useGelatoLimitOrdersHandlers();
+  const handlers = useGelatoRangeOrdersHandlers();
 
   return {
     handlers,

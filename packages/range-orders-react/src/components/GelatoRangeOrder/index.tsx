@@ -40,7 +40,6 @@ export default function GelatoRangeOrder({
       handleRateType,
       handleCurrencySelection,
       handleSwitchTokens,
-      handleLimitOrderSubmission,
     },
     derivedOrderInfo: {
       parsedAmounts,
@@ -92,7 +91,6 @@ export default function GelatoRangeOrder({
   }, [maxInputAmount, handleInput]);
   const handleInputSelect = useCallback(
     (inputCurrency) => {
-      //  setApprovalSubmitted(false); // reset 2 step UI for approvals
       handleCurrencySelection(Field.INPUT, inputCurrency);
     },
     [handleCurrencySelection]
@@ -179,6 +177,8 @@ export default function GelatoRangeOrder({
                 showCurrencySelector={false}
                 hideBalance={true}
                 showRange={true}
+                rangePriceLower={formattedAmounts.rangePriceLower}
+                rangePriceUpper={formattedAmounts.rangePriceUpper}
                 isInvertedRate={rateType === Rate.MUL ? false : true}
                 gasPrice={gasPrice}
                 realExecutionPrice={realExecutionPrice ?? undefined}
@@ -202,6 +202,9 @@ export default function GelatoRangeOrder({
               <ArrowWrapper clickable={false}>
                 <ArrowDown
                   size="16"
+                  onClick={() => {
+                    handleSwitchTokens();
+                  }}
                   color={
                     currencies.input && currencies.output
                       ? theme.text1

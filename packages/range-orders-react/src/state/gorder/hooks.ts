@@ -21,6 +21,7 @@ import {
   setRecipient,
   switchCurrencies,
   typeInput,
+  setRange,
 } from "./actions";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "..";
@@ -77,10 +78,13 @@ export function useOrderActionHandlers(): {
   onUserInput: (field: Field, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
   onChangeRateType: (rateType: Rate) => void;
+  onRangeChange: (upper: number, lower: number) => void;
 } {
   const dispatch = useDispatch();
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
+      // console.log('onCurrencySelection >>>>>>')
+      // console.log(currency)
       dispatch(
         selectCurrency({
           field,
@@ -120,12 +124,22 @@ export function useOrderActionHandlers(): {
     [dispatch]
   );
 
+  const onRangeChange = useCallback((upper: number, lower: number) => {
+    dispatch(
+      setRange({
+        upper,
+        lower,
+      })
+    );
+  }, [dispatch]);
+
   return {
     onSwitchTokens,
     onCurrencySelection,
     onUserInput,
     onChangeRecipient,
     onChangeRateType,
+    onRangeChange,
   };
 }
 
@@ -170,6 +184,8 @@ export interface DerivedOrderInfo {
     input: string;
     output: string;
     price: string;
+    rangePriceLower: string;
+    rangePriceUpper: string;
   };
   rawAmounts: {
     input: string | undefined;
@@ -181,7 +197,6 @@ export interface DerivedOrderInfo {
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedOrderInfo(): DerivedOrderInfo {
   const { account, handler, chainId } = useWeb3();
-
   const {
     independentField,
     typedValue,
@@ -189,6 +204,7 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
     rateType,
     inputValue,
+    range,
   } = useOrderState();
 
   const inputCurrency = useCurrency(inputCurrencyId);
@@ -349,6 +365,7 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       inputError =
         inputError ?? "Only possible to place buy orders below market rate";
   }
+  // Get Range Order Upper and Lower prices
 
   const formattedAmounts = {
     input:
@@ -365,6 +382,8 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
         : rateType === Rate.MUL
         ? price?.toSignificant(6) ?? ""
         : price?.invert().toSignificant(6) ?? "",
+    rangePriceLower: range.lower.toLocaleString("en-US"),
+    rangePriceUpper: range.upper.toLocaleString("en-US"),
   };
 
   const rawAmounts = useMemo(

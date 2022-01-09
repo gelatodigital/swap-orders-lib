@@ -1,10 +1,10 @@
 import { useCallback } from "react";
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { RangeOrderData } from "@gelatonetwork/range-orders-lib";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Overrides } from "@ethersproject/contracts";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
-
+import { useSelector } from "react-redux";
 import { useOrderActionHandlers } from "../../state/gorder/hooks";
 import { Field } from "../../types";
 import { Currency, Price } from "@uniswap/sdk-core";
@@ -12,26 +12,29 @@ import { Rate } from "../../state/gorder/actions";
 import { useWeb3 } from "../../web3";
 import { useTransactionAdder } from "../../state/gtransactions/hooks";
 import useGelatoRangeOrdersLib from "./useGelatoRangeOrdersLib";
+import { useCurrency, useToken } from "../../hooks/Tokens";
+import { AppState } from "../../state";
+import { computePoolAddress, FACTORY_ADDRESS, FeeAmount } from "@uniswap/v3-sdk";
 
 export interface GelatoRangeOrdersHandlers {
-  handleLimitOrderSubmission: (orderToSubmit: {
-    inputToken: string;
-    outputToken: string;
-    inputAmount: string;
-    outputAmount: string;
-    owner: string;
-    overrides?: Overrides;
-  }) => Promise<TransactionResponse>;
-  handleLimitOrderCancellation: (
-    order: Order,
-    orderDetails?: {
-      inputTokenSymbol: string;
-      outputTokenSymbol: string;
-      inputAmount: string;
-      outputAmount: string;
-    },
-    overrides?: Overrides
-  ) => Promise<TransactionResponse>;
+  // handleLimitOrderSubmission: (orderToSubmit: {
+  //   inputToken: string;
+  //   outputToken: string;
+  //   inputAmount: string;
+  //   outputAmount: string;
+  //   owner: string;
+  //   overrides?: Overrides;
+  // }) => Promise<TransactionResponse>;
+  // handleLimitOrderCancellation: (
+  //   order: RangeOrderData,
+  //   orderDetails?: {
+  //     inputTokenSymbol: string;
+  //     outputTokenSymbol: string;
+  //     inputAmount: string;
+  //     outputAmount: string;
+  //   },
+  //   overrides?: Overrides
+  // ) => Promise<TransactionResponse>;
   handleInput: (field: Field, value: string) => void;
   handleCurrencySelection: (
     field: Field.INPUT | Field.OUTPUT,
@@ -41,10 +44,14 @@ export interface GelatoRangeOrdersHandlers {
   handleRateType: (rateType: Rate, price?: Price<Currency, Currency>) => void;
 }
 
+export function useOrderState(): AppState["granger"] {
+  return useSelector<AppState, AppState["granger"]>((state) => state.granger);
+}
+
 export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandlers {
   const { chainId, account } = useWeb3();
 
-  const gelatoLimitOrders = useGelatoRangeOrdersLib();
+  const gelatoRangeOrders = useGelatoRangeOrdersLib();
 
   const addTransaction = useTransactionAdder();
 
@@ -53,135 +60,56 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     onCurrencySelection,
     onUserInput,
     onChangeRateType,
+    onRangeChange,
   } = useOrderActionHandlers();
 
-  const handleLimitOrderSubmission = useCallback(
-    async (
-      orderToSubmit: {
-        inputToken: string;
-        outputToken: string;
-        inputAmount: string;
-        outputAmount: string;
-        owner: string;
-      },
-      overrides?: Overrides
-    ) => {
-      if (!gelatoLimitOrders) {
-        throw new Error("Could not reach Gelato Limit Orders library");
-      }
+  const {
+    priceValue,
+    [Field.INPUT]: { currencyId: inputCurrencyId },
+    [Field.OUTPUT]: { currencyId: outputCurrencyId },
+  } = useOrderState();
 
-      if (!chainId) {
-        throw new Error("No chainId");
-      }
-
-      if (!gelatoLimitOrders?.signer) {
-        throw new Error("No signer");
-      }
-
-      const {
-        witness,
-        payload,
-        order,
-      } = await gelatoLimitOrders.encodeLimitOrderSubmissionWithSecret(
-        orderToSubmit.inputToken,
-        orderToSubmit.outputToken,
-        orderToSubmit.inputAmount,
-        orderToSubmit.outputAmount,
-        orderToSubmit.owner
-      );
-
-      const tx = await gelatoLimitOrders.signer.sendTransaction({
-        ...(overrides ?? {}),
-        to: payload.to,
-        data: payload.data,
-        value: BigNumber.from(payload.value),
-      });
-
-      const now = Math.round(Date.now() / 1000);
-
-      addTransaction(tx, {
-        summary: `Order submission`,
-        type: "submission",
-        order: {
-          ...order,
-          createdTxHash: tx?.hash.toLowerCase(),
-          witness,
-          status: "open",
-          updatedAt: now.toString(),
-        } as Order,
-      });
-
-      return tx;
-    },
-    [addTransaction, chainId, gelatoLimitOrders]
-  );
-
-  const handleLimitOrderCancellation = useCallback(
-    async (
-      orderToCancel: Order,
-      orderDetails?: {
-        inputTokenSymbol: string;
-        outputTokenSymbol: string;
-        inputAmount: string;
-        outputAmount: string;
-      },
-      overrides?: Overrides
-    ) => {
-      if (!gelatoLimitOrders) {
-        throw new Error("Could not reach Gelato Limit Orders library");
-      }
-
-      if (!chainId) {
-        throw new Error("No chainId");
-      }
-
-      if (!account) {
-        throw new Error("No account");
-      }
-
-      const checkIfOrderExists = Boolean(
-        orderToCancel.module &&
-          orderToCancel.inputToken &&
-          orderToCancel.owner &&
-          orderToCancel.witness &&
-          orderToCancel.data
-      );
-
-      const tx = await gelatoLimitOrders.cancelLimitOrder(
-        orderToCancel,
-        checkIfOrderExists,
-        overrides ?? {
-          gasLimit: isEthereumChain(chainId) ? 600_000 : 2_000_000,
-        }
-      );
-
-      const now = Math.round(Date.now() / 1000);
-
-      const summary = orderDetails
-        ? `Order cancellation: Swap ${orderDetails.inputAmount} ${orderDetails.inputTokenSymbol} for ${orderDetails.outputAmount} ${orderDetails.outputTokenSymbol}`
-        : "Order cancellation";
-
-      addTransaction(tx, {
-        summary,
-        type: "cancellation",
-        order: {
-          ...orderToCancel,
-          updatedAt: now.toString(),
-          status: "cancelled",
-          cancelledTxHash: tx?.hash.toLowerCase(),
-        },
-      });
-
-      return tx;
-    },
-    [gelatoLimitOrders, chainId, account, addTransaction]
-  );
+  const inputToken = useToken(inputCurrencyId);
+  const outputToken = useToken(outputCurrencyId);
 
   const handleInput = useCallback(
     (field: Field, value: string) => {
       onUserInput(field, value);
+      const updateRange = async () => {
+        console.log('----------> Updating Range Prices <----------')
+        if (!gelatoRangeOrders) {
+          throw new Error("Could not reach Gelato Limit Orders library");
+        }
+
+        if (!chainId) {
+          throw new Error("No chainId");
+        }
+
+        if (!gelatoRangeOrders?.signer) {
+          throw new Error("No signer");
+        }
+        console.log(priceValue)
+        if(gelatoRangeOrders && inputToken && outputToken && priceValue && Number(priceValue) > 0) {
+          const pool = computePoolAddress({
+            factoryAddress: FACTORY_ADDRESS,
+            tokenA: inputToken,
+            tokenB: outputToken,
+            fee: FeeAmount.LOW
+          });
+          console.log(pool)
+          const prices = await gelatoRangeOrders.getNearTicks(pool, BigNumber.from(Number(priceValue).toFixed(0)));
+          console.log("prices", prices);
+          if (prices) {
+            const { upper, lower }: { upper: number, lower: number } = prices;
+            onRangeChange(upper, lower);
+          }
+        }
+      }
+      if(field === Field.PRICE && Number(priceValue) > 0) {
+        updateRange();
+      }
     },
-    [onUserInput]
+    [onUserInput, gelatoRangeOrders, chainId, inputToken, outputToken, priceValue, onRangeChange]
   );
 
   const handleCurrencySelection = useCallback(
@@ -209,8 +137,6 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
   );
 
   return {
-    handleLimitOrderSubmission,
-    handleLimitOrderCancellation,
     handleInput,
     handleCurrencySelection,
     handleSwitchTokens,

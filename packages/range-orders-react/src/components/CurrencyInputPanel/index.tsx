@@ -229,6 +229,8 @@ interface CurrencyInputPanelProps {
   showCurrencySelector?: boolean;
   showRate?: boolean;
   showRange?: boolean;
+  rangePriceLower?: string;
+  rangePriceUpper?: string;
   isInvertedRate?: boolean;
   realExecutionPrice?: Price<Currency, Currency> | undefined;
   realExecutionPriceAsString?: string | undefined;
@@ -256,6 +258,8 @@ export default function CurrencyInputPanel({
   showCurrencySelector = true,
   showRate = false,
   showRange = false,
+  rangePriceLower,
+  rangePriceUpper,
   isInvertedRate = false,
   realExecutionPriceAsString,
   rateType,
@@ -485,7 +489,7 @@ export default function CurrencyInputPanel({
                   setSelectPriceB(false);
                 }}
               >
-                <PriceAligner>4000</PriceAligner>
+                <PriceAligner>{rangePriceLower}</PriceAligner>
               </PriceSelect>
               <PriceSelect
                 selected={selectPriceB}
@@ -496,7 +500,7 @@ export default function CurrencyInputPanel({
                   setSelectPriceB(true);
                 }}
               >
-                <PriceAligner>4010</PriceAligner>
+                <PriceAligner>{rangePriceUpper}</PriceAligner>
               </PriceSelect>
             </PriceRow>
           </Fragment>

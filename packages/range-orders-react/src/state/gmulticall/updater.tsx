@@ -66,7 +66,7 @@ async function fetchChunk(
  * @param chainId the current chain id
  */
 export function activeListeningKeys(
-  allListeners: AppState["rmulticall"]["callListeners"],
+  allListeners: AppState["gmulticall"]["callListeners"],
   chainId?: number
 ): { [callKey: string]: number } {
   if (!allListeners || !chainId) return {};
@@ -100,7 +100,7 @@ export function activeListeningKeys(
  * @param latestBlockNumber the latest block number
  */
 export function outdatedListeningKeys(
-  callResults: AppState["rmulticall"]["callResults"],
+  callResults: AppState["gmulticall"]["callResults"],
   listeningKeys: { [callKey: string]: number },
   chainId: number | undefined,
   latestBlockNumber: number | undefined
@@ -134,8 +134,8 @@ export function outdatedListeningKeys(
 export default function Updater(): null {
   const { chainId } = useWeb3();
   const dispatch = useDispatch<AppDispatch>();
-  const state = useSelector<AppState, AppState["rmulticall"]>(
-    (state) => state.rmulticall
+  const state = useSelector<AppState, AppState["gmulticall"]>(
+    (state) => state.gmulticall
   );
   // wait for listeners to settle before triggering updates
   const debouncedListeners = useDebounce(state.callListeners, 100);

@@ -8,12 +8,14 @@ import {
   switchCurrencies,
   setRecipient,
   setRateType,
+  setRange,
 } from "./actions";
 
 export interface OrderState {
   readonly independentField: Field;
   readonly typedValue: string;
   readonly inputValue?: string;
+  readonly priceValue?: string;
   readonly [Field.INPUT]: {
     readonly currencyId: string | undefined;
   };
@@ -24,12 +26,17 @@ export interface OrderState {
   // the typed recipient address or ENS name, or null if swap should go to sender
   readonly recipient: string | null;
   readonly rateType: Rate;
+  readonly range: {
+    readonly upper: number;
+    readonly lower: number;
+  }
 }
 
 export const initialState: OrderState = {
   independentField: Field.INPUT,
   typedValue: "",
   inputValue: "",
+  priceValue: "",
   [Field.INPUT]: {
     currencyId: NATIVE,
   },
@@ -38,6 +45,10 @@ export const initialState: OrderState = {
   },
   rateType: Rate.MUL,
   recipient: null,
+  range: {
+    upper: 0,
+    lower: 0,
+  }
 };
 
 export default createReducer<OrderState>(initialState, (builder) =>
@@ -75,23 +86,40 @@ export default createReducer<OrderState>(initialState, (builder) =>
       };
     })
     .addCase(typeInput, (state, { payload: { field, typedValue } }) => {
-      return field === Field.INPUT
-        ? {
+      switch (field) {
+        case Field.INPUT:
+          return {
             ...state,
             inputValue: typedValue,
             independentField: field,
             typedValue,
           }
-        : {
+          break;
+        case Field.PRICE:
+          return {
             ...state,
+            priceValue: typedValue,
             independentField: field,
             typedValue,
-          };
+          }
+          break;
+        default:
+          return {
+            ...state,
+            inputValue: typedValue,
+            independentField: field,
+            typedValue,
+          }
+          break;
+      }
     })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
       state.recipient = recipient;
     })
     .addCase(setRateType, (state, { payload: { rateType } }) => {
       state.rateType = rateType;
+    })
+    .addCase(setRange, (state, { payload: { upper, lower } }) => {
+      state.range = { upper, lower };
     })
 );

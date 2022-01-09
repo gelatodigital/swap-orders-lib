@@ -110,8 +110,8 @@ function listUrlRowHTMLId(listUrl: string) {
 }
 
 const ListRow = memo(function ListRow({ listUrl }: { listUrl: string }) {
-  const listsByUrl = useSelector<AppState, AppState["rlists"]["byUrl"]>(
-    (state) => state.rlists.byUrl
+  const listsByUrl = useSelector<AppState, AppState["glists"]["byUrl"]>(
+    (state) => state.glists.byUrl
   );
   const dispatch = useDispatch<AppDispatch>();
   const { current: list, pendingUpdate: pending } = listsByUrl[listUrl];

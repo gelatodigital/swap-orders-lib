@@ -55,3 +55,13 @@ export const BETTER_TRADE_LESS_HOPS_THRESHOLD = new Percent(
 
 export const ZERO_PERCENT = new Percent("0");
 export const ONE_HUNDRED_PERCENT = new Percent("1");
+
+/**
+ * The default factory enabled fee amounts, denominated in hundredths of bips.
+ */
+export enum FeeAmount {
+  LOWEST = 100,
+  LOW = 500,
+  MEDIUM = 3000,
+  HIGH = 10000
+}

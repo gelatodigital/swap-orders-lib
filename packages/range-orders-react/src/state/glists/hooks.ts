@@ -44,9 +44,9 @@ export function listToTokenMap(list: TokenList): TokenAddressMap {
 
 const TRANSFORMED_DEFAULT_TOKEN_LIST = listToTokenMap(DEFAULT_TOKEN_LIST);
 
-export function useAllLists(): AppState["rlists"]["byUrl"] {
-  return useSelector<AppState, AppState["rlists"]["byUrl"]>(
-    (state) => state.rlists.byUrl
+export function useAllLists(): AppState["glists"]["byUrl"] {
+  return useSelector<AppState, AppState["glists"]["byUrl"]>(
+    (state) => state.glists.byUrl
   );
 }
 
@@ -89,8 +89,8 @@ function useCombinedTokenMapFromUrls(
 
 // filter out unsupported lists
 export function useActiveListUrls(): string[] | undefined {
-  return useSelector<AppState, AppState["rlists"]["activeListUrls"]>(
-    (state) => state.rlists.activeListUrls
+  return useSelector<AppState, AppState["glists"]["activeListUrls"]>(
+    (state) => state.glists.activeListUrls
   )?.filter((url) => !UNSUPPORTED_LIST_URLS.includes(url));
 }
 
