@@ -10,10 +10,7 @@ export default function useGelatoRangeOrdersLib():
   return useMemo(() => {
     try {
       return chainId && library
-        ? new GelatoRangeOrder(
-            chainId as ChainId,
-            library?.getSigner(),
-          )
+        ? new GelatoRangeOrder(chainId as ChainId, library?.getSigner())
         : undefined;
     } catch (error: any) {
       console.error(

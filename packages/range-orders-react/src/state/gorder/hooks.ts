@@ -124,14 +124,17 @@ export function useOrderActionHandlers(): {
     [dispatch]
   );
 
-  const onRangeChange = useCallback((upper: number, lower: number) => {
-    dispatch(
-      setRange({
-        upper,
-        lower,
-      })
-    );
-  }, [dispatch]);
+  const onRangeChange = useCallback(
+    (upper: number, lower: number) => {
+      dispatch(
+        setRange({
+          upper,
+          lower,
+        })
+      );
+    },
+    [dispatch]
+  );
 
   return {
     onSwitchTokens,

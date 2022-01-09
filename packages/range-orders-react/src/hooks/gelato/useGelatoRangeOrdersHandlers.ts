@@ -14,7 +14,11 @@ import { useTransactionAdder } from "../../state/gtransactions/hooks";
 import useGelatoRangeOrdersLib from "./useGelatoRangeOrdersLib";
 import { useCurrency, useToken } from "../../hooks/Tokens";
 import { AppState } from "../../state";
-import { computePoolAddress, FACTORY_ADDRESS, FeeAmount } from "@uniswap/v3-sdk";
+import {
+  computePoolAddress,
+  FACTORY_ADDRESS,
+  FeeAmount,
+} from "@uniswap/v3-sdk";
 
 export interface GelatoRangeOrdersHandlers {
   // handleLimitOrderSubmission: (orderToSubmit: {
@@ -76,7 +80,7 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     (field: Field, value: string) => {
       onUserInput(field, value);
       const updateRange = async () => {
-        console.log('----------> Updating Range Prices <----------')
+        console.log("----------> Updating Range Prices <----------");
         if (!gelatoRangeOrders) {
           throw new Error("Could not reach Gelato Limit Orders library");
         }
@@ -88,28 +92,45 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
         if (!gelatoRangeOrders?.signer) {
           throw new Error("No signer");
         }
-        console.log(priceValue)
-        if(gelatoRangeOrders && inputToken && outputToken && priceValue && Number(priceValue) > 0) {
+        console.log(priceValue);
+        if (
+          gelatoRangeOrders &&
+          inputToken &&
+          outputToken &&
+          priceValue &&
+          Number(priceValue) > 0
+        ) {
           const pool = computePoolAddress({
             factoryAddress: FACTORY_ADDRESS,
             tokenA: inputToken,
             tokenB: outputToken,
-            fee: FeeAmount.LOW
+            fee: FeeAmount.LOW,
           });
-          console.log(pool)
-          const prices = await gelatoRangeOrders.getNearTicks(pool, BigNumber.from(Number(priceValue).toFixed(0)));
+          console.log(pool);
+          const prices = await gelatoRangeOrders.getNearTicks(
+            pool,
+            BigNumber.from(Number(priceValue).toFixed(0))
+          );
           console.log("prices", prices);
           if (prices) {
-            const { upper, lower }: { upper: number, lower: number } = prices;
+            const { upper, lower }: { upper: number; lower: number } = prices;
             onRangeChange(upper, lower);
           }
         }
-      }
-      if(field === Field.PRICE && Number(priceValue) > 0) {
+      };
+      if (field === Field.PRICE && Number(priceValue) > 0) {
         updateRange();
       }
     },
-    [onUserInput, gelatoRangeOrders, chainId, inputToken, outputToken, priceValue, onRangeChange]
+    [
+      onUserInput,
+      gelatoRangeOrders,
+      chainId,
+      inputToken,
+      outputToken,
+      priceValue,
+      onRangeChange,
+    ]
   );
 
   const handleCurrencySelection = useCallback(
