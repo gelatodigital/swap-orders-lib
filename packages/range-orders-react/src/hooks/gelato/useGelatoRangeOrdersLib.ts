@@ -1,22 +1,18 @@
 import { useMemo } from "react";
-import { ChainId, GelatoLimitOrders } from "@gelatonetwork/limit-orders-lib";
+import { ChainId, GelatoRangeOrder } from "@gelatonetwork/range-orders-lib";
 import { useWeb3 } from "../../web3";
-import { useFrontrunProtected } from "../../state/gapplication/hooks";
 
 export default function useGelatoRangeOrdersLib():
-  | GelatoLimitOrders
+  | GelatoRangeOrder
   | undefined {
-  const { chainId, library, handler } = useWeb3();
-  const frontrunProtected = useFrontrunProtected();
+  const { chainId, library } = useWeb3();
 
   return useMemo(() => {
     try {
       return chainId && library
-        ? new GelatoLimitOrders(
+        ? new GelatoRangeOrder(
             chainId as ChainId,
             library?.getSigner(),
-            frontrunProtected ? undefined : handler,
-            frontrunProtected
           )
         : undefined;
     } catch (error: any) {
@@ -25,5 +21,5 @@ export default function useGelatoRangeOrdersLib():
       );
       return undefined;
     }
-  }, [chainId, library, handler, frontrunProtected]);
+  }, [chainId, library]);
 }

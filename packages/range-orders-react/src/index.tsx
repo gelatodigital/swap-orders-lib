@@ -1,10 +1,14 @@
 import React from "react";
-import { Handler } from "@gelatonetwork/limit-orders-lib";
+import { Handler } from "@gelatonetwork/range-orders-lib";
 import { gelatoRangeOrderReducers, GELATO_RANGE_PERSISTED_KEYS } from "./state";
 import GelatoRangeOrderPanel from "./components/GelatoRangeOrder";
 import GelatoRangeOrderHistoryPanel from "./components/RangeOrdersHistory";
 import ThemeProvider, { ThemedGlobalStyle } from "./theme";
 import { Web3Provider } from "./web3";
+import ApplicationUpdater from "./state/gapplication/updater";
+import ListsUpdater from "./state/glists/updater";
+import MulticallUpdater from "./state/gmulticall/updater";
+import TransactionUpdater from "./state/gtransactions/updater";
 
 export function GelatoProvider({
   chainId,
@@ -35,6 +39,10 @@ export function GelatoProvider({
         toggleWalletModal={toggleWalletModal}
       >
         <ThemedGlobalStyle />
+        <ListsUpdater />
+        <ApplicationUpdater />
+        <MulticallUpdater />
+        <TransactionUpdater />
         {children}
       </Web3Provider>
     </ThemeProvider>
@@ -46,6 +54,10 @@ export function GelatoProvider({
       handler={handler}
       toggleWalletModal={toggleWalletModal}
     >
+      <ListsUpdater />
+      <ApplicationUpdater />
+      <MulticallUpdater />
+      <TransactionUpdater />
       {children}
     </Web3Provider>
   );

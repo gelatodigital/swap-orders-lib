@@ -1,23 +1,23 @@
-import rapplication from "./gapplication/reducer";
+import gapplication from "./gapplication/reducer";
 import ruser from "./guser/reducer";
 import granger from "./gorder/reducer";
-import rmulticall from "./gmulticall/reducer";
-import rlists from "./glists/reducer";
+import gmulticall from "./gmulticall/reducer";
+import glists from "./glists/reducer";
 import rtransactions from "./gtransactions/reducer";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const GELATO_RANGE_PERSISTED_KEYS: string[] = [
-  "rtransactions",
-  "rlists",
+  "gtransactions",
+  "glists",
   "ruser",
 ];
 
 export const gelatoRangeOrderReducers = {
-  rapplication,
+  gapplication,
   ruser,
   granger,
-  rmulticall,
-  rlists,
+  gmulticall,
+  glists,
   rtransactions,
 };
 

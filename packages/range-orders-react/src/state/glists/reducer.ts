@@ -52,8 +52,6 @@ export default createReducer(initialState, (builder) =>
       fetchTokenList.pending,
       (state, { payload: { requestId, url } }) => {
         state.byUrl[url] = {
-          current: null,
-          pendingUpdate: null,
           ...state.byUrl[url],
           loadingRequestId: requestId,
           error: null,

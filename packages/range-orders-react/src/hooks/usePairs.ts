@@ -3,7 +3,7 @@ import { abi as IUniswapV2PairABI } from "../abis/IUniswapV2Pair.json";
 import { Interface } from "@ethersproject/abi";
 import { useMultipleContractSingleData } from "../state/gmulticall/hooks";
 import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
-import { Handler } from "@gelatonetwork/limit-orders-lib";
+import { Handler } from "@gelatonetwork/range-orders-lib";
 import { Pair } from "../entities/pair";
 import { useWeb3 } from "../web3";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";

@@ -67,8 +67,8 @@ function useCallsData(
 ): CallResult[] {
   const callResults = useSelector<
     AppState,
-    AppState["rmulticall"]["callResults"]
-  >((state) => state.rmulticall.callResults);
+    AppState["gmulticall"]["callResults"]
+  >((state) => state.gmulticall.callResults);
   const dispatch = useDispatch<AppDispatch>();
   const { chainId } = useWeb3();
 

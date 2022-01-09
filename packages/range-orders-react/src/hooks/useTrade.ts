@@ -5,7 +5,7 @@ import { isTradeBetter } from "../utils/isTradeBetter";
 import { BETTER_TRADE_LESS_HOPS_THRESHOLD } from "../constants/misc";
 import { useAllCurrencyCombinations } from "./useAllCurrencyCombinations";
 import { PairState, usePairs } from "./usePairs";
-import { Handler } from "@gelatonetwork/limit-orders-lib";
+import { Handler } from "@gelatonetwork/range-orders-lib";
 import { Pair } from "../entities/pair";
 
 function useAllCommonPairs(

@@ -14,20 +14,20 @@ export const fetchTokenList: Readonly<{
     requestId: string;
   }>;
 }> = {
-  pending: createAction("rlists/fetchTokenList/pending"),
-  fulfilled: createAction("rlists/fetchTokenList/fulfilled"),
-  rejected: createAction("rlists/fetchTokenList/rejected"),
+  pending: createAction("glists/fetchTokenList/pending"),
+  fulfilled: createAction("glists/fetchTokenList/fulfilled"),
+  rejected: createAction("glists/fetchTokenList/rejected"),
 };
 // add and remove from list options
-export const addList = createAction<string>("rlists/addList");
-export const removeList = createAction<string>("rlists/removeList");
+export const addList = createAction<string>("glists/addList");
+export const removeList = createAction<string>("glists/removeList");
 
 // select which lists to search across from loaded lists
-export const enableList = createAction<string>("rlists/enableList");
-export const disableList = createAction<string>("rlists/disableList");
+export const enableList = createAction<string>("glists/enableList");
+export const disableList = createAction<string>("glists/disableList");
 
 // versioning
-export const acceptListUpdate = createAction<string>("rlists/acceptListUpdate");
+export const acceptListUpdate = createAction<string>("glists/acceptListUpdate");
 export const rejectVersionUpdate = createAction<Version>(
-  "rlists/rejectVersionUpdate"
+  "glists/rejectVersionUpdate"
 );
