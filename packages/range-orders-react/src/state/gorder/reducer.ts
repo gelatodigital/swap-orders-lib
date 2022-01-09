@@ -29,7 +29,7 @@ export interface OrderState {
   readonly range: {
     readonly upper: number;
     readonly lower: number;
-  }
+  };
 }
 
 export const initialState: OrderState = {
@@ -48,7 +48,7 @@ export const initialState: OrderState = {
   range: {
     upper: 0,
     lower: 0,
-  }
+  },
 };
 
 export default createReducer<OrderState>(initialState, (builder) =>
@@ -93,7 +93,7 @@ export default createReducer<OrderState>(initialState, (builder) =>
             inputValue: typedValue,
             independentField: field,
             typedValue,
-          }
+          };
           break;
         case Field.PRICE:
           return {
@@ -101,7 +101,7 @@ export default createReducer<OrderState>(initialState, (builder) =>
             priceValue: typedValue,
             independentField: field,
             typedValue,
-          }
+          };
           break;
         default:
           return {
@@ -109,7 +109,7 @@ export default createReducer<OrderState>(initialState, (builder) =>
             inputValue: typedValue,
             independentField: field,
             typedValue,
-          }
+          };
           break;
       }
     })
