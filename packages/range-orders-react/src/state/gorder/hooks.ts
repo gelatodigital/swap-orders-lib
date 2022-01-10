@@ -26,6 +26,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "..";
 import { useWeb3 } from "../../web3";
+import { BigNumber } from "ethers";
 
 export function applyExchangeRateTo(
   inputValue: string,
@@ -78,7 +79,7 @@ export function useOrderActionHandlers(): {
   onUserInput: (field: Field, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
   onChangeRateType: (rateType: Rate) => void;
-  onRangeChange: (upper: number, lower: number) => void;
+  onRangeChange: (upper: BigNumber, lower: BigNumber) => void;
 } {
   const dispatch = useDispatch();
   const onCurrencySelection = useCallback(
@@ -125,11 +126,11 @@ export function useOrderActionHandlers(): {
   );
 
   const onRangeChange = useCallback(
-    (upper: number, lower: number) => {
+    (upper: BigNumber, lower: BigNumber) => {
       dispatch(
         setRange({
-          upper,
-          lower,
+          upper: upper.toNumber(),
+          lower: lower.toNumber(),
         })
       );
     },

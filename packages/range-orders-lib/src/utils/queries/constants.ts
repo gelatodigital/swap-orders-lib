@@ -8,10 +8,9 @@ export const GET_RANGE_ORDER_BY_TOKEN_ID = gql`
       creator
       tickThreshold
       zeroForOne
-      ejectDust
+      startTime
+      expiryTime
       amountIn
-      amount0Min
-      amount1Min
       receiver
       feeToken
       resolver
@@ -40,10 +39,9 @@ export const GET_OPEN_RANGE_ORDER_BY_CREATOR = gql`
       creator
       tickThreshold
       zeroForOne
-      ejectDust
+      startTime
+      expiryTime
       amountIn
-      amount0Min
-      amount1Min
       receiver
       feeToken
       resolver
@@ -72,10 +70,9 @@ export const GET_EXECUTED_RANGE_ORDER_BY_CREATOR = gql`
       creator
       tickThreshold
       zeroForOne
-      ejectDust
+      startTime
+      expiryTime
       amountIn
-      amount0Min
-      amount1Min
       receiver
       feeToken
       resolver
@@ -104,10 +101,40 @@ export const GET_CANCELLED_RANGE_ORDER_BY_CREATOR = gql`
       creator
       tickThreshold
       zeroForOne
-      ejectDust
+      startTime
+      expiryTime
       amountIn
-      amount0Min
-      amount1Min
+      receiver
+      feeToken
+      resolver
+      maxFeeAmount
+      feeAmount
+      amount0
+      amount1
+      pool
+      submittedTxHash
+      executedTxHash
+      cancelledTxHash
+      createdAt
+      updatedAt
+      createdAtBlock
+      updatedAtBlock
+      updatedAtBlockHash
+    }
+  }
+`;
+
+export const GET_EXPIRED_RANGE_ORDER_BY_CREATOR = gql`
+  query getCancelledRangeOrderByUser($creator: ID) {
+    rangeOrders(where: { creator: $creator, status: expired }) {
+      id
+      status
+      creator
+      tickThreshold
+      zeroForOne
+      startTime
+      expiryTime
+      amountIn
       receiver
       feeToken
       resolver

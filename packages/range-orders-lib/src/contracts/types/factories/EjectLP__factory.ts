@@ -15,13 +15,13 @@ const _abi = [
         type: "address",
       },
       {
-        internalType: "address",
-        name: "factory_",
+        internalType: "contract IPokeMe",
+        name: "pokeMe_",
         type: "address",
       },
       {
-        internalType: "contract IPokeMe",
-        name: "pokeMe_",
+        internalType: "address",
+        name: "factory_",
         type: "address",
       },
       {
@@ -73,6 +73,12 @@ const _abi = [
         name: "feeAmount",
         type: "uint256",
       },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
     ],
     name: "LogEject",
     type: "event",
@@ -104,21 +110,6 @@ const _abi = [
             type: "bool",
           },
           {
-            internalType: "bool",
-            name: "ejectDust",
-            type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "amount0Min",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "amount1Min",
-            type: "uint256",
-          },
-          {
             internalType: "address",
             name: "receiver",
             type: "address",
@@ -139,10 +130,16 @@ const _abi = [
             type: "uint256",
           },
         ],
-        indexed: true,
+        indexed: false,
         internalType: "struct OrderParams",
         name: "orderParams",
         type: "tuple",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "startTime",
+        type: "uint256",
       },
       {
         indexed: false,
@@ -152,6 +149,69 @@ const _abi = [
       },
     ],
     name: "LogSetEject",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount0Out",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount1Out",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "feeAmount",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "receiver",
+        type: "address",
+      },
+    ],
+    name: "LogSettle",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "Paused",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "Unpaused",
     type: "event",
   },
   {
@@ -174,21 +234,6 @@ const _abi = [
             type: "bool",
           },
           {
-            internalType: "bool",
-            name: "ejectDust",
-            type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "amount0Min",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "amount1Min",
-            type: "uint256",
-          },
-          {
             internalType: "address",
             name: "receiver",
             type: "address",
@@ -201,6 +246,11 @@ const _abi = [
           {
             internalType: "uint256",
             name: "maxFeeAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "startTime",
             type: "uint256",
           },
         ],
@@ -216,16 +266,6 @@ const _abi = [
     ],
     name: "canEject",
     outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
       {
         internalType: "uint128",
         name: "",
@@ -255,19 +295,67 @@ const _abi = [
             type: "bool",
           },
           {
+            internalType: "address",
+            name: "receiver",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "maxFeeAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "startTime",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Order",
+        name: "order_",
+        type: "tuple",
+      },
+    ],
+    name: "cancel",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "duration",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId_",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "int24",
+            name: "tickThreshold",
+            type: "int24",
+          },
+          {
             internalType: "bool",
-            name: "ejectDust",
+            name: "ejectAbove",
             type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "amount0Min",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "amount1Min",
-            type: "uint256",
           },
           {
             internalType: "address",
@@ -284,13 +372,62 @@ const _abi = [
             name: "maxFeeAmount",
             type: "uint256",
           },
+          {
+            internalType: "uint256",
+            name: "startTime",
+            type: "uint256",
+          },
         ],
         internalType: "struct Order",
         name: "order_",
         type: "tuple",
       },
+      {
+        internalType: "bool",
+        name: "isEjection_",
+        type: "bool",
+      },
     ],
-    name: "cancel",
+    name: "ejectOrSettle",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "factory",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "hashById",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "initialize",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -315,19 +452,75 @@ const _abi = [
             type: "bool",
           },
           {
+            internalType: "address",
+            name: "receiver",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "owner",
+            type: "address",
+          },
+          {
+            internalType: "uint256",
+            name: "maxFeeAmount",
+            type: "uint256",
+          },
+          {
+            internalType: "uint256",
+            name: "startTime",
+            type: "uint256",
+          },
+        ],
+        internalType: "struct Order",
+        name: "order_",
+        type: "tuple",
+      },
+      {
+        internalType: "address",
+        name: "feeToken_",
+        type: "address",
+      },
+      {
+        internalType: "contract IUniswapV3Pool",
+        name: "pool_",
+        type: "address",
+      },
+    ],
+    name: "isEjectable",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId_",
+        type: "uint256",
+      },
+      {
+        components: [
+          {
+            internalType: "int24",
+            name: "tickThreshold",
+            type: "int24",
+          },
+          {
             internalType: "bool",
-            name: "ejectDust",
+            name: "ejectAbove",
             type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "amount0Min",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "amount1Min",
-            type: "uint256",
           },
           {
             internalType: "address",
@@ -344,34 +537,67 @@ const _abi = [
             name: "maxFeeAmount",
             type: "uint256",
           },
+          {
+            internalType: "uint256",
+            name: "startTime",
+            type: "uint256",
+          },
         ],
         internalType: "struct Order",
         name: "order_",
         type: "tuple",
       },
+      {
+        internalType: "address",
+        name: "feeToken_",
+        type: "address",
+      },
     ],
-    name: "eject",
-    outputs: [],
-    stateMutability: "nonpayable",
+    name: "isExpired",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "minimumFee",
+    outputs: [
       {
         internalType: "uint256",
         name: "",
         type: "uint256",
       },
     ],
-    name: "hashById",
-    outputs: [
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
       {
-        internalType: "bytes32",
-        name: "",
-        type: "bytes32",
+        internalType: "address[]",
+        name: "tokens_",
+        type: "address[]",
+      },
+      {
+        internalType: "address",
+        name: "recipient_",
+        type: "address",
       },
     ],
-    stateMutability: "view",
+    name: "mulipleRetrieveDust",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -382,6 +608,26 @@ const _abi = [
         internalType: "contract INonfungiblePositionManager",
         name: "",
         type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "pause",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "paused",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
       },
     ],
     stateMutability: "view",
@@ -420,21 +666,6 @@ const _abi = [
             type: "bool",
           },
           {
-            internalType: "bool",
-            name: "ejectDust",
-            type: "bool",
-          },
-          {
-            internalType: "uint256",
-            name: "amount0Min",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "amount1Min",
-            type: "uint256",
-          },
-          {
             internalType: "address",
             name: "receiver",
             type: "address",
@@ -462,6 +693,32 @@ const _abi = [
     ],
     name: "schedule",
     outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "duration_",
+        type: "uint256",
+      },
+    ],
+    name: "setDuration",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "minimumFee_",
+        type: "uint256",
+      },
+    ],
+    name: "setMinimumFee",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -482,6 +739,13 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "unpause",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

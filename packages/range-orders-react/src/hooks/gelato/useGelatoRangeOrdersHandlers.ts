@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { RangeOrderData } from "@gelatonetwork/range-orders-lib";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Overrides } from "@ethersproject/contracts";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
@@ -72,8 +71,9 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useOrderState();
-
+  console.log('inputCurrencyId', inputCurrencyId)
   const inputToken = useToken(inputCurrencyId);
+  console.log(inputToken);
   const outputToken = useToken(outputCurrencyId);
 
   const handleInput = useCallback(
@@ -107,14 +107,15 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
             fee: FeeAmount.LOW,
           });
           console.log(pool);
-          const prices = await gelatoRangeOrders.getNearTicks(
+          const prices = await gelatoRangeOrders.getNearestPrice(
             pool,
             BigNumber.from(Number(priceValue).toFixed(0))
           );
           console.log("prices", prices);
           if (prices) {
-            const { upper, lower }: { upper: number; lower: number } = prices;
-            onRangeChange(upper, lower);
+            const { upperPrice, lowerPrice }: { upperPrice: BigNumber; lowerPrice: BigNumber } = prices;
+            if(upperPrice && lowerPrice)
+              onRangeChange(upperPrice, lowerPrice);
           }
         }
       };

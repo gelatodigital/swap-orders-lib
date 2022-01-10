@@ -1,24 +1,14 @@
-import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import { BigNumber } from "@ethersproject/bignumber";
 import { BytesLike } from "@ethersproject/bytes";
 
 // mainnet | goerli | optimism | matic | arbitrum
 export type ChainId = 1 | 5 | 10 | 137 | 42161;
 
-export type Handler = "uniswap";
-
-export interface TransactionData {
-  to: string;
-  data: BytesLike;
-  value: BigNumberish;
-}
-
 export type RangeOrderPayload = {
   pool: string;
   zeroForOne: boolean;
-  ejectDust: boolean;
   tickThreshold: number;
   amountIn: BigNumber;
-  minAmountOut: BigNumber;
   receiver: string;
   maxFeeAmount: BigNumber;
 };
@@ -35,10 +25,9 @@ export type RangeOrderData = {
   creator: string;
   tickThreshold: BigNumber;
   zeroForOne: boolean;
-  ejectDust: boolean;
+  startTime: BigNumber;
+  expiryTime: BigNumber;
   amountIn: BigNumber;
-  amount0Min: BigNumber | undefined;
-  amount1Min: BigNumber | undefined;
   receiver: string;
   feeToken: string;
   resolver: string;
