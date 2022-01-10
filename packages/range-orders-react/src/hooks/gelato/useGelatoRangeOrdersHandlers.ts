@@ -71,7 +71,7 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useOrderState();
-  console.log('inputCurrencyId', inputCurrencyId)
+  console.log("inputCurrencyId", inputCurrencyId);
   const inputToken = useToken(inputCurrencyId);
   console.log(inputToken);
   const outputToken = useToken(outputCurrencyId);
@@ -113,9 +113,11 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
           );
           console.log("prices", prices);
           if (prices) {
-            const { upperPrice, lowerPrice }: { upperPrice: BigNumber; lowerPrice: BigNumber } = prices;
-            if(upperPrice && lowerPrice)
-              onRangeChange(upperPrice, lowerPrice);
+            const {
+              upperPrice,
+              lowerPrice,
+            }: { upperPrice: BigNumber; lowerPrice: BigNumber } = prices;
+            if (upperPrice && lowerPrice) onRangeChange(upperPrice, lowerPrice);
           }
         }
       };
