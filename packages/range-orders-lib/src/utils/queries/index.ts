@@ -5,6 +5,7 @@ import {
   GET_OPEN_RANGE_ORDER_BY_CREATOR,
   GET_EXECUTED_RANGE_ORDER_BY_CREATOR,
   GET_CANCELLED_RANGE_ORDER_BY_CREATOR,
+  GET_EXPIRED_RANGE_ORDER_BY_CREATOR,
 } from "./constants";
 import { ChainId, RangeOrderData } from "../../types";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -76,6 +77,28 @@ export const queryCancelledRangeOrderByUser = async (
       ? await request(
           SUBGRAPH_URL[chainId],
           GET_CANCELLED_RANGE_ORDER_BY_CREATOR,
+          {
+            creator,
+          }
+        )
+      : { orders: [] };
+
+    return result.rangeOrders;
+  } catch (error) {
+    console.log(error);
+    throw new Error("Could not query subgraph for Range Order");
+  }
+};
+
+export const queryExpiredRangeOrderByUser = async (
+  chainId: ChainId,
+  creator: string
+): Promise<RangeOrderData[]> => {
+  try {
+    const result = SUBGRAPH_URL[chainId]
+      ? await request(
+          SUBGRAPH_URL[chainId],
+          GET_EXPIRED_RANGE_ORDER_BY_CREATOR,
           {
             creator,
           }

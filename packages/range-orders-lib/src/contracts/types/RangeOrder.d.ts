@@ -23,11 +23,15 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface RangeOrderInterface extends ethers.utils.Interface {
   functions: {
     "WETH9()": FunctionFragment;
-    "cancelRangeOrder(uint256,(address,bool,bool,int24,uint256,uint256,address,uint256))": FunctionFragment;
+    "cancelRangeOrder(uint256,(address,bool,int24,uint256,address,uint256),uint256)": FunctionFragment;
     "eject()": FunctionFragment;
-    "ejectResolver()": FunctionFragment;
+    "initialize()": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
-    "setRangeOrder((address,bool,bool,int24,uint256,uint256,address,uint256))": FunctionFragment;
+    "pause()": FunctionFragment;
+    "paused()": FunctionFragment;
+    "rangeOrderResolver()": FunctionFragment;
+    "setRangeOrder((address,bool,int24,uint256,address,uint256))": FunctionFragment;
+    "unpause()": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "WETH9", values?: undefined): string;
@@ -38,23 +42,28 @@ interface RangeOrderInterface extends ethers.utils.Interface {
       {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
-      }
+      },
+      BigNumberish
     ]
   ): string;
   encodeFunctionData(functionFragment: "eject", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "ejectResolver",
+    functionFragment: "initialize",
     values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "onERC721Received",
     values: [string, string, BigNumberish, BytesLike]
+  ): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "rangeOrderResolver",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "setRangeOrder",
@@ -62,15 +71,14 @@ interface RangeOrderInterface extends ethers.utils.Interface {
       {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       }
     ]
   ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "WETH9", data: BytesLike): Result;
   decodeFunctionResult(
@@ -78,37 +86,55 @@ interface RangeOrderInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "eject", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "ejectResolver",
-    data: BytesLike
-  ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "onERC721Received",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "rangeOrderResolver",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "setRangeOrder",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
 
   events: {
-    "LogSetRangeOrder(uint256,address,address,address,uint24,uint256,address)": EventFragment;
+    "LogCancelRangeOrder(uint256,uint256,uint256)": EventFragment;
+    "LogSetRangeOrder(uint256,address,uint256)": EventFragment;
+    "Paused(address)": EventFragment;
+    "Unpaused(address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "LogCancelRangeOrder"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogSetRangeOrder"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
-export type LogSetRangeOrderEvent = TypedEvent<
-  [BigNumber, string, string, string, number, BigNumber, string] & {
+export type LogCancelRangeOrderEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber] & {
     tokenId: BigNumber;
-    pool: string;
-    token0: string;
-    token1: string;
-    fee: number;
-    amountIn: BigNumber;
-    creator: string;
+    amount0: BigNumber;
+    amount1: BigNumber;
   }
 >;
+
+export type LogSetRangeOrderEvent = TypedEvent<
+  [BigNumber, string, BigNumber] & {
+    tokenId: BigNumber;
+    pool: string;
+    amountIn: BigNumber;
+  }
+>;
+
+export type PausedEvent = TypedEvent<[string] & { account: string }>;
+
+export type UnpausedEvent = TypedEvent<[string] & { account: string }>;
 
 export class RangeOrder extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -161,19 +187,20 @@ export class RangeOrder extends BaseContract {
       params_: {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
+      startTime_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     eject(overrides?: CallOverrides): Promise<[string]>;
 
-    ejectResolver(overrides?: CallOverrides): Promise<[string]>;
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     onERC721Received(
       arg0: string,
@@ -183,18 +210,28 @@ export class RangeOrder extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
+
+    rangeOrderResolver(overrides?: CallOverrides): Promise<[string]>;
+
     setRangeOrder(
       params_: {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    unpause(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
 
@@ -205,19 +242,20 @@ export class RangeOrder extends BaseContract {
     params_: {
       pool: string;
       zeroForOne: boolean;
-      ejectDust: boolean;
       tickThreshold: BigNumberish;
       amountIn: BigNumberish;
-      minAmountOut: BigNumberish;
       receiver: string;
       maxFeeAmount: BigNumberish;
     },
+    startTime_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   eject(overrides?: CallOverrides): Promise<string>;
 
-  ejectResolver(overrides?: CallOverrides): Promise<string>;
+  initialize(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   onERC721Received(
     arg0: string,
@@ -227,18 +265,28 @@ export class RangeOrder extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  pause(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  paused(overrides?: CallOverrides): Promise<boolean>;
+
+  rangeOrderResolver(overrides?: CallOverrides): Promise<string>;
+
   setRangeOrder(
     params_: {
       pool: string;
       zeroForOne: boolean;
-      ejectDust: boolean;
       tickThreshold: BigNumberish;
       amountIn: BigNumberish;
-      minAmountOut: BigNumberish;
       receiver: string;
       maxFeeAmount: BigNumberish;
     },
     overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  unpause(
+    overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
@@ -249,19 +297,18 @@ export class RangeOrder extends BaseContract {
       params_: {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
+      startTime_: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     eject(overrides?: CallOverrides): Promise<string>;
 
-    ejectResolver(overrides?: CallOverrides): Promise<string>;
+    initialize(overrides?: CallOverrides): Promise<void>;
 
     onERC721Received(
       arg0: string,
@@ -271,63 +318,75 @@ export class RangeOrder extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    pause(overrides?: CallOverrides): Promise<void>;
+
+    paused(overrides?: CallOverrides): Promise<boolean>;
+
+    rangeOrderResolver(overrides?: CallOverrides): Promise<string>;
+
     setRangeOrder(
       params_: {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
       overrides?: CallOverrides
     ): Promise<void>;
+
+    unpause(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
-    "LogSetRangeOrder(uint256,address,address,address,uint24,uint256,address)"(
+    "LogCancelRangeOrder(uint256,uint256,uint256)"(
+      tokenId?: BigNumberish | null,
+      amount0?: null,
+      amount1?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber],
+      { tokenId: BigNumber; amount0: BigNumber; amount1: BigNumber }
+    >;
+
+    LogCancelRangeOrder(
+      tokenId?: BigNumberish | null,
+      amount0?: null,
+      amount1?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber],
+      { tokenId: BigNumber; amount0: BigNumber; amount1: BigNumber }
+    >;
+
+    "LogSetRangeOrder(uint256,address,uint256)"(
       tokenId?: BigNumberish | null,
       pool?: null,
-      token0?: null,
-      token1?: null,
-      fee?: null,
-      amountIn?: null,
-      creator?: null
+      amountIn?: null
     ): TypedEventFilter<
-      [BigNumber, string, string, string, number, BigNumber, string],
-      {
-        tokenId: BigNumber;
-        pool: string;
-        token0: string;
-        token1: string;
-        fee: number;
-        amountIn: BigNumber;
-        creator: string;
-      }
+      [BigNumber, string, BigNumber],
+      { tokenId: BigNumber; pool: string; amountIn: BigNumber }
     >;
 
     LogSetRangeOrder(
       tokenId?: BigNumberish | null,
       pool?: null,
-      token0?: null,
-      token1?: null,
-      fee?: null,
-      amountIn?: null,
-      creator?: null
+      amountIn?: null
     ): TypedEventFilter<
-      [BigNumber, string, string, string, number, BigNumber, string],
-      {
-        tokenId: BigNumber;
-        pool: string;
-        token0: string;
-        token1: string;
-        fee: number;
-        amountIn: BigNumber;
-        creator: string;
-      }
+      [BigNumber, string, BigNumber],
+      { tokenId: BigNumber; pool: string; amountIn: BigNumber }
     >;
+
+    "Paused(address)"(
+      account?: null
+    ): TypedEventFilter<[string], { account: string }>;
+
+    Paused(account?: null): TypedEventFilter<[string], { account: string }>;
+
+    "Unpaused(address)"(
+      account?: null
+    ): TypedEventFilter<[string], { account: string }>;
+
+    Unpaused(account?: null): TypedEventFilter<[string], { account: string }>;
   };
 
   estimateGas: {
@@ -338,19 +397,20 @@ export class RangeOrder extends BaseContract {
       params_: {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
+      startTime_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     eject(overrides?: CallOverrides): Promise<BigNumber>;
 
-    ejectResolver(overrides?: CallOverrides): Promise<BigNumber>;
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
 
     onERC721Received(
       arg0: string,
@@ -360,18 +420,28 @@ export class RangeOrder extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
+
+    rangeOrderResolver(overrides?: CallOverrides): Promise<BigNumber>;
+
     setRangeOrder(
       params_: {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    unpause(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
   };
 
@@ -383,19 +453,20 @@ export class RangeOrder extends BaseContract {
       params_: {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
+      startTime_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     eject(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    ejectResolver(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
 
     onERC721Received(
       arg0: string,
@@ -405,18 +476,30 @@ export class RangeOrder extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    rangeOrderResolver(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     setRangeOrder(
       params_: {
         pool: string;
         zeroForOne: boolean;
-        ejectDust: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
-        minAmountOut: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    unpause(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

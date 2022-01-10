@@ -21,12 +21,37 @@ const _abi = [
       },
       {
         internalType: "address",
-        name: "ejectResolver_",
+        name: "rangeOrderResolver_",
         type: "address",
       },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount0",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "amount1",
+        type: "uint256",
+      },
+    ],
+    name: "LogCancelRangeOrder",
+    type: "event",
   },
   {
     anonymous: false,
@@ -45,36 +70,38 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "address",
-        name: "token0",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "token1",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "uint24",
-        name: "fee",
-        type: "uint24",
-      },
-      {
-        indexed: false,
         internalType: "uint256",
         name: "amountIn",
         type: "uint256",
       },
+    ],
+    name: "LogSetRangeOrder",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
       {
         indexed: false,
         internalType: "address",
-        name: "creator",
+        name: "account",
         type: "address",
       },
     ],
-    name: "LogSetRangeOrder",
+    name: "Paused",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+    ],
+    name: "Unpaused",
     type: "event",
   },
   {
@@ -100,18 +127,13 @@ const _abi = [
       {
         components: [
           {
-            internalType: "address",
+            internalType: "contract IUniswapV3Pool",
             name: "pool",
             type: "address",
           },
           {
             internalType: "bool",
             name: "zeroForOne",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "ejectDust",
             type: "bool",
           },
           {
@@ -122,11 +144,6 @@ const _abi = [
           {
             internalType: "uint256",
             name: "amountIn",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "minAmountOut",
             type: "uint256",
           },
           {
@@ -143,6 +160,11 @@ const _abi = [
         internalType: "struct RangeOrderParams",
         name: "params_",
         type: "tuple",
+      },
+      {
+        internalType: "uint256",
+        name: "startTime_",
+        type: "uint256",
       },
     ],
     name: "cancelRangeOrder",
@@ -165,15 +187,9 @@ const _abi = [
   },
   {
     inputs: [],
-    name: "ejectResolver",
-    outputs: [
-      {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
-    ],
-    stateMutability: "view",
+    name: "initialize",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -211,22 +227,50 @@ const _abi = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "pause",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "paused",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "rangeOrderResolver",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         components: [
           {
-            internalType: "address",
+            internalType: "contract IUniswapV3Pool",
             name: "pool",
             type: "address",
           },
           {
             internalType: "bool",
             name: "zeroForOne",
-            type: "bool",
-          },
-          {
-            internalType: "bool",
-            name: "ejectDust",
             type: "bool",
           },
           {
@@ -237,11 +281,6 @@ const _abi = [
           {
             internalType: "uint256",
             name: "amountIn",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "minAmountOut",
             type: "uint256",
           },
           {
@@ -263,6 +302,13 @@ const _abi = [
     name: "setRangeOrder",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "unpause",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

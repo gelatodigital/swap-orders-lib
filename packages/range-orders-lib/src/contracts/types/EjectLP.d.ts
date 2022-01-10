@@ -12,6 +12,7 @@ import {
   BaseContract,
   ContractTransaction,
   Overrides,
+  PayableOverrides,
   CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
@@ -21,14 +22,26 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface EjectLPInterface extends ethers.utils.Interface {
   functions: {
-    "canEject(uint256,(int24,bool,bool,uint256,uint256,address,address,uint256),address)": FunctionFragment;
-    "cancel(uint256,(int24,bool,bool,uint256,uint256,address,address,uint256))": FunctionFragment;
-    "eject(uint256,(int24,bool,bool,uint256,uint256,address,address,uint256))": FunctionFragment;
+    "canEject(uint256,(int24,bool,address,address,uint256,uint256),address)": FunctionFragment;
+    "cancel(uint256,(int24,bool,address,address,uint256,uint256))": FunctionFragment;
+    "duration()": FunctionFragment;
+    "ejectOrSettle(uint256,(int24,bool,address,address,uint256,uint256),bool)": FunctionFragment;
+    "factory()": FunctionFragment;
     "hashById(uint256)": FunctionFragment;
+    "initialize()": FunctionFragment;
+    "isEjectable(uint256,(int24,bool,address,address,uint256,uint256),address,address)": FunctionFragment;
+    "isExpired(uint256,(int24,bool,address,address,uint256,uint256),address)": FunctionFragment;
+    "minimumFee()": FunctionFragment;
+    "mulipleRetrieveDust(address[],address)": FunctionFragment;
     "nftPositions()": FunctionFragment;
+    "pause()": FunctionFragment;
+    "paused()": FunctionFragment;
     "pokeMe()": FunctionFragment;
-    "schedule((uint256,int24,bool,bool,uint256,uint256,address,address,address,uint256))": FunctionFragment;
+    "schedule((uint256,int24,bool,address,address,address,uint256))": FunctionFragment;
+    "setDuration(uint256)": FunctionFragment;
+    "setMinimumFee(uint256)": FunctionFragment;
     "taskById(uint256)": FunctionFragment;
+    "unpause()": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -38,12 +51,10 @@ interface EjectLPInterface extends ethers.utils.Interface {
       {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
       string
     ]
@@ -55,39 +66,83 @@ interface EjectLPInterface extends ethers.utils.Interface {
       {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       }
     ]
   ): string;
+  encodeFunctionData(functionFragment: "duration", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "eject",
+    functionFragment: "ejectOrSettle",
     values: [
       BigNumberish,
       {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
-      }
+        startTime: BigNumberish;
+      },
+      boolean
     ]
   ): string;
+  encodeFunctionData(functionFragment: "factory", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "hashById",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
+    functionFragment: "initialize",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isEjectable",
+    values: [
+      BigNumberish,
+      {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      string,
+      string
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isExpired",
+    values: [
+      BigNumberish,
+      {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      string
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "minimumFee",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "mulipleRetrieveDust",
+    values: [string[], string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "nftPositions",
     values?: undefined
   ): string;
+  encodeFunctionData(functionFragment: "pause", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(functionFragment: "pokeMe", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "schedule",
@@ -96,9 +151,6 @@ interface EjectLPInterface extends ethers.utils.Interface {
         tokenId: BigNumberish;
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         feeToken: string;
         resolver: string;
@@ -107,31 +159,73 @@ interface EjectLPInterface extends ethers.utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "setDuration",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setMinimumFee",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
     functionFragment: "taskById",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "unpause", values?: undefined): string;
 
   decodeFunctionResult(functionFragment: "canEject", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "cancel", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "eject", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "duration", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "ejectOrSettle",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "factory", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "hashById", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "isEjectable",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "isExpired", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "minimumFee", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "mulipleRetrieveDust",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "nftPositions",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "pause", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "pokeMe", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "schedule", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setDuration",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setMinimumFee",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "taskById", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "unpause", data: BytesLike): Result;
 
   events: {
     "LogCancelEject(uint256)": EventFragment;
-    "LogEject(uint256,uint256,uint256,uint256)": EventFragment;
-    "LogSetEject(uint256,tuple,address)": EventFragment;
+    "LogEject(uint256,uint256,uint256,uint256,address)": EventFragment;
+    "LogSetEject(uint256,tuple,uint256,address)": EventFragment;
+    "LogSettle(uint256,uint256,uint256,uint256,address)": EventFragment;
+    "Paused(address)": EventFragment;
+    "Unpaused(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "LogCancelEject"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogEject"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "LogSetEject"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "LogSettle"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
 export type LogCancelEjectEvent = TypedEvent<
@@ -139,40 +233,28 @@ export type LogCancelEjectEvent = TypedEvent<
 >;
 
 export type LogEjectEvent = TypedEvent<
-  [BigNumber, BigNumber, BigNumber, BigNumber] & {
+  [BigNumber, BigNumber, BigNumber, BigNumber, string] & {
     tokenId: BigNumber;
     amount0Out: BigNumber;
     amount1Out: BigNumber;
     feeAmount: BigNumber;
+    receiver: string;
   }
 >;
 
 export type LogSetEjectEvent = TypedEvent<
   [
     BigNumber,
-    [
-      BigNumber,
-      number,
-      boolean,
-      boolean,
-      BigNumber,
-      BigNumber,
-      string,
-      string,
-      string,
-      BigNumber
-    ] & {
+    [BigNumber, number, boolean, string, string, string, BigNumber] & {
       tokenId: BigNumber;
       tickThreshold: number;
       ejectAbove: boolean;
-      ejectDust: boolean;
-      amount0Min: BigNumber;
-      amount1Min: BigNumber;
       receiver: string;
       feeToken: string;
       resolver: string;
       maxFeeAmount: BigNumber;
     },
+    BigNumber,
     string
   ] & {
     tokenId: BigNumber;
@@ -180,9 +262,6 @@ export type LogSetEjectEvent = TypedEvent<
       BigNumber,
       number,
       boolean,
-      boolean,
-      BigNumber,
-      BigNumber,
       string,
       string,
       string,
@@ -191,17 +270,29 @@ export type LogSetEjectEvent = TypedEvent<
       tokenId: BigNumber;
       tickThreshold: number;
       ejectAbove: boolean;
-      ejectDust: boolean;
-      amount0Min: BigNumber;
-      amount1Min: BigNumber;
       receiver: string;
       feeToken: string;
       resolver: string;
       maxFeeAmount: BigNumber;
     };
+    startTime: BigNumber;
     sender: string;
   }
 >;
+
+export type LogSettleEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber, string] & {
+    tokenId: BigNumber;
+    amount0Out: BigNumber;
+    amount1Out: BigNumber;
+    feeAmount: BigNumber;
+    receiver: string;
+  }
+>;
+
+export type PausedEvent = TypedEvent<[string] & { account: string }>;
+
+export type UnpausedEvent = TypedEvent<[string] & { account: string }>;
 
 export class EjectLP extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -252,50 +343,96 @@ export class EjectLP extends BaseContract {
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
       feeToken_: string,
       overrides?: CallOverrides
-    ): Promise<[string, string, BigNumber]>;
+    ): Promise<[BigNumber]>;
 
     cancel(
       tokenId_: BigNumberish,
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    eject(
+    duration(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    ejectOrSettle(
       tokenId_: BigNumberish,
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
+      isEjection_: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    factory(overrides?: CallOverrides): Promise<[string]>;
+
     hashById(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
 
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    isEjectable(
+      tokenId_: BigNumberish,
+      order_: {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      feeToken_: string,
+      pool_: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean, string]>;
+
+    isExpired(
+      tokenId_: BigNumberish,
+      order_: {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      feeToken_: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean, string]>;
+
+    minimumFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    mulipleRetrieveDust(
+      tokens_: string[],
+      recipient_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     nftPositions(overrides?: CallOverrides): Promise<[string]>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     pokeMe(overrides?: CallOverrides): Promise<[string]>;
 
@@ -304,18 +441,29 @@ export class EjectLP extends BaseContract {
         tokenId: BigNumberish;
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         feeToken: string;
         resolver: string;
         maxFeeAmount: BigNumberish;
       },
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setDuration(
+      duration_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    setMinimumFee(
+      minimumFee_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     taskById(arg0: BigNumberish, overrides?: CallOverrides): Promise<[string]>;
+
+    unpause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   canEject(
@@ -323,50 +471,96 @@ export class EjectLP extends BaseContract {
     order_: {
       tickThreshold: BigNumberish;
       ejectAbove: boolean;
-      ejectDust: boolean;
-      amount0Min: BigNumberish;
-      amount1Min: BigNumberish;
       receiver: string;
       owner: string;
       maxFeeAmount: BigNumberish;
+      startTime: BigNumberish;
     },
     feeToken_: string,
     overrides?: CallOverrides
-  ): Promise<[string, string, BigNumber]>;
+  ): Promise<BigNumber>;
 
   cancel(
     tokenId_: BigNumberish,
     order_: {
       tickThreshold: BigNumberish;
       ejectAbove: boolean;
-      ejectDust: boolean;
-      amount0Min: BigNumberish;
-      amount1Min: BigNumberish;
       receiver: string;
       owner: string;
       maxFeeAmount: BigNumberish;
+      startTime: BigNumberish;
     },
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  eject(
+  duration(overrides?: CallOverrides): Promise<BigNumber>;
+
+  ejectOrSettle(
     tokenId_: BigNumberish,
     order_: {
       tickThreshold: BigNumberish;
       ejectAbove: boolean;
-      ejectDust: boolean;
-      amount0Min: BigNumberish;
-      amount1Min: BigNumberish;
       receiver: string;
       owner: string;
       maxFeeAmount: BigNumberish;
+      startTime: BigNumberish;
     },
+    isEjection_: boolean,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  factory(overrides?: CallOverrides): Promise<string>;
+
   hashById(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+  initialize(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  isEjectable(
+    tokenId_: BigNumberish,
+    order_: {
+      tickThreshold: BigNumberish;
+      ejectAbove: boolean;
+      receiver: string;
+      owner: string;
+      maxFeeAmount: BigNumberish;
+      startTime: BigNumberish;
+    },
+    feeToken_: string,
+    pool_: string,
+    overrides?: CallOverrides
+  ): Promise<[boolean, string]>;
+
+  isExpired(
+    tokenId_: BigNumberish,
+    order_: {
+      tickThreshold: BigNumberish;
+      ejectAbove: boolean;
+      receiver: string;
+      owner: string;
+      maxFeeAmount: BigNumberish;
+      startTime: BigNumberish;
+    },
+    feeToken_: string,
+    overrides?: CallOverrides
+  ): Promise<[boolean, string]>;
+
+  minimumFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+  mulipleRetrieveDust(
+    tokens_: string[],
+    recipient_: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   nftPositions(overrides?: CallOverrides): Promise<string>;
+
+  pause(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  paused(overrides?: CallOverrides): Promise<boolean>;
 
   pokeMe(overrides?: CallOverrides): Promise<string>;
 
@@ -375,18 +569,29 @@ export class EjectLP extends BaseContract {
       tokenId: BigNumberish;
       tickThreshold: BigNumberish;
       ejectAbove: boolean;
-      ejectDust: boolean;
-      amount0Min: BigNumberish;
-      amount1Min: BigNumberish;
       receiver: string;
       feeToken: string;
       resolver: string;
       maxFeeAmount: BigNumberish;
     },
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setDuration(
+    duration_: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  setMinimumFee(
+    minimumFee_: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   taskById(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+  unpause(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     canEject(
@@ -394,50 +599,92 @@ export class EjectLP extends BaseContract {
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
       feeToken_: string,
       overrides?: CallOverrides
-    ): Promise<[string, string, BigNumber]>;
+    ): Promise<BigNumber>;
 
     cancel(
       tokenId_: BigNumberish,
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
       overrides?: CallOverrides
     ): Promise<void>;
 
-    eject(
+    duration(overrides?: CallOverrides): Promise<BigNumber>;
+
+    ejectOrSettle(
       tokenId_: BigNumberish,
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
+      isEjection_: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
+    factory(overrides?: CallOverrides): Promise<string>;
+
     hashById(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
+    initialize(overrides?: CallOverrides): Promise<void>;
+
+    isEjectable(
+      tokenId_: BigNumberish,
+      order_: {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      feeToken_: string,
+      pool_: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean, string]>;
+
+    isExpired(
+      tokenId_: BigNumberish,
+      order_: {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      feeToken_: string,
+      overrides?: CallOverrides
+    ): Promise<[boolean, string]>;
+
+    minimumFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    mulipleRetrieveDust(
+      tokens_: string[],
+      recipient_: string,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     nftPositions(overrides?: CallOverrides): Promise<string>;
+
+    pause(overrides?: CallOverrides): Promise<void>;
+
+    paused(overrides?: CallOverrides): Promise<boolean>;
 
     pokeMe(overrides?: CallOverrides): Promise<string>;
 
@@ -446,9 +693,6 @@ export class EjectLP extends BaseContract {
         tokenId: BigNumberish;
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         feeToken: string;
         resolver: string;
@@ -457,7 +701,19 @@ export class EjectLP extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    setDuration(
+      duration_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setMinimumFee(
+      minimumFee_: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     taskById(arg0: BigNumberish, overrides?: CallOverrides): Promise<string>;
+
+    unpause(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -469,18 +725,20 @@ export class EjectLP extends BaseContract {
       tokenId?: BigNumberish | null
     ): TypedEventFilter<[BigNumber], { tokenId: BigNumber }>;
 
-    "LogEject(uint256,uint256,uint256,uint256)"(
+    "LogEject(uint256,uint256,uint256,uint256,address)"(
       tokenId?: BigNumberish | null,
       amount0Out?: null,
       amount1Out?: null,
-      feeAmount?: null
+      feeAmount?: null,
+      receiver?: null
     ): TypedEventFilter<
-      [BigNumber, BigNumber, BigNumber, BigNumber],
+      [BigNumber, BigNumber, BigNumber, BigNumber, string],
       {
         tokenId: BigNumber;
         amount0Out: BigNumber;
         amount1Out: BigNumber;
         feeAmount: BigNumber;
+        receiver: string;
       }
     >;
 
@@ -488,58 +746,37 @@ export class EjectLP extends BaseContract {
       tokenId?: BigNumberish | null,
       amount0Out?: null,
       amount1Out?: null,
-      feeAmount?: null
+      feeAmount?: null,
+      receiver?: null
     ): TypedEventFilter<
-      [BigNumber, BigNumber, BigNumber, BigNumber],
+      [BigNumber, BigNumber, BigNumber, BigNumber, string],
       {
         tokenId: BigNumber;
         amount0Out: BigNumber;
         amount1Out: BigNumber;
         feeAmount: BigNumber;
+        receiver: string;
       }
     >;
 
-    "LogSetEject(uint256,tuple,address)"(
+    "LogSetEject(uint256,tuple,uint256,address)"(
       tokenId?: BigNumberish | null,
-      orderParams?: {
-        tokenId: BigNumberish;
-        tickThreshold: BigNumberish;
-        ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
-        receiver: string;
-        feeToken: string;
-        resolver: string;
-        maxFeeAmount: BigNumberish;
-      } | null,
+      orderParams?: null,
+      startTime?: null,
       sender?: null
     ): TypedEventFilter<
       [
         BigNumber,
-        [
-          BigNumber,
-          number,
-          boolean,
-          boolean,
-          BigNumber,
-          BigNumber,
-          string,
-          string,
-          string,
-          BigNumber
-        ] & {
+        [BigNumber, number, boolean, string, string, string, BigNumber] & {
           tokenId: BigNumber;
           tickThreshold: number;
           ejectAbove: boolean;
-          ejectDust: boolean;
-          amount0Min: BigNumber;
-          amount1Min: BigNumber;
           receiver: string;
           feeToken: string;
           resolver: string;
           maxFeeAmount: BigNumber;
         },
+        BigNumber,
         string
       ],
       {
@@ -548,9 +785,6 @@ export class EjectLP extends BaseContract {
           BigNumber,
           number,
           boolean,
-          boolean,
-          BigNumber,
-          BigNumber,
           string,
           string,
           string,
@@ -559,59 +793,34 @@ export class EjectLP extends BaseContract {
           tokenId: BigNumber;
           tickThreshold: number;
           ejectAbove: boolean;
-          ejectDust: boolean;
-          amount0Min: BigNumber;
-          amount1Min: BigNumber;
           receiver: string;
           feeToken: string;
           resolver: string;
           maxFeeAmount: BigNumber;
         };
+        startTime: BigNumber;
         sender: string;
       }
     >;
 
     LogSetEject(
       tokenId?: BigNumberish | null,
-      orderParams?: {
-        tokenId: BigNumberish;
-        tickThreshold: BigNumberish;
-        ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
-        receiver: string;
-        feeToken: string;
-        resolver: string;
-        maxFeeAmount: BigNumberish;
-      } | null,
+      orderParams?: null,
+      startTime?: null,
       sender?: null
     ): TypedEventFilter<
       [
         BigNumber,
-        [
-          BigNumber,
-          number,
-          boolean,
-          boolean,
-          BigNumber,
-          BigNumber,
-          string,
-          string,
-          string,
-          BigNumber
-        ] & {
+        [BigNumber, number, boolean, string, string, string, BigNumber] & {
           tokenId: BigNumber;
           tickThreshold: number;
           ejectAbove: boolean;
-          ejectDust: boolean;
-          amount0Min: BigNumber;
-          amount1Min: BigNumber;
           receiver: string;
           feeToken: string;
           resolver: string;
           maxFeeAmount: BigNumber;
         },
+        BigNumber,
         string
       ],
       {
@@ -620,9 +829,6 @@ export class EjectLP extends BaseContract {
           BigNumber,
           number,
           boolean,
-          boolean,
-          BigNumber,
-          BigNumber,
           string,
           string,
           string,
@@ -631,17 +837,61 @@ export class EjectLP extends BaseContract {
           tokenId: BigNumber;
           tickThreshold: number;
           ejectAbove: boolean;
-          ejectDust: boolean;
-          amount0Min: BigNumber;
-          amount1Min: BigNumber;
           receiver: string;
           feeToken: string;
           resolver: string;
           maxFeeAmount: BigNumber;
         };
+        startTime: BigNumber;
         sender: string;
       }
     >;
+
+    "LogSettle(uint256,uint256,uint256,uint256,address)"(
+      tokenId?: BigNumberish | null,
+      amount0Out?: null,
+      amount1Out?: null,
+      feeAmount?: null,
+      receiver?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber, BigNumber, string],
+      {
+        tokenId: BigNumber;
+        amount0Out: BigNumber;
+        amount1Out: BigNumber;
+        feeAmount: BigNumber;
+        receiver: string;
+      }
+    >;
+
+    LogSettle(
+      tokenId?: BigNumberish | null,
+      amount0Out?: null,
+      amount1Out?: null,
+      feeAmount?: null,
+      receiver?: null
+    ): TypedEventFilter<
+      [BigNumber, BigNumber, BigNumber, BigNumber, string],
+      {
+        tokenId: BigNumber;
+        amount0Out: BigNumber;
+        amount1Out: BigNumber;
+        feeAmount: BigNumber;
+        receiver: string;
+      }
+    >;
+
+    "Paused(address)"(
+      account?: null
+    ): TypedEventFilter<[string], { account: string }>;
+
+    Paused(account?: null): TypedEventFilter<[string], { account: string }>;
+
+    "Unpaused(address)"(
+      account?: null
+    ): TypedEventFilter<[string], { account: string }>;
+
+    Unpaused(account?: null): TypedEventFilter<[string], { account: string }>;
   };
 
   estimateGas: {
@@ -650,12 +900,10 @@ export class EjectLP extends BaseContract {
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
       feeToken_: string,
       overrides?: CallOverrides
@@ -666,34 +914,82 @@ export class EjectLP extends BaseContract {
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    eject(
+    duration(overrides?: CallOverrides): Promise<BigNumber>;
+
+    ejectOrSettle(
       tokenId_: BigNumberish,
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
+      isEjection_: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    factory(overrides?: CallOverrides): Promise<BigNumber>;
+
     hashById(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
 
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    isEjectable(
+      tokenId_: BigNumberish,
+      order_: {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      feeToken_: string,
+      pool_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    isExpired(
+      tokenId_: BigNumberish,
+      order_: {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      feeToken_: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    minimumFee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    mulipleRetrieveDust(
+      tokens_: string[],
+      recipient_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     nftPositions(overrides?: CallOverrides): Promise<BigNumber>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     pokeMe(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -702,18 +998,29 @@ export class EjectLP extends BaseContract {
         tokenId: BigNumberish;
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         feeToken: string;
         resolver: string;
         maxFeeAmount: BigNumberish;
       },
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setDuration(
+      duration_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    setMinimumFee(
+      minimumFee_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     taskById(arg0: BigNumberish, overrides?: CallOverrides): Promise<BigNumber>;
+
+    unpause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -722,12 +1029,10 @@ export class EjectLP extends BaseContract {
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
       feeToken_: string,
       overrides?: CallOverrides
@@ -738,37 +1043,85 @@ export class EjectLP extends BaseContract {
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    eject(
+    duration(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    ejectOrSettle(
       tokenId_: BigNumberish,
       order_: {
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         owner: string;
         maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
       },
+      isEjection_: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    factory(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     hashById(
       arg0: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    initialize(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    isEjectable(
+      tokenId_: BigNumberish,
+      order_: {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      feeToken_: string,
+      pool_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    isExpired(
+      tokenId_: BigNumberish,
+      order_: {
+        tickThreshold: BigNumberish;
+        ejectAbove: boolean;
+        receiver: string;
+        owner: string;
+        maxFeeAmount: BigNumberish;
+        startTime: BigNumberish;
+      },
+      feeToken_: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    minimumFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    mulipleRetrieveDust(
+      tokens_: string[],
+      recipient_: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     nftPositions(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    pause(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     pokeMe(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
@@ -777,20 +1130,31 @@ export class EjectLP extends BaseContract {
         tokenId: BigNumberish;
         tickThreshold: BigNumberish;
         ejectAbove: boolean;
-        ejectDust: boolean;
-        amount0Min: BigNumberish;
-        amount1Min: BigNumberish;
         receiver: string;
         feeToken: string;
         resolver: string;
         maxFeeAmount: BigNumberish;
       },
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setDuration(
+      duration_: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setMinimumFee(
+      minimumFee_: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     taskById(
       arg0: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    unpause(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }
