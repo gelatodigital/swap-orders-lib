@@ -1,8 +1,5 @@
 import { useCallback } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { Overrides } from "@ethersproject/contracts";
-import { TransactionResponse } from "@ethersproject/abstract-provider";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { useSelector } from "react-redux";
 import { useOrderActionHandlers } from "../../state/gorder/hooks";
 import { Field } from "../../types";
@@ -18,6 +15,7 @@ import {
   FACTORY_ADDRESS,
   FeeAmount,
 } from "@uniswap/v3-sdk";
+import { parseUnits } from 'ethers/lib/utils';
 
 export interface GelatoRangeOrdersHandlers {
   // handleLimitOrderSubmission: (orderToSubmit: {
@@ -71,28 +69,25 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
   } = useOrderState();
-  console.log("inputCurrencyId", inputCurrencyId);
-  const inputToken = useToken(inputCurrencyId);
-  console.log(inputToken);
-  const outputToken = useToken(outputCurrencyId);
+  const inputCurrency = useCurrency(inputCurrencyId);
+  const outputCurrency = useCurrency(outputCurrencyId);
+  const inputToken = useToken(inputCurrency?.wrapped.address);
+  const outputToken = useToken(outputCurrency?.wrapped.address);
 
   const handleInput = useCallback(
     (field: Field, value: string) => {
       onUserInput(field, value);
       const updateRange = async () => {
-        console.log("----------> Updating Range Prices <----------");
+        // console.log("----------> Updating Range Prices <----------");
         if (!gelatoRangeOrders) {
           throw new Error("Could not reach Gelato Limit Orders library");
         }
-
         if (!chainId) {
           throw new Error("No chainId");
         }
-
         if (!gelatoRangeOrders?.signer) {
           throw new Error("No signer");
         }
-        console.log(priceValue);
         if (
           gelatoRangeOrders &&
           inputToken &&
@@ -100,18 +95,19 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
           priceValue &&
           Number(priceValue) > 0
         ) {
+          const parsedRate = parseUnits(value, outputToken.decimals);
           const pool = computePoolAddress({
             factoryAddress: FACTORY_ADDRESS,
             tokenA: inputToken,
             tokenB: outputToken,
             fee: FeeAmount.LOW,
           });
-          console.log(pool);
+          
           const prices = await gelatoRangeOrders.getNearestPrice(
             pool,
-            BigNumber.from(Number(priceValue).toFixed(0))
+            parsedRate,
           );
-          console.log("prices", prices);
+          // console.log("prices", prices);
           if (prices) {
             const {
               upperPrice,
@@ -125,15 +121,7 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
         updateRange();
       }
     },
-    [
-      onUserInput,
-      gelatoRangeOrders,
-      chainId,
-      inputToken,
-      outputToken,
-      priceValue,
-      onRangeChange,
-    ]
+    [onUserInput, priceValue, gelatoRangeOrders, chainId, inputToken, outputToken, onRangeChange]
   );
 
   const handleCurrencySelection = useCallback(

@@ -3,7 +3,6 @@ import {
   Currency,
   CurrencyAmount,
   Percent,
-  TradeType,
 } from "@uniswap/sdk-core";
 import AppBody from "./AppBody";
 import SwapHeader from "../order/SwapHeader";
@@ -17,7 +16,7 @@ import { maxAmountSpend } from "../../utils/maxAmountSpend";
 import { useUSDCValue } from "../../hooks/useUSDCPrice";
 import { Divide, X, Minus, ArrowDown } from "react-feather";
 import useTheme from "../../hooks/useTheme";
-import { tryParseAmount } from "../../state/gorder/hooks";
+import { tryParseAmount } from "../../utils/tryParseAmount";
 import useGasOverhead from "../../hooks/useGasOverhead";
 
 interface GelatoRangeOrderProps {
@@ -51,7 +50,7 @@ export default function GelatoRangeOrder({
     },
     orderState: { independentField, rateType },
   } = useGelatoRangeOrders();
-
+    
   const fiatValueInput = useUSDCValue(parsedAmounts.input);
   const maxInputAmount: CurrencyAmount<Currency> | undefined = maxAmountSpend(
     currencyBalances.input
