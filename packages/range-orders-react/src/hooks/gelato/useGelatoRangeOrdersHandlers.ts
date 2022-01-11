@@ -15,7 +15,7 @@ import {
   FACTORY_ADDRESS,
   FeeAmount,
 } from "@uniswap/v3-sdk";
-import { parseUnits } from 'ethers/lib/utils';
+import { parseUnits } from "ethers/lib/utils";
 
 export interface GelatoRangeOrdersHandlers {
   // handleLimitOrderSubmission: (orderToSubmit: {
@@ -102,10 +102,10 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
             tokenB: outputToken,
             fee: FeeAmount.LOW,
           });
-          
+
           const prices = await gelatoRangeOrders.getNearestPrice(
             pool,
-            parsedRate,
+            parsedRate
           );
           // console.log("prices", prices);
           if (prices) {
@@ -121,7 +121,15 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
         updateRange();
       }
     },
-    [onUserInput, priceValue, gelatoRangeOrders, chainId, inputToken, outputToken, onRangeChange]
+    [
+      onUserInput,
+      priceValue,
+      gelatoRangeOrders,
+      chainId,
+      inputToken,
+      outputToken,
+      onRangeChange,
+    ]
   );
 
   const handleCurrencySelection = useCallback(
