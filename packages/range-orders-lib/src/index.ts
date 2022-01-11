@@ -1,3 +1,2 @@
-import { GelatoRangeOrder } from "./range-orders";
-
-export { GelatoRangeOrder };
+export { GelatoRangeOrder } from "./range-orders";
+export * from "./types";

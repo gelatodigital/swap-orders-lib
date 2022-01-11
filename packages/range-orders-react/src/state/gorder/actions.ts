@@ -1,4 +1,5 @@
 import { createAction } from "@reduxjs/toolkit";
+import { BigNumber } from "ethers";
 
 export enum Field {
   INPUT = "INPUT",
@@ -25,6 +26,6 @@ export const setRecipient = createAction<{ recipient: string | null }>(
 export const setRateType = createAction<{ rateType: Rate }>(
   "granger/setRateType"
 );
-export const setRange = createAction<{ upper: number; lower: number }>(
+export const setRange = createAction<{ upper: BigNumber; lower: BigNumber }>(
   "granger/range"
 );

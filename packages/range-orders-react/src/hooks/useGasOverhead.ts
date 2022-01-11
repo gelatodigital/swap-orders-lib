@@ -6,7 +6,7 @@ import { useCurrency } from "./Tokens";
 import { BigNumber } from "@ethersproject/bignumber";
 import { GENERIC_GAS_LIMIT_ORDER_EXECUTION } from "../constants/misc";
 import { useTradeExactIn } from "./useTrade";
-import { tryParseAmount } from "../state/gorder/hooks";
+import { tryParseAmount } from "../utils/tryParseAmount";
 import { Currency, CurrencyAmount, Price } from "@uniswap/sdk-core";
 import JSBI from "jsbi";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";

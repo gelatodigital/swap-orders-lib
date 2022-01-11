@@ -1,4 +1,5 @@
 import { createReducer } from "@reduxjs/toolkit";
+import { BigNumber } from "ethers";
 import { NATIVE } from "../../constants/addresses";
 import {
   Field,
@@ -27,8 +28,8 @@ export interface OrderState {
   readonly recipient: string | null;
   readonly rateType: Rate;
   readonly range: {
-    readonly upper: number;
-    readonly lower: number;
+    readonly upper: BigNumber;
+    readonly lower: BigNumber;
   };
 }
 
@@ -46,8 +47,8 @@ export const initialState: OrderState = {
   rateType: Rate.MUL,
   recipient: null,
   range: {
-    upper: 0,
-    lower: 0,
+    upper: BigNumber.from(0),
+    lower: BigNumber.from(0),
   },
 };
 

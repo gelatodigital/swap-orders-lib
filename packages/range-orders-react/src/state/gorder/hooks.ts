@@ -1,5 +1,4 @@
 import JSBI from "jsbi";
-import { parseUnits } from "@ethersproject/units";
 import {
   Currency,
   CurrencyAmount,
@@ -26,7 +25,8 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "..";
 import { useWeb3 } from "../../web3";
-import { BigNumber } from "ethers";
+import { BigNumber, utils } from "ethers";
+import { tryParseAmount } from "../../utils/tryParseAmount";
 
 export function applyExchangeRateTo(
   inputValue: string,
@@ -84,8 +84,6 @@ export function useOrderActionHandlers(): {
   const dispatch = useDispatch();
   const onCurrencySelection = useCallback(
     (field: Field, currency: Currency) => {
-      // console.log('onCurrencySelection >>>>>>')
-      // console.log(currency)
       dispatch(
         selectCurrency({
           field,
@@ -129,8 +127,8 @@ export function useOrderActionHandlers(): {
     (upper: BigNumber, lower: BigNumber) => {
       dispatch(
         setRange({
-          upper: upper.toNumber(),
-          lower: lower.toNumber(),
+          upper,
+          lower,
         })
       );
     },
@@ -145,31 +143,6 @@ export function useOrderActionHandlers(): {
     onChangeRateType,
     onRangeChange,
   };
-}
-
-// try to parse a user entered amount for a given token
-export function tryParseAmount<T extends Currency>(
-  value?: string,
-  currency?: T
-): CurrencyAmount<T> | undefined {
-  if (!value || !currency) {
-    return undefined;
-  }
-  try {
-    const typedValueParsed = parseUnits(value, currency.decimals).toString();
-
-    if (typedValueParsed !== "0") {
-      return CurrencyAmount.fromRawAmount(
-        currency,
-        JSBI.BigInt(typedValueParsed)
-      );
-    }
-  } catch (error) {
-    // should fail if the user specifies too many decimal places of precision (or maybe exceed max uint?)
-    console.debug(`Failed to parse input amount: "${value}"`, error);
-  }
-  // necessary for all paths to return a value
-  return undefined;
 }
 
 export interface DerivedOrderInfo {
@@ -188,8 +161,8 @@ export interface DerivedOrderInfo {
     input: string;
     output: string;
     price: string;
-    rangePriceLower: string;
-    rangePriceUpper: string;
+    rangePriceLower?: string;
+    rangePriceUpper?: string;
   };
   rawAmounts: {
     input: string | undefined;
@@ -213,6 +186,8 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
+  const upperRange = utils.formatUnits(range.upper, inputCurrency?.decimals ?? undefined);
+  const lowerRange = utils.formatUnits(range.lower, inputCurrency?.decimals ?? undefined);
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -386,8 +361,8 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
         : rateType === Rate.MUL
         ? price?.toSignificant(6) ?? ""
         : price?.invert().toSignificant(6) ?? "",
-    rangePriceLower: range.lower.toLocaleString("en-US"),
-    rangePriceUpper: range.upper.toLocaleString("en-US"),
+    rangePriceLower: Number(lowerRange).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
+    rangePriceUpper: Number(upperRange).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
   };
 
   const rawAmounts = useMemo(

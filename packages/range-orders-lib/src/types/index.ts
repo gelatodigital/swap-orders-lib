@@ -4,6 +4,20 @@ import { BytesLike } from "@ethersproject/bytes";
 // mainnet | goerli | optimism | matic | arbitrum
 export type ChainId = 1 | 5 | 10 | 137 | 42161;
 
+export type Handler =
+  | "spookyswap"
+  | "uniswap"
+  | "quickswap"
+  | "spiritswap"
+  | "bombswap"
+  | "polydex"
+  | "cafeswap"
+  | "pancakeswap"
+  | "traderjoe"
+  | "defyswap"
+  | "pangolin"
+  | "quickswap_stoploss";
+
 export type RangeOrderPayload = {
   pool: string;
   zeroForOne: boolean;
