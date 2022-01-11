@@ -186,8 +186,14 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const upperRange = utils.formatUnits(range.upper, inputCurrency?.decimals ?? undefined);
-  const lowerRange = utils.formatUnits(range.lower, inputCurrency?.decimals ?? undefined);
+  const upperRange = utils.formatUnits(
+    range.upper,
+    inputCurrency?.decimals ?? undefined
+  );
+  const lowerRange = utils.formatUnits(
+    range.lower,
+    inputCurrency?.decimals ?? undefined
+  );
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -361,8 +367,14 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
         : rateType === Rate.MUL
         ? price?.toSignificant(6) ?? ""
         : price?.invert().toSignificant(6) ?? "",
-    rangePriceLower: Number(lowerRange).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
-    rangePriceUpper: Number(upperRange).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 }),
+    rangePriceLower: Number(lowerRange).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 6,
+    }),
+    rangePriceUpper: Number(upperRange).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 6,
+    }),
   };
 
   const rawAmounts = useMemo(

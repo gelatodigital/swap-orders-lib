@@ -1,6 +1,6 @@
-import JSBI from 'jsbi';
-import { parseUnits } from 'ethers/lib/utils';
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core';
+import JSBI from "jsbi";
+import { parseUnits } from "ethers/lib/utils";
+import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
 
 // try to parse a user entered amount for a given token
 export function tryParseAmount<T extends Currency>(

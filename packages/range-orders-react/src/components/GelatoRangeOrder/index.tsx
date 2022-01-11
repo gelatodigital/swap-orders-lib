@@ -1,9 +1,5 @@
 import React, { Fragment, useState, useCallback } from "react";
-import {
-  Currency,
-  CurrencyAmount,
-  Percent,
-} from "@uniswap/sdk-core";
+import { Currency, CurrencyAmount, Percent } from "@uniswap/sdk-core";
 import AppBody from "./AppBody";
 import SwapHeader from "../order/SwapHeader";
 import { ArrowWrapper, Wrapper } from "../order/styleds";
@@ -50,7 +46,7 @@ export default function GelatoRangeOrder({
     },
     orderState: { independentField, rateType },
   } = useGelatoRangeOrders();
-    
+
   const fiatValueInput = useUSDCValue(parsedAmounts.input);
   const maxInputAmount: CurrencyAmount<Currency> | undefined = maxAmountSpend(
     currencyBalances.input
