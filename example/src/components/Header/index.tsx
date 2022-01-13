@@ -259,15 +259,16 @@ export const StyledMenuButton = styled.button`
 `
 
 const NETWORK_LABELS: { [chainId: number]: string } = {
-  [1]: 'Ethereum',
-  [4]: 'Rinkeby',
-  [3]: 'Ropsten',
-  [5]: 'Görli',
-  [42]: 'Kovan',
-  [56]: "BSC",
-  [137]: 'Polygon (Matic)',
-  [250]: 'Fantom',
-  [43114]: 'AVAX',
+  1: 'Ethereum',
+  4: 'Rinkeby',
+  3: 'Ropsten',
+  5: 'Görli',
+  10: 'Optimism',
+  42: 'Kovan',
+  56: "BSC",
+  137: 'Polygon (Matic)',
+  250: 'Fantom',
+  43114: 'AVAX',
 }
 
 export default function Header() {

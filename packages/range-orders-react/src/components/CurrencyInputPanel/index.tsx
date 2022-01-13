@@ -24,7 +24,7 @@ import { FiatValue } from "./FiatValue";
 import { formatTokenAmount } from "../../utils/formatTokenAmount";
 import { MouseoverTooltip } from "../Tooltip";
 import DropDown from "../../assets/images/dropdown.svg";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isRangeOrderSupportedChain } from "@gelatonetwork/range-orders-lib/dist/utils";
 import { Pair } from "../../entities/pair";
 import { RatePercentage } from "./RatePercentage";
 import { Rate } from "../../state/gorder/actions";
@@ -102,11 +102,10 @@ const PriceSelect = styled(ButtonGray)<{
   align-items: center;
   font-size: 24px;
   font-weight: 500;
-  background-color: ${({ theme }) => theme.bg1};
+  background-color: ${({ theme, selected }) => selected ? theme.bg0 : theme.bg1};
   color: ${({ theme }) => theme.text1};
   border-radius: 8px;
-  box-shadow: ${({ selected }) =>
-    selected ? "0px 6px 10px rgba(0, 0, 0, 0.075)" : "none"};
+  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
   outline: none;
   cursor: pointer;
   user-select: none;
@@ -122,7 +121,6 @@ const PriceSelect = styled(ButtonGray)<{
     border: ${({ selected }) => (selected ? "1px solid" : "none")};
     border-color: ${({ selected, theme }) =>
       selected ? theme.primary1 : "none"};
-    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
   }
 `;
 
@@ -266,7 +264,6 @@ export default function CurrencyInputPanel({
   ...rest
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [showInverted, setShowInverted] = useState<boolean>(true);
   const [selectPriceA, setSelectPriceA] = useState<boolean>(false);
   const [selectPriceB, setSelectPriceB] = useState<boolean>(false);
 
@@ -281,7 +278,7 @@ export default function CurrencyInputPanel({
     setModalOpen(false);
   }, [setModalOpen]);
 
-  const isEthereum = chainId && isEthereumChain(chainId);
+  const isSupportedChain = chainId && isRangeOrderSupportedChain(chainId);
 
   const rate = useMemo(
     () =>
@@ -386,7 +383,7 @@ export default function CurrencyInputPanel({
             <RowFixed style={{ height: "17px" }}>
               <MouseoverTooltip
                 text={`The virtual price that will determine your output amount. ${
-                  chainId && isEthereumChain(chainId)
+                  chainId && isSupportedChain
                     ? "It does not account execution gas costs. For that check the actual execution rate below."
                     : ""
                 } ${rate ? rate + "." : ""}`}
@@ -454,7 +451,7 @@ export default function CurrencyInputPanel({
           </FiatRow>
         )}
 
-        {value && currency && otherCurrency && isEthereum && showRange && (
+        {value && currency && otherCurrency && isSupportedChain && showRange && (
           <Fragment>
             <FiatRow>
               <RowBetween>
@@ -474,7 +471,7 @@ export default function CurrencyInputPanel({
                     fontSize={14}
                     style={{ display: "inline", cursor: "pointer" }}
                   >
-                    Range order price
+                    Select Range order price
                   </TYPE.body>
                 </MouseoverTooltip>
               </RowBetween>
