@@ -95,13 +95,14 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
           priceValue &&
           Number(priceValue) > 0
         ) {
-          const parsedRate = parseUnits(value, outputToken.decimals);
+          const parsedRate = parseUnits(priceValue, outputToken.decimals);
           const pool = computePoolAddress({
             factoryAddress: FACTORY_ADDRESS,
             tokenA: inputToken,
             tokenB: outputToken,
             fee: FeeAmount.LOW,
           });
+          // console.log('pool', pool)
 
           const prices = await gelatoRangeOrders.getNearestPrice(
             pool,
