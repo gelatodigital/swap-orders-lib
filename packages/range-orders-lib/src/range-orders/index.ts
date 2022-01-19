@@ -3,12 +3,18 @@ import {
   RangeOrderData,
   RangeOrderPayload,
   RangeOrderStatus,
+  Handler,
+  TransactionDataWithOrder,
 } from "../types";
 import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
 import { RangeOrder } from "../contracts/types";
 import { getRangeOrder, getUniswapV3Pool, getECR20 } from "../contracts";
-import { SUBGRAPH_URL } from "../constants";
+import {
+  SUBGRAPH_URL,
+  NETWORK_HANDLERS,
+  GELATO_RANGE_ORDERS_ADDRESS,
+} from "../constants";
 import {
   queryRangeOrder,
   queryOpenRangeOrderByUser,
@@ -16,10 +22,23 @@ import {
   queryCancelledRangeOrderByUser,
   queryExpiredRangeOrderByUser,
 } from "../utils/queries";
-import { BigNumber, ContractTransaction, ethers } from "ethers";
+import {
+  BigNumber,
+  ContractTransaction,
+  ethers,
+  utils,
+  BigNumberish,
+} from "ethers";
 import { sqrt } from "@uniswap/sdk-core";
 import JSBI from "jsbi";
 import { TickMath } from "@uniswap/v3-sdk";
+
+export const isValidChainIdAndHandler = (
+  chainId: ChainId,
+  handler: Handler
+): boolean => {
+  return NETWORK_HANDLERS[chainId].includes(handler);
+};
 
 export class GelatoRangeOrder {
   private _chainId: ChainId;
@@ -27,6 +46,10 @@ export class GelatoRangeOrder {
   private _signer: Signer | undefined;
   private _gelatoRangeOrders: RangeOrder;
   private _subgraphUrl: string;
+  private _abiEncoder: utils.AbiCoder;
+  private _handlerAddress?: string;
+  private _handler?: Handler;
+  private _moduleAddress: string;
 
   get chainId(): ChainId {
     return this._chainId;
@@ -59,6 +82,8 @@ export class GelatoRangeOrder {
 
     this._gelatoRangeOrders = getRangeOrder(chainId, signerOrProvider);
     this._subgraphUrl = SUBGRAPH_URL[chainId];
+    this._abiEncoder = new utils.AbiCoder();
+    this._moduleAddress = GELATO_RANGE_ORDERS_ADDRESS[chainId];
   }
 
   public async setRangeOrder(
@@ -422,5 +447,49 @@ export class GelatoRangeOrder {
     return rangeOrderData.expiryTime.lt(now)
       ? ethers.constants.Zero
       : rangeOrderData.expiryTime.sub(now);
+  }
+
+  public async encodeRangeOrderSubmission(
+    pool: string,
+    zeroForOne: boolean,
+    tickThreshold: BigNumberish,
+    amountIn: BigNumberish,
+    receiver: string,
+    maxFeeAmount: BigNumberish
+  ): Promise<TransactionDataWithOrder> {
+    const data = this._gelatoRangeOrders.interface.encodeFunctionData(
+      "setRangeOrder",
+      [{ pool, zeroForOne, tickThreshold, amountIn, receiver, maxFeeAmount }]
+    );
+    const value = ethers.constants.Zero;
+    const to = this._gelatoRangeOrders.address;
+    return {
+      payload: {
+        data,
+        value,
+        to,
+      },
+      order: {
+        id: this._getKey({
+          resolver: this._moduleAddress,
+          creator: this._moduleAddress,
+          receiver: receiver,
+        } as RangeOrderData),
+        creator: this._moduleAddress.toLowerCase(),
+        receiver: receiver,
+        resolver: this._moduleAddress.toLowerCase(),
+        inputToken: "0x0000000000000000000000000000000000000000",
+        inputAmount: Number(amountIn.toString()),
+      },
+    };
+  }
+
+  private _getKey(order: RangeOrderData): string {
+    return utils.keccak256(
+      this._abiEncoder.encode(
+        ["address", "address", "address"],
+        [order.resolver, order.creator, order.receiver]
+      )
+    );
   }
 }

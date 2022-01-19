@@ -26,6 +26,6 @@ export const setRecipient = createAction<{ recipient: string | null }>(
 export const setRateType = createAction<{ rateType: Rate }>(
   "granger/setRateType"
 );
-export const setRange = createAction<{ upper: BigNumber; lower: BigNumber }>(
+export const setRange = createAction<{ upper: number; upperPrice: BigNumber; lower: number; lowerPrice: BigNumber }>(
   "granger/range"
 );

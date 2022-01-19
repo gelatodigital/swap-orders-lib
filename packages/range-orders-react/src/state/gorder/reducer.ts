@@ -28,8 +28,10 @@ export interface OrderState {
   readonly recipient: string | null;
   readonly rateType: Rate;
   readonly range: {
-    readonly upper: BigNumber;
-    readonly lower: BigNumber;
+    readonly upper: number;
+    readonly upperPrice: BigNumber;
+    readonly lower: number;
+    readonly lowerPrice: BigNumber;
   };
 }
 
@@ -47,8 +49,10 @@ export const initialState: OrderState = {
   rateType: Rate.MUL,
   recipient: null,
   range: {
-    upper: BigNumber.from(0),
-    lower: BigNumber.from(0),
+    upper: 0,
+    upperPrice: BigNumber.from(0),
+    lower: 0,
+    lowerPrice: BigNumber.from(0),
   },
 };
 
@@ -120,7 +124,7 @@ export default createReducer<OrderState>(initialState, (builder) =>
     .addCase(setRateType, (state, { payload: { rateType } }) => {
       state.rateType = rateType;
     })
-    .addCase(setRange, (state, { payload: { upper, lower } }) => {
-      state.range = { upper, lower };
+    .addCase(setRange, (state, { payload: { upper, upperPrice, lower, lowerPrice } }) => {
+      state.range = { upper, upperPrice, lower, lowerPrice };
     })
 );

@@ -16,6 +16,11 @@ export const NETWORK_NAME = {
   [CHAIN_ID.GOERLI]: "Goerli",
 };
 
+export const NETWORK_HANDLERS = {
+  [CHAIN_ID.MAINNET]: ["uniswap"],
+  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoploss"],
+};
+
 export const SUBGRAPH_URL = {
   [CHAIN_ID.MAINNET]:
     "https://api.thegraph.com/subgraphs/name/gelatodigital/range-orders-mainnet",
