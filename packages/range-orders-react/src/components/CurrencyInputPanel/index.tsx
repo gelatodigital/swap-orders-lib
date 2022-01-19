@@ -102,7 +102,8 @@ const PriceSelect = styled(ButtonGray)<{
   align-items: center;
   font-size: 24px;
   font-weight: 500;
-  background-color: ${({ theme, selected }) => selected ? theme.bg0 : theme.bg1};
+  background-color: ${({ theme, selected }) =>
+    selected ? theme.bg0 : theme.bg1};
   color: ${({ theme }) => theme.text1};
   border-radius: 8px;
   box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
@@ -228,12 +229,15 @@ interface CurrencyInputPanelProps {
   showRate?: boolean;
   showRange?: boolean;
   rangePriceLower?: string;
+  lowerTick?: number;
   rangePriceUpper?: string;
+  upperTick?: number;
   isInvertedRate?: boolean;
   realExecutionPrice?: Price<Currency, Currency> | undefined;
   realExecutionPriceAsString?: string | undefined;
   gasPrice?: number;
   rateType?: Rate;
+  onPriceSelect?: (price: any) => void;
 }
 
 export default function CurrencyInputPanel({
@@ -257,10 +261,13 @@ export default function CurrencyInputPanel({
   showRate = false,
   showRange = false,
   rangePriceLower,
+  lowerTick,
   rangePriceUpper,
+  upperTick,
   isInvertedRate = false,
   realExecutionPriceAsString,
   rateType,
+  onPriceSelect,
   ...rest
 }: CurrencyInputPanelProps) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -451,7 +458,7 @@ export default function CurrencyInputPanel({
           </FiatRow>
         )}
 
-        {value && currency && otherCurrency && isSupportedChain && showRange && (
+        {value && currency && otherCurrency && isSupportedChain && showRange && onPriceSelect && (
           <Fragment>
             <FiatRow>
               <RowBetween>
@@ -484,6 +491,7 @@ export default function CurrencyInputPanel({
                 onClick={() => {
                   setSelectPriceA(true);
                   setSelectPriceB(false);
+                  onPriceSelect(lowerTick);
                 }}
               >
                 <PriceAligner>{rangePriceLower}</PriceAligner>
@@ -495,6 +503,7 @@ export default function CurrencyInputPanel({
                 onClick={() => {
                   setSelectPriceA(false);
                   setSelectPriceB(true);
+                  onPriceSelect(upperTick);
                 }}
               >
                 <PriceAligner>{rangePriceUpper}</PriceAligner>

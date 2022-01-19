@@ -18,6 +18,17 @@ export type Handler =
   | "pangolin"
   | "quickswap_stoploss";
 
+export interface TransactionData {
+  to: string;
+  data: BytesLike;
+  value: BigNumber;
+}
+
+export interface TransactionDataWithOrder {
+  payload: TransactionData;
+  order: PartialRangeOrder;
+}
+
 export type RangeOrderPayload = {
   pool: string;
   zeroForOne: boolean;
@@ -54,8 +65,30 @@ export type RangeOrderData = {
   executedTxHash: BytesLike | undefined;
   cancelledTxHash: BytesLike | undefined;
   createdAt: BigNumber;
-  updatedAt: BigNumber;
+  updatedAt: string;
   createdAtBlock: BigNumber;
   updatedAtBlock: BigNumber;
   updatedAtBlockHash: BytesLike | undefined;
 };
+
+export interface TransactionData {
+  to: string;
+  data: BytesLike;
+  value: BigNumber;
+}
+
+export interface TransactionDataWithSecret {
+  payload: TransactionData;
+  secret: string;
+  witness: string;
+  order: PartialRangeOrder;
+}
+
+export interface PartialRangeOrder {
+  id: string;
+  creator: string;
+  receiver: string;
+  resolver: string;
+  inputToken: string;
+  inputAmount: number;
+}

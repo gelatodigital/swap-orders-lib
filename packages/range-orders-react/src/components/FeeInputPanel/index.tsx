@@ -1,9 +1,11 @@
-import React, { useState, useCallback, Fragment, useMemo } from "react";
+import React from "react";
 import styled from "styled-components/macro";
 import { Input as NumericalInput } from "../NumericalInput";
 import { TYPE } from "../../theme";
 import { RowFixed } from "../Row";
 import { MouseoverTooltip } from "../Tooltip";
+import useGasPrice from "../../hooks/useGasPrice";
+import { useCurrency } from "../../hooks/Tokens";
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -46,6 +48,9 @@ export default function FeeInputPanel({
   onUserInput,
   ...rest
 }: FeeInputPanelProps) {
+  const gasPrice = useGasPrice();
+  console.log(gasPrice)
+  const nativeCurrency = useCurrency("NATIVE")
   return (
     <InputPanel id={id} hideInput={hideInput} {...rest}>
       <Container hideInput={hideInput}>
@@ -60,13 +65,13 @@ export default function FeeInputPanel({
           {!hideInput && (
             <NumericalInput
               className="token-amount-input"
-              value={value}
+              value={gasPrice ?? 0}
               onUserInput={(val: string) => {
                 onUserInput(val);
               }}
             />
           )}
-          <TYPE.main>ETH</TYPE.main>
+          <TYPE.main>{nativeCurrency?.symbol}</TYPE.main>
         </InputRow>
       </Container>
     </InputPanel>

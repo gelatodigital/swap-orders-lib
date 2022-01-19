@@ -79,7 +79,12 @@ export function useOrderActionHandlers(): {
   onUserInput: (field: Field, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
   onChangeRateType: (rateType: Rate) => void;
-  onRangeChange: (upper: BigNumber, lower: BigNumber) => void;
+  onRangeChange: (
+    upper: number,
+    upperPrice: BigNumber,
+    lower: number,
+    lowerPrice: BigNumber,
+  ) => void;
 } {
   const dispatch = useDispatch();
   const onCurrencySelection = useCallback(
@@ -124,11 +129,13 @@ export function useOrderActionHandlers(): {
   );
 
   const onRangeChange = useCallback(
-    (upper: BigNumber, lower: BigNumber) => {
+    (upper: number, upperPrice: BigNumber, lower: number, lowerPrice: BigNumber) => {
       dispatch(
         setRange({
           upper,
+          upperPrice,
           lower,
+          lowerPrice
         })
       );
     },
@@ -161,8 +168,10 @@ export interface DerivedOrderInfo {
     input: string;
     output: string;
     price: string;
-    rangePriceLower?: string;
-    rangePriceUpper?: string;
+    rangePriceLower: string;
+    lowerTick: number;
+    rangePriceUpper: string;
+    upperTick: number;
   };
   rawAmounts: {
     input: string | undefined;
@@ -187,11 +196,11 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
   const upperRange = utils.formatUnits(
-    range.upper,
+    range.upperPrice,
     inputCurrency?.decimals ?? undefined
   );
   const lowerRange = utils.formatUnits(
-    range.lower,
+    range.lowerPrice,
     inputCurrency?.decimals ?? undefined
   );
 
@@ -371,10 +380,12 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,
     }),
+    lowerTick: range.lower,
     rangePriceUpper: Number(upperRange).toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,
     }),
+    upperTick: range.upper,
   };
 
   const rawAmounts = useMemo(
