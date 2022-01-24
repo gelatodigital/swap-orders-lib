@@ -152,6 +152,9 @@ const FiatRow = styled(LabelRow)`
 const PriceRow = styled(LabelRow)`
   justify-content: space-between;
 `;
+const ErrorRow = styled(LabelRow)`
+  justify-content: space-between;
+`;
 
 const Aligner = styled.span`
   display: flex;
@@ -229,9 +232,13 @@ interface CurrencyInputPanelProps {
   showRate?: boolean;
   showRange?: boolean;
   rangePriceLower?: string;
+  rangeLowerEnabled?: boolean;
   lowerTick?: number;
   rangePriceUpper?: string;
+  rangeUpperEnabled?: boolean;
   upperTick?: number;
+  rangeError0?: boolean
+  rangeError1?: boolean;
   isInvertedRate?: boolean;
   realExecutionPrice?: Price<Currency, Currency> | undefined;
   realExecutionPriceAsString?: string | undefined;
@@ -261,9 +268,13 @@ export default function CurrencyInputPanel({
   showRate = false,
   showRange = false,
   rangePriceLower,
+  rangeLowerEnabled,
   lowerTick,
   rangePriceUpper,
+  rangeUpperEnabled,
   upperTick,
+  rangeError0,
+  rangeError1,
   isInvertedRate = false,
   realExecutionPriceAsString,
   rateType,
@@ -458,59 +469,83 @@ export default function CurrencyInputPanel({
           </FiatRow>
         )}
 
-        {value && currency && otherCurrency && isSupportedChain && showRange && onPriceSelect && (
-          <Fragment>
-            <FiatRow>
-              <RowBetween>
-                <MouseoverTooltip
-                  text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
-                    rate
-                      ? `Assuming current gas price it should execute when ` +
-                        realExecutionRateExplainer +
-                        "."
-                      : ""
-                  }`}
-                >
-                  <TYPE.body
-                    onClick={onMax}
-                    color={theme.text2}
-                    fontWeight={400}
-                    fontSize={14}
-                    style={{ display: "inline", cursor: "pointer" }}
+        {/* Range Order Inputs */}
+        {value &&
+          currency &&
+          otherCurrency &&
+          isSupportedChain &&
+          showRange &&
+          onPriceSelect && (
+            <Fragment>
+              <FiatRow>
+                <RowBetween>
+                  <MouseoverTooltip
+                    text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                      rate
+                        ? `Assuming current gas price it should execute when ` +
+                          realExecutionRateExplainer +
+                          "."
+                        : ""
+                    }`}
                   >
-                    Select Range order price
+                    <TYPE.body
+                      onClick={onMax}
+                      color={theme.text2}
+                      fontWeight={400}
+                      fontSize={14}
+                      style={{ display: "inline", cursor: "pointer" }}
+                    >
+                      Select Range order price
+                    </TYPE.body>
+                  </MouseoverTooltip>
+                </RowBetween>
+              </FiatRow>
+              <PriceRow>
+                <PriceSelect
+                  selected={selectPriceA}
+                  hideInput={hideInput}
+                  className="select-range-price"
+                  onClick={() => {
+                    setSelectPriceA(true);
+                    setSelectPriceB(false);
+                    onPriceSelect(lowerTick);
+                  }}
+                  disabled={!rangeLowerEnabled}
+                >
+                  <PriceAligner>{rangePriceLower}</PriceAligner>
+                </PriceSelect>
+                <PriceSelect
+                  selected={selectPriceB}
+                  hideInput={hideInput}
+                  className="select-range-price"
+                  onClick={() => {
+                    setSelectPriceA(false);
+                    setSelectPriceB(true);
+                    onPriceSelect(upperTick);
+                  }}
+                  disabled={!rangeUpperEnabled}
+                >
+                  <PriceAligner>{rangePriceUpper}</PriceAligner>
+                </PriceSelect>
+              </PriceRow>
+              <ErrorRow>
+                <RowFixed>
+                {
+                  rangeError0 &&
+                  <TYPE.body fontSize={12} color={theme.red1}>
+                    Can not place range order over current tick.
                   </TYPE.body>
-                </MouseoverTooltip>
-              </RowBetween>
-            </FiatRow>
-            <PriceRow>
-              <PriceSelect
-                selected={selectPriceA}
-                hideInput={hideInput}
-                className="select-range-price"
-                onClick={() => {
-                  setSelectPriceA(true);
-                  setSelectPriceB(false);
-                  onPriceSelect(lowerTick);
-                }}
-              >
-                <PriceAligner>{rangePriceLower}</PriceAligner>
-              </PriceSelect>
-              <PriceSelect
-                selected={selectPriceB}
-                hideInput={hideInput}
-                className="select-range-price"
-                onClick={() => {
-                  setSelectPriceA(false);
-                  setSelectPriceB(true);
-                  onPriceSelect(upperTick);
-                }}
-              >
-                <PriceAligner>{rangePriceUpper}</PriceAligner>
-              </PriceSelect>
-            </PriceRow>
-          </Fragment>
-        )}
+                }
+                {
+                  rangeError1 &&
+                  <TYPE.body fontSize={12} color={theme.red1}>
+                    Can not place range order below current tick.
+                  </TYPE.body>
+                }
+                </RowFixed>
+              </ErrorRow>
+            </Fragment>
+          )}
       </Container>
       {onCurrencySelect && (
         <CurrencySearchModal

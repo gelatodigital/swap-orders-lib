@@ -1,5 +1,9 @@
 import React from "react";
 import styled from "styled-components/macro";
+import {
+  Currency,
+  CurrencyAmount,
+} from "@uniswap/sdk-core";
 import { Input as NumericalInput } from "../NumericalInput";
 import { TYPE } from "../../theme";
 import { RowFixed } from "../Row";
@@ -35,7 +39,7 @@ const InputRow = styled.div`
 `;
 
 interface FeeInputPanelProps {
-  value: string;
+  value: CurrencyAmount<Currency>;
   onUserInput: (value: string) => void;
   hideInput?: boolean;
   id: string;
@@ -48,9 +52,7 @@ export default function FeeInputPanel({
   onUserInput,
   ...rest
 }: FeeInputPanelProps) {
-  const gasPrice = useGasPrice();
-  console.log(gasPrice)
-  const nativeCurrency = useCurrency("NATIVE")
+  const nativeCurrency = useCurrency("NATIVE");
   return (
     <InputPanel id={id} hideInput={hideInput} {...rest}>
       <Container hideInput={hideInput}>
@@ -65,7 +67,7 @@ export default function FeeInputPanel({
           {!hideInput && (
             <NumericalInput
               className="token-amount-input"
-              value={gasPrice ?? 0}
+              value={value.toSignificant(nativeCurrency?.decimals)}
               onUserInput={(val: string) => {
                 onUserInput(val);
               }}

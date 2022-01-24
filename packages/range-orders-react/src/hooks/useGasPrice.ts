@@ -18,7 +18,7 @@ export default function useGasPrice(): number | undefined {
   const [gasPrice, setGasPrice] = useState<number>();
 
   const gasPriceCallback = useCallback(() => {
-    if (isPolygonChainId(chainId)) {
+    if (chainId && isPolygonChainId(chainId)) {
       setGasPrice(1);
       return;
     }

@@ -1,15 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { useSelector } from "react-redux";
-import { useOrderActionHandlers } from "../../state/gorder/hooks";
+import { useOrderActionHandlers, useOrderState } from "../../state/gorder/hooks";
 import { Field } from "../../types";
-import { Currency, Price } from "@uniswap/sdk-core";
+import { Currency, Price, CurrencyAmount } from "@uniswap/sdk-core";
 import { Rate } from "../../state/gorder/actions";
 import { useWeb3 } from "../../web3";
 import { useTransactionAdder } from "../../state/gtransactions/hooks";
 import useGelatoRangeOrdersLib from "./useGelatoRangeOrdersLib";
 import { useCurrency, useToken } from "../../hooks/Tokens";
-import { AppState } from "../../state";
 import {
   computePoolAddress,
   FACTORY_ADDRESS,
@@ -17,8 +15,17 @@ import {
 } from "@uniswap/v3-sdk";
 import { parseUnits } from "ethers/lib/utils";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
-import { RangeOrderData, RangeOrderStatus, RangeOrderPayload } from "@gelatonetwork/range-orders-lib";
-import { Overrides } from "@ethersproject/contracts";
+import {
+  RangeOrderData,
+  RangeOrderStatus,
+  RangeOrderPayload,
+} from "@gelatonetwork/range-orders-lib";
+import { PayableOverrides } from "@ethersproject/contracts";
+import { NATIVE } from "../../constants/addresses";
+import { MAX_FEE_AMOUNTS } from "../../constants/misc";
+import { usePoolContract } from "../useContract";
+import { useDispatch } from "react-redux";
+import { setRangeUpperEnabled, setRangeLowerEnabled } from "../../state/gorder/actions";
 
 export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
@@ -44,16 +51,14 @@ export interface GelatoRangeOrdersHandlers {
   handleRangeSelection: (rangePrice: string) => void;
 }
 
-export function useOrderState(): AppState["granger"] {
-  return useSelector<AppState, AppState["granger"]>((state) => state.granger);
-}
-
 export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandlers {
   const { chainId, account } = useWeb3();
 
   const gelatoRangeOrders = useGelatoRangeOrdersLib();
 
   const addTransaction = useTransactionAdder();
+
+  const nativeCurrency = useCurrency(NATIVE);
 
   const {
     onSwitchTokens,
@@ -67,6 +72,7 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     priceValue,
     [Field.INPUT]: { currencyId: inputCurrencyId },
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
+    zeroForOne,
     range,
   } = useOrderState();
   const inputCurrency = useCurrency(inputCurrencyId);
@@ -75,18 +81,50 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
   const outputToken = useToken(outputCurrency?.wrapped.address);
   const [pool, setPool] = useState<string>();
   const [tickThreshold, setTickThreshold] = useState<number>(0);
-  const [zeroForOne, setZeroForOne] = useState<boolean>(false);
+  const [currentTick, setCurrentTick] = useState<number>(0);
+  const poolContract = usePoolContract(pool);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    if(inputCurrency && outputCurrency) {
-      if(parseInt(inputCurrency?.wrapped.address, 16) > parseInt(outputCurrency?.wrapped.address, 16)) {
-        setZeroForOne(true);
-      } else setZeroForOne(false);
+  const computeCurrentTick = useCallback(async () => {
+    if(!poolContract) {
+      setCurrentTick(0);
+      dispatch(setRangeUpperEnabled(false));
+      dispatch(setRangeLowerEnabled(false));
+      return;
     }
-  }, [inputCurrency, outputCurrency]);
-
+    const { tick } = await poolContract.slot0();
+    const { upper, lower } = range;
+    // console.log(zeroForOne)
+    // console.log(tick)
+    // console.log(upper)
+    // console.log(lower)
+    if(zeroForOne) {
+      if(tick <= upper) {
+        dispatch(setRangeUpperEnabled(true));
+      } else {
+        dispatch(setRangeUpperEnabled(false));
+      }
+      if(tick <= lower) {
+        dispatch(setRangeLowerEnabled(true));
+      } else {
+        dispatch(setRangeLowerEnabled(false));
+      }
+    } else {
+      if(tick >= upper) {
+        dispatch(setRangeUpperEnabled(true));
+      } else {
+        dispatch(setRangeUpperEnabled(false));
+      }
+      if(tick >= lower) {
+        dispatch(setRangeLowerEnabled(true));
+      } else {
+        dispatch(setRangeLowerEnabled(false));
+      }
+    }
+    setCurrentTick(tick);
+  }, [dispatch, poolContract, range, zeroForOne]);
   useEffect(() => {
-    if(inputToken && outputToken) {
+    if (inputToken && outputToken) {
       const p = computePoolAddress({
         factoryAddress: FACTORY_ADDRESS,
         tokenA: inputToken,
@@ -94,8 +132,9 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
         fee: FeeAmount.LOW,
       });
       setPool(p);
+      computeCurrentTick();
     }
-  }, [inputToken, outputToken]);
+  }, [computeCurrentTick, inputToken, outputToken]);
 
   const handleInput = useCallback(
     (field: Field, value: string) => {
@@ -135,7 +174,8 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
               lowerPrice,
             }: { upperPrice: BigNumber; lowerPrice: BigNumber } = prices;
             const { upper, lower }: { upper: number; lower: number } = ticks;
-            if (upperPrice && lowerPrice) onRangeChange(upper, upperPrice, lower, lowerPrice);
+            if (upperPrice && lowerPrice)
+              onRangeChange(upper, upperPrice, lower, lowerPrice);
           }
         }
       };
@@ -143,7 +183,16 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
         updateRange();
       }
     },
-    [onUserInput, priceValue, gelatoRangeOrders, chainId, pool, inputToken, outputToken, onRangeChange]
+    [
+      onUserInput,
+      priceValue,
+      gelatoRangeOrders,
+      chainId,
+      pool,
+      inputToken,
+      outputToken,
+      onRangeChange,
+    ]
   );
 
   const handleCurrencySelection = useCallback(
@@ -170,74 +219,83 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     [onChangeRateType, onUserInput]
   );
 
-  const handleRangeOrderSubmission = useCallback(async (
-    orderToSubmit: {
+  const handleRangeOrderSubmission = useCallback(
+    async (
+      orderToSubmit: {
         inputAmount: BigNumber;
+      }
+    ) => {
+      if (!gelatoRangeOrders) {
+        throw new Error("Could not reach Gelato Limit Orders library");
+      }
+
+      if (!chainId) {
+        throw new Error("No chainId");
+      }
+
+      if (!gelatoRangeOrders?.signer) {
+        throw new Error("No signer");
+      }
+
+      if (!pool) {
+        throw new Error("No pool");
+      }
+
+      if (!account) {
+        throw new Error("No account");
+      }
+
+      const { order } = await gelatoRangeOrders.encodeRangeOrderSubmission(
+        pool,
+        zeroForOne,
+        tickThreshold,
+        orderToSubmit.inputAmount,
+        account,
+        BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+      );
+
+      const orderPayload: RangeOrderPayload = {
+        pool,
+        zeroForOne,
+        tickThreshold,
+        amountIn: orderToSubmit.inputAmount,
+        receiver: account,
+        maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
+      }
+      const overrides: PayableOverrides = {
+        value: inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address ?
+          BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(orderToSubmit.inputAmount) :
+          BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+      }
+      console.log(orderPayload)
+      console.log(overrides)
+
+      const tx = await gelatoRangeOrders.setRangeOrder(orderPayload, overrides);
+      if (!tx) {
+        throw new Error("No transaction");
+      }
+      const now = Math.round(Date.now() / 1000);
+      addTransaction(tx, {
+        summary: `Order submission`,
+        type: "submission",
+        order: ({
+          ...order,
+          submittedTxHash: tx?.hash.toLowerCase(),
+          status: RangeOrderStatus.Submitted,
+          updatedAt: now.toString(),
+        } as unknown) as RangeOrderData,
+      });
+
+      return tx;
     },
-    overrides?: Overrides
-  ) => {
-    if (!gelatoRangeOrders) {
-      throw new Error("Could not reach Gelato Limit Orders library");
-    }
-
-    if (!chainId) {
-      throw new Error("No chainId");
-    }
-
-    if (!gelatoRangeOrders?.signer) {
-      throw new Error("No signer");
-    }
-
-    if (!pool) {
-      throw new Error("No pool");
-    }
-
-    if (!account) {
-      throw new Error("No account");
-    }
-
-    const {
-      order
-    } = await gelatoRangeOrders.encodeRangeOrderSubmission(
-      pool,
-      zeroForOne,
-      tickThreshold,
-      orderToSubmit.inputAmount,
-      account,
-      BigNumber.from(1),
-    );
-    
-    const tx = await gelatoRangeOrders.setRangeOrder({
-      pool,
-      zeroForOne,
-      tickThreshold,
-      amountIn: orderToSubmit.inputAmount,
-      receiver: account,
-      maxFeeAmount: BigNumber.from(100),
-    });
-    if (!tx) {
-      throw new Error("No transaction");
-    }
-    const now = Math.round(Date.now() / 1000);
-    addTransaction(tx, {
-      summary: `Order submission`,
-      type: "submission",
-      order: {
-        ...order,
-        submittedTxHash: tx?.hash.toLowerCase(),
-        status: RangeOrderStatus.Submitted,
-        updatedAt: now.toString(),
-      } as unknown as RangeOrderData,
-    })
-
-    return tx;
-  }, [account, addTransaction, chainId, gelatoRangeOrders, pool, tickThreshold, zeroForOne]);
+    [account, addTransaction, chainId, gelatoRangeOrders, inputCurrency?.wrapped.address, nativeCurrency?.wrapped.address, pool, tickThreshold, zeroForOne]
+  );
 
   const handleRangeSelection = useCallback(async (tick) => {
-    if(tick) {
+    if (tick) {
       setTickThreshold(tick);
     }
-  }, [])
+  }, []);
 
   return {
     handleInput,
@@ -245,6 +303,6 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     handleSwitchTokens,
     handleRateType,
     handleRangeOrderSubmission,
-    handleRangeSelection
+    handleRangeSelection,
   };
 }

@@ -32,6 +32,7 @@ import {
 import { sqrt } from "@uniswap/sdk-core";
 import JSBI from "jsbi";
 import { TickMath } from "@uniswap/v3-sdk";
+import { PayableOverrides } from "@ethersproject/contracts";
 
 export const isValidChainIdAndHandler = (
   chainId: ChainId,
@@ -87,12 +88,14 @@ export class GelatoRangeOrder {
   }
 
   public async setRangeOrder(
-    rangeOrderPayload: RangeOrderPayload
+    rangeOrderPayload: RangeOrderPayload,
+    overrides?: PayableOverrides
   ): Promise<ContractTransaction | undefined> {
-    if (this._signer)
+    if (this._signer) {
       return this._gelatoRangeOrders
         .connect(this._signer as Signer)
-        .setRangeOrder(rangeOrderPayload);
+        .setRangeOrder(rangeOrderPayload, overrides);
+    }
     throw new Error("No Signer");
   }
 

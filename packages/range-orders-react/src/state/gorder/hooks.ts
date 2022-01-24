@@ -21,12 +21,14 @@ import {
   switchCurrencies,
   typeInput,
   setRange,
+  setZeroForOne,
 } from "./actions";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "..";
 import { useWeb3 } from "../../web3";
 import { BigNumber, utils } from "ethers";
 import { tryParseAmount } from "../../utils/tryParseAmount";
+import { MAX_FEE_AMOUNTS } from "../../constants/misc";
 
 export function applyExchangeRateTo(
   inputValue: string,
@@ -83,7 +85,7 @@ export function useOrderActionHandlers(): {
     upper: number,
     upperPrice: BigNumber,
     lower: number,
-    lowerPrice: BigNumber,
+    lowerPrice: BigNumber
   ) => void;
 } {
   const dispatch = useDispatch();
@@ -129,13 +131,18 @@ export function useOrderActionHandlers(): {
   );
 
   const onRangeChange = useCallback(
-    (upper: number, upperPrice: BigNumber, lower: number, lowerPrice: BigNumber) => {
+    (
+      upper: number,
+      upperPrice: BigNumber,
+      lower: number,
+      lowerPrice: BigNumber
+    ) => {
       dispatch(
         setRange({
           upper,
           upperPrice,
           lower,
-          lowerPrice
+          lowerPrice,
         })
       );
     },
@@ -178,6 +185,8 @@ export interface DerivedOrderInfo {
     output: string | undefined;
   };
   price: Price<Currency, Currency> | undefined;
+  maxFeeAmount: CurrencyAmount<Currency> | undefined;
+  zeroForOne: boolean;
 }
 
 // from the current swap inputs, compute the best trade and return it.
@@ -191,7 +200,13 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     rateType,
     inputValue,
     range,
+    zeroForOne,
   } = useOrderState();
+  const nativeCurrency = useCurrency("NATIVE");
+  const maxFeeAmount: CurrencyAmount<Currency> | undefined = (nativeCurrency && chainId) ? CurrencyAmount.fromRawAmount(
+    nativeCurrency,
+    MAX_FEE_AMOUNTS[chainId],
+  ) : undefined;
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
@@ -263,6 +278,21 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     return tryParseAmount(inputValue, inputCurrency ?? undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue, inputCurrencyId]);
+
+  const dispatch = useDispatch()
+
+  useMemo(() => {
+    if (inputCurrency?.wrapped.address && outputCurrency?.wrapped.address) {
+      if (
+          parseInt(inputCurrency?.wrapped.address, 16) <
+          parseInt(outputCurrency?.wrapped.address, 16)
+        ) {
+          dispatch(setZeroForOne(true))
+        } else {
+          dispatch(setZeroForOne(false))
+        }
+    }
+  }, [dispatch, inputCurrency?.wrapped.address, outputCurrency?.wrapped.address])
 
   const currencyBalances = {
     input: relevantTokenBalances[0],
@@ -424,5 +454,7 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     parsedAmounts,
     price,
     rawAmounts,
+    maxFeeAmount,
+    zeroForOne,
   };
 }
