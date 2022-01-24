@@ -140,15 +140,12 @@ export default createReducer<OrderState>(initialState, (builder) =>
       }
     )
     .addCase(setZeroForOne, (state, { payload }) => {
-        state.zeroForOne = payload;
-      }
-    )
+      state.zeroForOne = payload;
+    })
     .addCase(setRangeLowerEnabled, (state, { payload }) => {
-        state.rangeLowerEnabled = payload;
-      }
-    )
+      state.rangeLowerEnabled = payload;
+    })
     .addCase(setRangeUpperEnabled, (state, { payload }) => {
-        state.rangeUpperEnabled = payload;
-      }
-    )
+      state.rangeUpperEnabled = payload;
+    })
 );

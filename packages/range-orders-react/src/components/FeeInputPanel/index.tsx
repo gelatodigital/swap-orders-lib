@@ -1,9 +1,6 @@
 import React from "react";
 import styled from "styled-components/macro";
-import {
-  Currency,
-  CurrencyAmount,
-} from "@uniswap/sdk-core";
+import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
 import { Input as NumericalInput } from "../NumericalInput";
 import { TYPE } from "../../theme";
 import { RowFixed } from "../Row";

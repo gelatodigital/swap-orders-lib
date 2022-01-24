@@ -90,7 +90,12 @@ export default function GelatoRangeOrder({
       rawAmounts,
       maxFeeAmount,
     },
-    orderState: { independentField, rateType, rangeLowerEnabled, rangeUpperEnabled },
+    orderState: {
+      independentField,
+      rateType,
+      rangeLowerEnabled,
+      rangeUpperEnabled,
+    },
   } = useGelatoRangeOrders();
 
   const fiatValueInput = useUSDCValue(parsedAmounts.input);
@@ -229,20 +234,27 @@ export default function GelatoRangeOrder({
   const [rangeError0, setRangeError0] = useState<boolean>(false);
   const [rangeError1, setRangeError1] = useState<boolean>(false);
   useEffect(() => {
-    if(price && currentMarketRate) {
-      if (price?.greaterThan(currentMarketRate) && (!rangeUpperEnabled && !rangeLowerEnabled)) {
-        setRangeError0(true)
+    if (price && currentMarketRate) {
+      if (
+        price?.greaterThan(currentMarketRate) &&
+        !rangeUpperEnabled &&
+        !rangeLowerEnabled
+      ) {
+        setRangeError0(true);
       } else {
-        setRangeError0(false)
+        setRangeError0(false);
       }
-      if(currentMarketRate?.greaterThan(price) && (!rangeUpperEnabled && !rangeLowerEnabled)) {
-        setRangeError1(true)
+      if (
+        currentMarketRate?.greaterThan(price) &&
+        !rangeUpperEnabled &&
+        !rangeLowerEnabled
+      ) {
+        setRangeError1(true);
       } else {
-        setRangeError1(false)
+        setRangeError1(false);
       }
     }
-      
-  }, [currentMarketRate, price, rangeLowerEnabled, rangeUpperEnabled])
+  }, [currentMarketRate, price, rangeLowerEnabled, rangeUpperEnabled]);
 
   const showApproveFlow =
     !inputError &&
@@ -431,14 +443,13 @@ export default function GelatoRangeOrder({
                   }
                 />
               </ArrowWrapper>
-              {
-                maxFeeAmount &&
-                  <FeeInputPanel
-                    id="range-order-fee"
-                    onUserInput={handleFeeInput}
-                    value={maxFeeAmount}
-                  />
-              }
+              {maxFeeAmount && (
+                <FeeInputPanel
+                  id="range-order-fee"
+                  onUserInput={handleFeeInput}
+                  value={maxFeeAmount}
+                />
+              )}
               <ArrowWrapper clickable={false}>
                 <ArrowDown
                   size="16"

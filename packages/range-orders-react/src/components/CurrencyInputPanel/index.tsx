@@ -237,7 +237,7 @@ interface CurrencyInputPanelProps {
   rangePriceUpper?: string;
   rangeUpperEnabled?: boolean;
   upperTick?: number;
-  rangeError0?: boolean
+  rangeError0?: boolean;
   rangeError1?: boolean;
   isInvertedRate?: boolean;
   realExecutionPrice?: Price<Currency, Currency> | undefined;
@@ -530,18 +530,16 @@ export default function CurrencyInputPanel({
               </PriceRow>
               <ErrorRow>
                 <RowFixed>
-                {
-                  rangeError0 &&
-                  <TYPE.body fontSize={12} color={theme.red1}>
-                    Can not place range order over current tick.
-                  </TYPE.body>
-                }
-                {
-                  rangeError1 &&
-                  <TYPE.body fontSize={12} color={theme.red1}>
-                    Can not place range order below current tick.
-                  </TYPE.body>
-                }
+                  {rangeError0 && (
+                    <TYPE.body fontSize={12} color={theme.red1}>
+                      Can not place range order over current tick.
+                    </TYPE.body>
+                  )}
+                  {rangeError1 && (
+                    <TYPE.body fontSize={12} color={theme.red1}>
+                      Can not place range order below current tick.
+                    </TYPE.body>
+                  )}
                 </RowFixed>
               </ErrorRow>
             </Fragment>

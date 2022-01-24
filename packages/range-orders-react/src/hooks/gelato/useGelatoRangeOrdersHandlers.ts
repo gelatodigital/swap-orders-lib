@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { useOrderActionHandlers, useOrderState } from "../../state/gorder/hooks";
+import {
+  useOrderActionHandlers,
+  useOrderState,
+} from "../../state/gorder/hooks";
 import { Field } from "../../types";
 import { Currency, Price, CurrencyAmount } from "@uniswap/sdk-core";
 import { Rate } from "../../state/gorder/actions";
@@ -25,7 +28,10 @@ import { NATIVE } from "../../constants/addresses";
 import { MAX_FEE_AMOUNTS } from "../../constants/misc";
 import { usePoolContract } from "../useContract";
 import { useDispatch } from "react-redux";
-import { setRangeUpperEnabled, setRangeLowerEnabled } from "../../state/gorder/actions";
+import {
+  setRangeUpperEnabled,
+  setRangeLowerEnabled,
+} from "../../state/gorder/actions";
 
 export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
@@ -86,7 +92,7 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
   const dispatch = useDispatch();
 
   const computeCurrentTick = useCallback(async () => {
-    if(!poolContract) {
+    if (!poolContract) {
       setCurrentTick(0);
       dispatch(setRangeUpperEnabled(false));
       dispatch(setRangeLowerEnabled(false));
@@ -98,24 +104,24 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     // console.log(tick)
     // console.log(upper)
     // console.log(lower)
-    if(zeroForOne) {
-      if(tick <= upper) {
+    if (zeroForOne) {
+      if (tick <= upper) {
         dispatch(setRangeUpperEnabled(true));
       } else {
         dispatch(setRangeUpperEnabled(false));
       }
-      if(tick <= lower) {
+      if (tick <= lower) {
         dispatch(setRangeLowerEnabled(true));
       } else {
         dispatch(setRangeLowerEnabled(false));
       }
     } else {
-      if(tick >= upper) {
+      if (tick >= upper) {
         dispatch(setRangeUpperEnabled(true));
       } else {
         dispatch(setRangeUpperEnabled(false));
       }
-      if(tick >= lower) {
+      if (tick >= lower) {
         dispatch(setRangeLowerEnabled(true));
       } else {
         dispatch(setRangeLowerEnabled(false));
@@ -220,11 +226,7 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
   );
 
   const handleRangeOrderSubmission = useCallback(
-    async (
-      orderToSubmit: {
-        inputAmount: BigNumber;
-      }
-    ) => {
+    async (orderToSubmit: { inputAmount: BigNumber }) => {
       if (!gelatoRangeOrders) {
         throw new Error("Could not reach Gelato Limit Orders library");
       }
@@ -251,7 +253,7 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
         tickThreshold,
         orderToSubmit.inputAmount,
         account,
-        BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+        BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
       );
 
       const orderPayload: RangeOrderPayload = {
@@ -260,15 +262,18 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
         tickThreshold,
         amountIn: orderToSubmit.inputAmount,
         receiver: account,
-        maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
-      }
+        maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+      };
       const overrides: PayableOverrides = {
-        value: inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address ?
-          BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(orderToSubmit.inputAmount) :
-          BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
-      }
-      console.log(orderPayload)
-      console.log(overrides)
+        value:
+          inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address
+            ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(
+                orderToSubmit.inputAmount
+              )
+            : BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+      };
+      console.log(orderPayload);
+      console.log(overrides);
 
       const tx = await gelatoRangeOrders.setRangeOrder(orderPayload, overrides);
       if (!tx) {
@@ -288,7 +293,17 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
 
       return tx;
     },
-    [account, addTransaction, chainId, gelatoRangeOrders, inputCurrency?.wrapped.address, nativeCurrency?.wrapped.address, pool, tickThreshold, zeroForOne]
+    [
+      account,
+      addTransaction,
+      chainId,
+      gelatoRangeOrders,
+      inputCurrency?.wrapped.address,
+      nativeCurrency?.wrapped.address,
+      pool,
+      tickThreshold,
+      zeroForOne,
+    ]
   );
 
   const handleRangeSelection = useCallback(async (tick) => {
