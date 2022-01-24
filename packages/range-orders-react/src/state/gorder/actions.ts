@@ -33,5 +33,9 @@ export const setRange = createAction<{
   lowerPrice: BigNumber;
 }>("granger/range");
 export const setZeroForOne = createAction<boolean>("granger/zeroForOne");
-export const setRangeUpperEnabled = createAction<boolean>("granger/rangeUpperEnabled");
-export const setRangeLowerEnabled = createAction<boolean>("granger/rangeLowerEnabled");
+export const setRangeUpperEnabled = createAction<boolean>(
+  "granger/rangeUpperEnabled"
+);
+export const setRangeLowerEnabled = createAction<boolean>(
+  "granger/rangeLowerEnabled"
+);

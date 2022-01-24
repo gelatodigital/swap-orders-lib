@@ -203,10 +203,10 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     zeroForOne,
   } = useOrderState();
   const nativeCurrency = useCurrency("NATIVE");
-  const maxFeeAmount: CurrencyAmount<Currency> | undefined = (nativeCurrency && chainId) ? CurrencyAmount.fromRawAmount(
-    nativeCurrency,
-    MAX_FEE_AMOUNTS[chainId],
-  ) : undefined;
+  const maxFeeAmount: CurrencyAmount<Currency> | undefined =
+    nativeCurrency && chainId
+      ? CurrencyAmount.fromRawAmount(nativeCurrency, MAX_FEE_AMOUNTS[chainId])
+      : undefined;
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
@@ -279,20 +279,24 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue, inputCurrencyId]);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useMemo(() => {
     if (inputCurrency?.wrapped.address && outputCurrency?.wrapped.address) {
       if (
-          parseInt(inputCurrency?.wrapped.address, 16) <
-          parseInt(outputCurrency?.wrapped.address, 16)
-        ) {
-          dispatch(setZeroForOne(true))
-        } else {
-          dispatch(setZeroForOne(false))
-        }
+        parseInt(inputCurrency?.wrapped.address, 16) <
+        parseInt(outputCurrency?.wrapped.address, 16)
+      ) {
+        dispatch(setZeroForOne(true));
+      } else {
+        dispatch(setZeroForOne(false));
+      }
     }
-  }, [dispatch, inputCurrency?.wrapped.address, outputCurrency?.wrapped.address])
+  }, [
+    dispatch,
+    inputCurrency?.wrapped.address,
+    outputCurrency?.wrapped.address,
+  ]);
 
   const currencyBalances = {
     input: relevantTokenBalances[0],
