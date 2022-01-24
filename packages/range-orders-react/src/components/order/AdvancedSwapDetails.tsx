@@ -25,7 +25,7 @@ export function AdvancedSwapDetails() {
   } = useGelatoRangeOrders();
 
   const library = useGelatoRangeOrdersLib();
-  const [minReturnRaw, setMinReturn] = useState<BigintIsh>(0)
+  const [minReturnRaw, setMinReturn] = useState<BigintIsh>(0);
 
   const { gasPrice, realExecutionPriceAsString } = useGasOverhead(
     parsedAmounts.input,
@@ -82,8 +82,8 @@ export function AdvancedSwapDetails() {
         receiver: "0x0000000000000000000000000000000000000000",
         maxFeeAmount: BigNumber.from(0),
       });
-      setMinReturn(mr.toString())
-    }
+      setMinReturn(mr.toString());
+    };
 
     const slippagePercentage = GelatoLimitOrders.slippageBPS / 100;
     const gelatoFeePercentage = GelatoLimitOrders.gelatoFeeBPS / 100;

@@ -10,6 +10,9 @@ import {
   setRecipient,
   setRateType,
   setRange,
+  setZeroForOne,
+  setRangeLowerEnabled,
+  setRangeUpperEnabled,
 } from "./actions";
 
 export interface OrderState {
@@ -33,6 +36,9 @@ export interface OrderState {
     readonly lower: number;
     readonly lowerPrice: BigNumber;
   };
+  readonly zeroForOne: boolean;
+  readonly rangeLowerEnabled: boolean;
+  readonly rangeUpperEnabled: boolean;
 }
 
 export const initialState: OrderState = {
@@ -54,6 +60,9 @@ export const initialState: OrderState = {
     lower: 0,
     lowerPrice: BigNumber.from(0),
   },
+  zeroForOne: false,
+  rangeLowerEnabled: false,
+  rangeUpperEnabled: false,
 };
 
 export default createReducer<OrderState>(initialState, (builder) =>
@@ -124,7 +133,22 @@ export default createReducer<OrderState>(initialState, (builder) =>
     .addCase(setRateType, (state, { payload: { rateType } }) => {
       state.rateType = rateType;
     })
-    .addCase(setRange, (state, { payload: { upper, upperPrice, lower, lowerPrice } }) => {
-      state.range = { upper, upperPrice, lower, lowerPrice };
-    })
+    .addCase(
+      setRange,
+      (state, { payload: { upper, upperPrice, lower, lowerPrice } }) => {
+        state.range = { upper, upperPrice, lower, lowerPrice };
+      }
+    )
+    .addCase(setZeroForOne, (state, { payload }) => {
+        state.zeroForOne = payload;
+      }
+    )
+    .addCase(setRangeLowerEnabled, (state, { payload }) => {
+        state.rangeLowerEnabled = payload;
+      }
+    )
+    .addCase(setRangeUpperEnabled, (state, { payload }) => {
+        state.rangeUpperEnabled = payload;
+      }
+    )
 );

@@ -1,5 +1,6 @@
 import { Contract } from "@ethersproject/contracts";
 import { WETH9 } from "@uniswap/sdk-core";
+import { abi as IUniswapV3PoolABI } from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
 
 import ARGENT_WALLET_DETECTOR_ABI from "../abis/argent-wallet-detector.json";
 import ENS_PUBLIC_RESOLVER_ABI from "../abis/ens-public-resolver.json";
@@ -128,4 +129,8 @@ export function useMulticall2Contract(): Multicall2 {
     MULTICALL_ABI,
     false
   ) as unknown) as Multicall2;
+}
+
+export function usePoolContract(poolAddress?: string): Contract | null {
+  return useContract(poolAddress, IUniswapV3PoolABI, true);
 }

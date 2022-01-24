@@ -65,3 +65,12 @@ export enum FeeAmount {
   MEDIUM = 3000,
   HIGH = 10000,
 }
+
+export const MAX_FEE_AMOUNTS: {
+  [chainId: number]: number;
+} = {
+  [1]: 0,
+  [5]: 0,
+  [56]: 0,
+  [137]: 1000000000000000000, // 1.0 MATIC
+}

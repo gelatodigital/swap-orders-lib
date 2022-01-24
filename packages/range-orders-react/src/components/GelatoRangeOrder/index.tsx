@@ -1,9 +1,19 @@
 import React, { Fragment, useState, useCallback, useEffect } from "react";
-import { Currency, CurrencyAmount, Percent, TradeType } from "@uniswap/sdk-core";
+import {
+  Currency,
+  CurrencyAmount,
+  Percent,
+  TradeType,
+} from "@uniswap/sdk-core";
 import AppBody from "./AppBody";
 import SwapHeader from "../order/SwapHeader";
 import { BottomGrouping } from "../order/styleds";
-import { ArrowWrapper, Wrapper, Dots, SwapCallbackError } from "../order/styleds";
+import {
+  ArrowWrapper,
+  Wrapper,
+  Dots,
+  SwapCallbackError,
+} from "../order/styleds";
 import { AutoColumn } from "../Column";
 import CurrencyInputPanel from "../CurrencyInputPanel";
 import FeeInputPanel from "../FeeInputPanel";
@@ -11,7 +21,14 @@ import { useGelatoRangeOrders } from "../../hooks/gelato";
 import { Field } from "../../state/gorder/actions";
 import { maxAmountSpend } from "../../utils/maxAmountSpend";
 import { useUSDCValue } from "../../hooks/useUSDCPrice";
-import { Divide, X, Minus, ArrowDown, CheckCircle, HelpCircle } from "react-feather";
+import {
+  Divide,
+  X,
+  Minus,
+  ArrowDown,
+  CheckCircle,
+  HelpCircle,
+} from "react-feather";
 import { Text } from "rebass";
 import useTheme from "../../hooks/useTheme";
 import { tryParseAmount } from "../../utils/tryParseAmount";
@@ -35,7 +52,6 @@ import CurrencyLogo from "../CurrencyLogo";
 import Loader from "../Loader";
 import { MouseoverTooltip } from "../Tooltip";
 import { Trade } from "@uniswap/v2-sdk";
-import { NATIVE } from "../../constants/addresses";
 import { BigNumber } from "ethers";
 import ConfirmSwapModal from "../order/ConfirmSwapModal";
 
@@ -52,7 +68,7 @@ export default function GelatoRangeOrder({
   showCommonBases = true,
 }: GelatoRangeOrderProps) {
   const theme = useTheme();
-  const { account, chainId, toggleWalletModal } = useWeb3();
+  const { account, toggleWalletModal } = useWeb3();
   const [activeTab, setActiveTab] = useState<"sell" | "buy">("sell");
   const recipient = account ?? null;
   const {
@@ -72,8 +88,9 @@ export default function GelatoRangeOrder({
       price,
       trade,
       rawAmounts,
+      maxFeeAmount,
     },
-    orderState: { independentField, rateType },
+    orderState: { independentField, rateType, rangeLowerEnabled, rangeUpperEnabled },
   } = useGelatoRangeOrders();
 
   const fiatValueInput = useUSDCValue(parsedAmounts.input);
@@ -208,6 +225,25 @@ export default function GelatoRangeOrder({
     }
   }, [approvalState, approvalSubmitted]);
 
+  // set order error text based on order state
+  const [rangeError0, setRangeError0] = useState<boolean>(false);
+  const [rangeError1, setRangeError1] = useState<boolean>(false);
+  useEffect(() => {
+    if(price && currentMarketRate) {
+      if (price?.greaterThan(currentMarketRate) && (!rangeUpperEnabled && !rangeLowerEnabled)) {
+        setRangeError0(true)
+      } else {
+        setRangeError0(false)
+      }
+      if(currentMarketRate?.greaterThan(price) && (!rangeUpperEnabled && !rangeLowerEnabled)) {
+        setRangeError1(true)
+      } else {
+        setRangeError1(false)
+      }
+    }
+      
+  }, [currentMarketRate, price, rangeLowerEnabled, rangeUpperEnabled])
+
   const showApproveFlow =
     !inputError &&
     (approvalState === ApprovalState.NOT_APPROVED ||
@@ -262,7 +298,7 @@ export default function GelatoRangeOrder({
       }
 
       handleRangeOrderSubmission({
-        inputAmount: BigNumber.from(rawAmounts.input)
+        inputAmount: BigNumber.from(rawAmounts.input),
       })
         .then(({ hash }: any) => {
           setSwapState({
@@ -291,7 +327,15 @@ export default function GelatoRangeOrder({
         txHash: undefined,
       });
     }
-  }, [handleRangeOrderSubmission, tradeToConfirm, showConfirm, currencies.input?.wrapped.address, currencies.output?.wrapped.address, rawAmounts.input, rawAmounts.output]);
+  }, [
+    handleRangeOrderSubmission,
+    tradeToConfirm,
+    showConfirm,
+    currencies.input?.wrapped.address,
+    currencies.output?.wrapped.address,
+    rawAmounts.input,
+    rawAmounts.output,
+  ]);
 
   return (
     <Fragment>
@@ -328,7 +372,7 @@ export default function GelatoRangeOrder({
                 onCurrencySelect={handleInputSelect}
                 otherCurrency={currencies.output}
                 showCommonBases={showCommonBases}
-                id="limit-order-currency-input"
+                id="range-order-currency-input"
               />
               <ArrowWrapper clickable={false}>
                 {rateType === Rate.MUL ? (
@@ -364,9 +408,13 @@ export default function GelatoRangeOrder({
                 hideBalance={true}
                 showRange={true}
                 rangePriceLower={formattedAmounts.rangePriceLower}
+                rangeLowerEnabled={rangeLowerEnabled}
                 lowerTick={formattedAmounts.lowerTick}
                 rangePriceUpper={formattedAmounts.rangePriceUpper}
+                rangeUpperEnabled={rangeUpperEnabled}
                 upperTick={formattedAmounts.upperTick}
+                rangeError0={rangeError0}
+                rangeError1={rangeError1}
                 isInvertedRate={rateType === Rate.MUL ? false : true}
                 gasPrice={gasPrice}
                 realExecutionPrice={realExecutionPrice ?? undefined}
@@ -383,11 +431,14 @@ export default function GelatoRangeOrder({
                   }
                 />
               </ArrowWrapper>
-              <FeeInputPanel
-                id="range-order-fee"
-                onUserInput={handleFeeInput}
-                value=""
-              />
+              {
+                maxFeeAmount &&
+                  <FeeInputPanel
+                    id="range-order-fee"
+                    onUserInput={handleFeeInput}
+                    value={maxFeeAmount}
+                  />
+              }
               <ArrowWrapper clickable={false}>
                 <ArrowDown
                   size="16"
