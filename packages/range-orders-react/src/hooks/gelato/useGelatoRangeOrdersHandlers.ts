@@ -38,7 +38,7 @@ export interface GelatoRangeOrdersHandlers {
     inputAmount: BigNumber;
   }) => Promise<TransactionResponse>;
   handleRangeOrderCancellation: (
-    order: RangeOrderData,
+    order: RangeOrderData
   ) => Promise<TransactionResponse>;
   handleInput: (field: Field, value: string) => void;
   handleCurrencySelection: (
@@ -300,7 +300,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   );
 
   const handleRangeOrderCancellation = useCallback(async () => {
-    console.log('Will cancel order...')
+    console.log("Will cancel order...");
     if (!gelatoRangeOrders) {
       throw new Error("Could not reach Gelato Limit Orders library");
     }
@@ -323,10 +323,14 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     const orderPayload: RangeOrderPayload = {
       pool,
       zeroForOne,
-    }
-    const tx = await gelatoRangeOrders?.cancelRangeOrder(BigNumber.from(0), orderPayload, startTime);
+    };
+    const tx = await gelatoRangeOrders?.cancelRangeOrder(
+      BigNumber.from(0),
+      orderPayload,
+      startTime
+    );
     return tx;
-  }, [])
+  }, []);
 
   const handleRangeSelection = useCallback(async (tick) => {
     if (tick) {

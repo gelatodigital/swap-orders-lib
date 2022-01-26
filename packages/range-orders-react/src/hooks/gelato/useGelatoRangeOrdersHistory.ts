@@ -48,9 +48,8 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
           const ordersLS = getLSOrders(chainId, account);
 
           orders.forEach((order: Order) => {
-            const orderExists = ordersLS.find(
-              (confOrder) =>
-                confOrder.id.eq(order.id)
+            const orderExists = ordersLS.find((confOrder) =>
+              confOrder.id.eq(order.id)
             );
 
             if (
@@ -73,10 +72,7 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
               .filter((order: Order) => {
                 const orderCancelled = pendingOrdersLS
                   .filter((pendingOrder) => pendingOrder.status === "cancelled")
-                  .find(
-                    (pendingOrder) =>
-                      pendingOrder.id.eq(order.id)
-                  );
+                  .find((pendingOrder) => pendingOrder.id.eq(order.id));
                 return orderCancelled ? false : true;
               })
               .sort(newOrdersFirst),
@@ -98,10 +94,7 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
               .filter((order: Order) => {
                 const orderCancelled = pendingOrdersLS
                   .filter((pendingOrder) => pendingOrder.status === "cancelled")
-                  .find(
-                    (pendingOrder) =>
-                      pendingOrder.id.eq(order.id)
-                  );
+                  .find((pendingOrder) => pendingOrder.id.eq(order.id));
                 return orderCancelled ? false : true;
               })
               .sort(newOrdersFirst),
@@ -120,9 +113,8 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
           const ordersLS = getLSOrders(chainId, account);
 
           orders.forEach((order: Order) => {
-            const orderExists = ordersLS.find(
-              (confOrder) =>
-                confOrder.id.eq(order.id)
+            const orderExists = ordersLS.find((confOrder) =>
+              confOrder.id.eq(order.id)
             );
             if (
               !orderExists ||
@@ -176,9 +168,8 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
           const ordersLS = getLSOrders(chainId, account);
 
           orders.forEach((order: Order) => {
-            const orderExists = ordersLS.find(
-              (confOrder) =>
-                confOrder.id.eq(order.id)
+            const orderExists = ordersLS.find((confOrder) =>
+              confOrder.id.eq(order.id)
             );
             if (
               !orderExists ||

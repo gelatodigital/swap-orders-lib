@@ -59,9 +59,7 @@ export function removeOrder(
 
   if (!prev) return [];
 
-  const orders = prev.filter(
-    (orderInLS) => !orderInLS.id.eq(order.id)
-  );
+  const orders = prev.filter((orderInLS) => !orderInLS.id.eq(order.id));
 
   set(key, orders);
 
@@ -147,7 +145,12 @@ export const getUniqueOrders = (allOrders: Order[]): Order[] => [
   ...new Map(
     allOrders
       // sort by `updatedAt` asc so that the most recent one will be used
-      .sort((a, b) => a.updatedAt && b.updatedAt ? (parseFloat(a.updatedAt.toString()) - parseFloat(b.updatedAt.toString())) : 1)
+      .sort((a, b) =>
+        a.updatedAt && b.updatedAt
+          ? parseFloat(a.updatedAt.toString()) -
+            parseFloat(b.updatedAt.toString())
+          : 1
+      )
       .map((order) => [order.id, order])
   ).values(),
 ];
