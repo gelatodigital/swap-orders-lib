@@ -1,7 +1,7 @@
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { RangeOrderData as Order } from "@gelatonetwork/range-orders-lib";
 import { get, set, clear } from "local-storage";
 
-const LS_ORDERS = "gorders_";
+const LS_ORDERS = "rorders_";
 
 export function clearOrdersLocalStorage() {
   return clear();
@@ -60,7 +60,7 @@ export function removeOrder(
   if (!prev) return [];
 
   const orders = prev.filter(
-    (orderInLS) => orderInLS.id.toLowerCase() !== order.id.toLowerCase()
+    (orderInLS) => !orderInLS.id.eq(order.id)
   );
 
   set(key, orders);
@@ -78,7 +78,7 @@ export function confirmOrderCancellation(
   const pendingKey = lsKey(LS_ORDERS + "pending_", account, chainId);
   const pendingOrders = get<Order[]>(pendingKey);
   const confirmedOrder = pendingOrders.find(
-    (order) => order.cancelledTxHash?.toLowerCase() === cancelHash
+    (order) => order.cancelledTxHash === cancelHash
   );
 
   if (confirmedOrder) removeOrder(chainId, account, confirmedOrder, true);
@@ -114,7 +114,7 @@ export function confirmOrderSubmission(
   const pendingKey = lsKey(LS_ORDERS + "pending_", account, chainId);
   const pendingOrders = get<Order[]>(pendingKey);
   const confirmedOrder = pendingOrders.find(
-    (order) => order.createdTxHash?.toLowerCase() === creationHash
+    (order) => order.submittedTxHash === creationHash
   );
 
   if (confirmedOrder) removeOrder(chainId, account, confirmedOrder, true);
@@ -125,18 +125,18 @@ export function confirmOrderSubmission(
     if (orders) {
       const ordersToSave = removeOrder(chainId, account, {
         ...confirmedOrder,
-        createdTxHash: creationHash,
+        submittedTxHash: creationHash,
       });
       ordersToSave.push({
         ...confirmedOrder,
-        createdTxHash: creationHash,
+        submittedTxHash: creationHash,
       });
       set(ordersKey, ordersToSave);
     } else {
       set(ordersKey, [
         {
           ...confirmedOrder,
-          createdTxHash: creationHash,
+          submittedTxHash: creationHash,
         },
       ]);
     }
@@ -147,7 +147,7 @@ export const getUniqueOrders = (allOrders: Order[]): Order[] => [
   ...new Map(
     allOrders
       // sort by `updatedAt` asc so that the most recent one will be used
-      .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
+      .sort((a, b) => a.updatedAt && b.updatedAt ? (parseFloat(a.updatedAt.toString()) - parseFloat(b.updatedAt.toString())) : 1)
       .map((order) => [order.id, order])
   ).values(),
 ];

@@ -445,11 +445,14 @@ export class GelatoRangeOrder {
     return { lowerPrice, upperPrice };
   }
 
-  public getRemainingTime(rangeOrderData: RangeOrderData): BigNumber {
+  public getRemainingTime(rangeOrderData: RangeOrderData): BigNumber | null {
     const now = Date.now();
-    return rangeOrderData.expiryTime.lt(now)
-      ? ethers.constants.Zero
-      : rangeOrderData.expiryTime.sub(now);
+    if (rangeOrderData.expiryTime) {
+      return rangeOrderData.expiryTime.lt(now)
+        ? ethers.constants.Zero
+        : rangeOrderData.expiryTime.sub(now);
+    }
+    return null;
   }
 
   public async encodeRangeOrderSubmission(
@@ -481,17 +484,17 @@ export class GelatoRangeOrder {
         creator: this._moduleAddress.toLowerCase(),
         receiver: receiver,
         resolver: this._moduleAddress.toLowerCase(),
-        inputToken: "0x0000000000000000000000000000000000000000",
-        inputAmount: Number(amountIn.toString()),
       },
     };
   }
 
-  private _getKey(order: RangeOrderData): string {
-    return utils.keccak256(
-      this._abiEncoder.encode(
-        ["address", "address", "address"],
-        [order.resolver, order.creator, order.receiver]
+  private _getKey(order: RangeOrderData): BigNumber {
+    return BigNumber.from(
+      utils.keccak256(
+        this._abiEncoder.encode(
+          ["address", "address", "address"],
+          [order.resolver, order.creator, order.receiver]
+        )
       )
     );
   }

@@ -26,7 +26,7 @@ export interface TransactionData {
 
 export interface TransactionDataWithOrder {
   payload: TransactionData;
-  order: PartialRangeOrder;
+  order: RangeOrderData;
 }
 
 export type RangeOrderPayload = {
@@ -46,29 +46,29 @@ export enum RangeOrderStatus {
 
 export type RangeOrderData = {
   id: BigNumber;
-  status: RangeOrderStatus;
+  status?: RangeOrderStatus;
   creator: string;
-  tickThreshold: BigNumber;
-  zeroForOne: boolean;
-  startTime: BigNumber;
-  expiryTime: BigNumber;
-  amountIn: BigNumber;
-  receiver: string;
-  feeToken: string;
+  tickThreshold?: BigNumber;
+  zeroForOne?: boolean;
+  startTime?: BigNumber;
+  expiryTime?: BigNumber;
+  amountIn?: BigNumber;
+  receiver?: string;
+  feeToken?: string;
   resolver: string;
-  maxFeeAmount: BigNumber;
-  feeAmount: BigNumber | undefined;
-  amount0: BigNumber | undefined;
-  amount1: BigNumber | undefined;
-  pool: string | undefined;
-  submittedTxHash: BytesLike;
-  executedTxHash: BytesLike | undefined;
-  cancelledTxHash: BytesLike | undefined;
-  createdAt: BigNumber;
-  updatedAt: string;
-  createdAtBlock: BigNumber;
-  updatedAtBlock: BigNumber;
-  updatedAtBlockHash: BytesLike | undefined;
+  maxFeeAmount?: BigNumber;
+  feeAmount?: BigNumber | undefined;
+  amount0?: BigNumber | undefined;
+  amount1?: BigNumber | undefined;
+  pool?: string | undefined;
+  submittedTxHash?: BytesLike;
+  executedTxHash?: BytesLike | undefined;
+  cancelledTxHash?: BytesLike | undefined;
+  createdAt?: BigNumber;
+  updatedAt?: BigNumber;
+  createdAtBlock?: BigNumber;
+  updatedAtBlock?: BigNumber;
+  updatedAtBlockHash?: BytesLike | undefined;
 };
 
 export interface TransactionData {
@@ -81,7 +81,7 @@ export interface TransactionDataWithSecret {
   payload: TransactionData;
   secret: string;
   witness: string;
-  order: PartialRangeOrder;
+  order: RangeOrderData;
 }
 
 export interface PartialRangeOrder {
@@ -91,4 +91,7 @@ export interface PartialRangeOrder {
   resolver: string;
   inputToken: string;
   inputAmount: number;
+  executedTxHash: string;
+  cancelledTxHash: string;
+  updatedAt: BigNumber;
 }
