@@ -1,4 +1,4 @@
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { RangeOrderData as Order } from "@gelatonetwork/range-orders-lib";
 import { createReducer } from "@reduxjs/toolkit";
 import {
   confirmOrderCancellation,

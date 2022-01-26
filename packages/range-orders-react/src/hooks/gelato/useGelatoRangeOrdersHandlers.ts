@@ -5,7 +5,7 @@ import {
   useOrderState,
 } from "../../state/gorder/hooks";
 import { Field } from "../../types";
-import { Currency, Price, CurrencyAmount } from "@uniswap/sdk-core";
+import { Currency, Price } from "@uniswap/sdk-core";
 import { Rate } from "../../state/gorder/actions";
 import { useWeb3 } from "../../web3";
 import { useTransactionAdder } from "../../state/gtransactions/hooks";
@@ -37,16 +37,9 @@ export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
     inputAmount: BigNumber;
   }) => Promise<TransactionResponse>;
-  // handleLimitOrderCancellation: (
-  //   order: RangeOrderData,
-  //   orderDetails?: {
-  //     inputTokenSymbol: string;
-  //     outputTokenSymbol: string;
-  //     inputAmount: string;
-  //     outputAmount: string;
-  //   },
-  //   overrides?: Overrides
-  // ) => Promise<TransactionResponse>;
+  handleRangeOrderCancellation: (
+    order: RangeOrderData,
+  ) => Promise<TransactionResponse>;
   handleInput: (field: Field, value: string) => void;
   handleCurrencySelection: (
     field: Field.INPUT | Field.OUTPUT,
@@ -57,7 +50,7 @@ export interface GelatoRangeOrdersHandlers {
   handleRangeSelection: (rangePrice: string) => void;
 }
 
-export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandlers {
+export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandlers {
   const { chainId, account } = useWeb3();
 
   const gelatoRangeOrders = useGelatoRangeOrdersLib();
@@ -306,6 +299,35 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     ]
   );
 
+  const handleRangeOrderCancellation = useCallback(async () => {
+    console.log('Will cancel order...')
+    if (!gelatoRangeOrders) {
+      throw new Error("Could not reach Gelato Limit Orders library");
+    }
+
+    if (!chainId) {
+      throw new Error("No chainId");
+    }
+
+    if (!gelatoRangeOrders?.signer) {
+      throw new Error("No signer");
+    }
+
+    if (!pool) {
+      throw new Error("No pool");
+    }
+
+    if (!account) {
+      throw new Error("No account");
+    }
+    const orderPayload: RangeOrderPayload = {
+      pool,
+      zeroForOne,
+    }
+    const tx = await gelatoRangeOrders?.cancelRangeOrder(BigNumber.from(0), orderPayload, startTime);
+    return tx;
+  }, [])
+
   const handleRangeSelection = useCallback(async (tick) => {
     if (tick) {
       setTickThreshold(tick);
@@ -319,5 +341,6 @@ export default function useGelatoLimitOrdersHandlers(): GelatoRangeOrdersHandler
     handleRateType,
     handleRangeOrderSubmission,
     handleRangeSelection,
+    handleRangeOrderCancellation,
   };
 }

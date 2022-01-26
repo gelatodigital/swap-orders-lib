@@ -1,5 +1,5 @@
 import React from 'react'
-import { GelatoRangeOrderPanel, GelatoProvider } from '@gelatonetwork/range-orders-react'
+import { GelatoRangeOrderPanel, GelatoProvider, GelatoRangeOrderHistoryPanel } from '@gelatonetwork/range-orders-react'
 import { useActiveWeb3React } from '../../hooks/web3'
 import { useWalletModalToggle } from '../../state/application/hooks'
 
@@ -24,6 +24,7 @@ export default function RangeOrder() {
   return (
     <Gelato>
       <GelatoRangeOrderPanel />
+      <GelatoRangeOrderHistoryPanel />
     </Gelato>
   )
 }

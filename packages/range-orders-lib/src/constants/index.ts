@@ -29,7 +29,7 @@ export const SUBGRAPH_URL = {
   [CHAIN_ID.ARBITRUM]:
     "https://api.thegraph.com/subgraphs/name/gelatodigital/range-orders-arbitrum",
   [CHAIN_ID.MATIC]:
-    "https://api.thegraph.com/subgraphs/name/gelatodigital/range-orders-matic",
+    "https://api.thegraph.com/subgraphs/name/gelatodigital/range-orders-polygon",
   [CHAIN_ID.GOERLI]:
     "https://api.thegraph.com/subgraphs/name/gelatodigital/range-orders-goerli",
 };
