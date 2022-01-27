@@ -60,7 +60,9 @@ export function removeOrder(
 
   if (!prev) return [];
 
-  const orders = prev.filter((orderInLS) => !BigNumber.from(orderInLS.id).eq(order.id));
+  const orders = prev.filter(
+    (orderInLS) => !BigNumber.from(orderInLS.id).eq(order.id)
+  );
 
   set(key, orders);
 

@@ -202,7 +202,7 @@ export default function OrderCard({ order }: { order: Order }) {
   const gelatoLibrary = useGelatoRangeOrdersLib();
 
   const poolContract = usePoolContract(order.pool);
-  
+
   const [token0, setToken0] = useState<string | undefined>();
   const [token1, setToken1] = useState<string | undefined>();
   const [price, setPrice] = useState<BigNumber | undefined>();
@@ -232,18 +232,21 @@ export default function OrderCard({ order }: { order: Order }) {
         setToken1(t1);
       }
     }
-    getTokenList()
-  }, [poolContract])
+    getTokenList();
+  }, [poolContract]);
 
   useEffect(() => {
     async function getPrice() {
       if (gelatoLibrary && order.pool && order.tickThreshold) {
-        const { upperPrice } = await gelatoLibrary.getPriceFromTick(order.pool, order.tickThreshold.toNumber());
+        const { upperPrice } = await gelatoLibrary.getPriceFromTick(
+          order.pool,
+          order.tickThreshold.toNumber()
+        );
         setPrice(upperPrice);
       }
     }
-    getPrice()
-  }, [gelatoLibrary, order.pool, order.tickThreshold])
+    getPrice();
+  }, [gelatoLibrary, order.pool, order.tickThreshold]);
 
   // const rawMinReturn = useMemo(
   //   () =>
@@ -267,12 +270,13 @@ export default function OrderCard({ order }: { order: Order }) {
     () =>
       inputToken && outputToken && order.amountIn && price
         ? CurrencyAmount.fromRawAmount(
-          outputToken,
-          CurrencyAmount.fromRawAmount(
-            inputToken,
-            order.amountIn.mul(price).toString()).toSignificant(inputToken.decimals))
-        :
-          undefined,
+            outputToken,
+            CurrencyAmount.fromRawAmount(
+              inputToken,
+              order.amountIn.mul(price).toString()
+            ).toSignificant(inputToken.decimals)
+          )
+        : undefined,
     [inputToken, outputToken, order.amountIn, price]
   );
 
@@ -294,7 +298,9 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const trade = useTradeExactIn(inputAmount, outputToken ?? undefined, handler);
 
-  const isSubmissionPending = useIsTransactionPending(order.submittedTxHash ? order.submittedTxHash.toString() : undefined);
+  const isSubmissionPending = useIsTransactionPending(
+    order.submittedTxHash ? order.submittedTxHash.toString() : undefined
+  );
   const isCancellationPending = useIsTransactionPending(
     order.cancelledTxHash ? order.cancelledTxHash.toString() : undefined
   );
@@ -432,7 +438,9 @@ export default function OrderCard({ order }: { order: Order }) {
                   window.open(
                     getExplorerLink(
                       chainId,
-                      order.submittedTxHash ? order.submittedTxHash.toString() : "",
+                      order.submittedTxHash
+                        ? order.submittedTxHash.toString()
+                        : "",
                       ExplorerDataType.TRANSACTION
                     ),
                     "_blank"
@@ -441,7 +449,9 @@ export default function OrderCard({ order }: { order: Order }) {
                   window.open(
                     getExplorerLink(
                       chainId,
-                      order.cancelledTxHash ? order.cancelledTxHash.toString() : "",
+                      order.cancelledTxHash
+                        ? order.cancelledTxHash.toString()
+                        : "",
                       ExplorerDataType.TRANSACTION
                     ),
                     "_blank"
@@ -450,7 +460,9 @@ export default function OrderCard({ order }: { order: Order }) {
                   window.open(
                     getExplorerLink(
                       chainId,
-                      order.executedTxHash ? order.executedTxHash.toString() : "",
+                      order.executedTxHash
+                        ? order.executedTxHash.toString()
+                        : "",
                       ExplorerDataType.TRANSACTION
                     ),
                     "_blank"
