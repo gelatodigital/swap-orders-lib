@@ -1,5 +1,6 @@
 import { RangeOrderData as Order } from "@gelatonetwork/range-orders-lib";
 import { get, set, clear } from "local-storage";
+import { BigNumber } from "@ethersproject/bignumber";
 
 const LS_ORDERS = "rorders_";
 
@@ -59,7 +60,7 @@ export function removeOrder(
 
   if (!prev) return [];
 
-  const orders = prev.filter((orderInLS) => !orderInLS.id.eq(order.id));
+  const orders = prev.filter((orderInLS) => !BigNumber.from(orderInLS.id).eq(order.id));
 
   set(key, orders);
 
