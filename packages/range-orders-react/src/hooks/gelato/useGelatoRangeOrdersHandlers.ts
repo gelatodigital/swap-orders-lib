@@ -37,9 +37,9 @@ export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
     inputAmount: BigNumber;
   }) => Promise<TransactionResponse>;
-  handleRangeOrderCancellation: (
-    order: RangeOrderData
-  ) => Promise<TransactionResponse>;
+  // handleRangeOrderCancellation: (
+  //   order: RangeOrderData
+  // ) => Promise<TransactionResponse>;
   handleInput: (field: Field, value: string) => void;
   handleCurrencySelection: (
     field: Field.INPUT | Field.OUTPUT,
@@ -299,38 +299,38 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     ]
   );
 
-  const handleRangeOrderCancellation = useCallback(async () => {
-    console.log("Will cancel order...");
-    if (!gelatoRangeOrders) {
-      throw new Error("Could not reach Gelato Limit Orders library");
-    }
+  // const handleRangeOrderCancellation = useCallback(async () => {
+  //   console.log("Will cancel order...");
+  //   if (!gelatoRangeOrders) {
+  //     throw new Error("Could not reach Gelato Limit Orders library");
+  //   }
 
-    if (!chainId) {
-      throw new Error("No chainId");
-    }
+  //   if (!chainId) {
+  //     throw new Error("No chainId");
+  //   }
 
-    if (!gelatoRangeOrders?.signer) {
-      throw new Error("No signer");
-    }
+  //   if (!gelatoRangeOrders?.signer) {
+  //     throw new Error("No signer");
+  //   }
 
-    if (!pool) {
-      throw new Error("No pool");
-    }
+  //   if (!pool) {
+  //     throw new Error("No pool");
+  //   }
 
-    if (!account) {
-      throw new Error("No account");
-    }
-    const orderPayload: RangeOrderPayload = {
-      pool,
-      zeroForOne,
-    };
-    const tx = await gelatoRangeOrders?.cancelRangeOrder(
-      BigNumber.from(0),
-      orderPayload,
-      startTime
-    );
-    return tx;
-  }, []);
+  //   if (!account) {
+  //     throw new Error("No account");
+  //   }
+  //   const orderPayload: RangeOrderPayload = {
+  //     pool,
+  //     zeroForOne,
+  //   };
+  //   const tx = await gelatoRangeOrders?.cancelRangeOrder(
+  //     BigNumber.from(0),
+  //     orderPayload,
+  //     startTime
+  //   );
+  //   return tx;
+  // }, []);
 
   const handleRangeSelection = useCallback(async (tick) => {
     if (tick) {
@@ -345,6 +345,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     handleRateType,
     handleRangeOrderSubmission,
     handleRangeSelection,
-    handleRangeOrderCancellation,
+    // handleRangeOrderCancellation,
   };
 }

@@ -1,19 +1,23 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import styled from "styled-components/macro";
 import { darken } from "polished";
+import { FixedSizeList } from "react-window";
 import Row from "../Row";
+import AppBody from "../GelatoRangeOrder/AppBody";
 import { AutoColumn } from "../Column";
 import { useWeb3 } from "../../web3";
+import { TYPE } from "../../theme";
 import { useGelatoRangeOrdersHistory } from "../../hooks/gelato";
 import useTheme from "../../hooks/useTheme";
 import OrderCard from "./OrderCard/index";
+import { Wrapper } from "../order/styleds";
 
 const TopSection = styled(AutoColumn)`
   max-width: 640px;
   width: 100%;
 `;
 
-const StyledLimitOrderHistoryHeader = styled.div`
+const StyledRangeOrderHistoryHeader = styled.div`
   padding-top: 0.75rem;
   padding-bottom: 0.2rem;
   padding-left: 0.3rem;
@@ -64,11 +68,36 @@ const HeaderTitles = styled(Row)`
 
 type Tab = "submitted" | "cancelled" | "executed";
 
+const RangeOrdersHistoryHeader = ({
+  title,
+  active,
+  onClick,
+}: {
+  title: string;
+  active: boolean;
+  onClick: () => void;
+}) => (
+  <StyledRangeOrderHistoryHeader>
+    <TYPE.black fontWeight={500} fontSize={16}>
+      <StyledNavLink
+        id={`order-history-nav-link`}
+        active={active}
+        onClick={onClick}
+      >
+        {title}
+      </StyledNavLink>
+    </TYPE.black>
+  </StyledRangeOrderHistoryHeader>
+);
+
 export default function GelatoRangeOrderHistory() {
-  const [orderTab, setOrderTab] = useState<Tab>("submitted");
+  const [orderTab, setOrderTab] = useState<Tab>("executed");
   const { account } = useWeb3();
   const theme = useTheme();
   const { open, cancelled, executed } = useGelatoRangeOrdersHistory();
+  // console.log("open", open);
+  // console.log("cancelled", cancelled);
+  // console.log("executed", executed);
 
   const fixedListRef = useRef<FixedSizeList>();
 
@@ -98,5 +127,112 @@ export default function GelatoRangeOrderHistory() {
   };
 
   const itemSize = 160;
-  return null;
+  return account ? (
+    <>
+      <AppBody>
+        <HeaderTitles>
+          <RangeOrdersHistoryHeader
+            title={"Open"}
+            active={orderTab === "submitted"}
+            onClick={() => handleActiveHeader("submitted")}
+          />
+          <RangeOrdersHistoryHeader
+            title={"Cancelled"}
+            active={orderTab === "cancelled"}
+            onClick={() => handleActiveHeader("cancelled")}
+          />
+          <RangeOrdersHistoryHeader
+            title={"Executed"}
+            active={orderTab === "executed"}
+            onClick={() => handleActiveHeader("executed")}
+          />
+        </HeaderTitles>
+
+        <Wrapper id="limit-order-history">
+          <TopSection gap="sm">
+            {orderTab === "submitted" && !allOpenOrders.length ? (
+              <TYPE.body
+                color={theme.text3}
+                style={{
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                  textAlign: "center",
+                }}
+                fontWeight={400}
+                fontSize={16}
+              >
+                {"No open orders"}
+              </TYPE.body>
+            ) : orderTab === "submitted" ? (
+              <FixedSizeList
+                height={438}
+                ref={fixedListRef as any}
+                width="100%"
+                itemData={allOpenOrders}
+                itemCount={allOpenOrders.length}
+                itemSize={itemSize}
+                itemKey={itemKey}
+              >
+                {Row}
+              </FixedSizeList>
+            ) : null}
+
+            {orderTab === "executed" && !executed.length ? (
+              <TYPE.body
+                color={theme.text3}
+                style={{
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                  textAlign: "center",
+                }}
+                fontWeight={400}
+                fontSize={16}
+              >
+                {"No executed orders"}
+              </TYPE.body>
+            ) : orderTab === "executed" ? (
+              <FixedSizeList
+                height={438}
+                ref={fixedListRef as any}
+                width="100%"
+                itemData={executed}
+                itemCount={executed.length}
+                itemSize={itemSize}
+                itemKey={itemKey}
+              >
+                {Row}
+              </FixedSizeList>
+            ) : null}
+
+            {orderTab === "cancelled" && !allCancelledOrders.length ? (
+              <TYPE.body
+                color={theme.text3}
+                style={{
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                  textAlign: "center",
+                }}
+                fontWeight={400}
+                fontSize={16}
+              >
+                {"No cancelled orders"}
+              </TYPE.body>
+            ) : orderTab === "cancelled" ? (
+              <FixedSizeList
+                height={438}
+                ref={fixedListRef as any}
+                width="100%"
+                itemData={allCancelledOrders}
+                itemCount={allCancelledOrders.length}
+                itemSize={itemSize}
+                itemKey={itemKey}
+              >
+                {Row}
+              </FixedSizeList>
+            ) : null}
+          </TopSection>
+        </Wrapper>
+      </AppBody>
+    </>
+  ) : null;
 }

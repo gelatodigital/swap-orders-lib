@@ -1,15 +1,15 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState, useEffect } from "react";
 import styled, { DefaultTheme } from "styled-components/macro";
 import { darken } from "polished";
 import { ArrowRight } from "react-feather";
 import { Text } from "rebass";
 import { RowBetween } from "../../Row";
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { RangeOrderData as Order } from "@gelatonetwork/range-orders-lib";
 import useTheme from "../../../hooks/useTheme";
 import { useCurrency } from "../../../hooks/Tokens";
 import CurrencyLogo from "../../CurrencyLogo";
 import { useGelatoRangeOrdersHandlers } from "../../../hooks/gelato";
-import { CurrencyAmount, Price } from "@uniswap/sdk-core";
+import { CurrencyAmount, Price, Token } from "@uniswap/sdk-core";
 import ConfirmCancellationModal from "../ConfirmCancellationModal";
 import { useTradeExactIn } from "../../../hooks/useTrade";
 import { Dots } from "../../order/styleds";
@@ -29,6 +29,9 @@ import { MouseoverTooltip } from "../../Tooltip";
 import { TYPE } from "../../../theme";
 import HoverInlineText from "../../HoverInlineText";
 import { formatUnits } from "@ethersproject/units";
+import { usePoolContract } from "../../../hooks/useContract";
+import getTokenList from "../../../utils/getTokenList";
+import { BigNumber } from "ethers";
 
 const handleColorType = (status: string, theme: DefaultTheme) => {
   switch (status) {
@@ -198,43 +201,79 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const gelatoLibrary = useGelatoRangeOrdersLib();
 
-  const inputToken = useCurrency(order.inputToken);
-  const outputToken = useCurrency(order.outputToken);
+  const poolContract = usePoolContract(order.pool);
+  
+  const [token0, setToken0] = useState<string | undefined>();
+  const [token1, setToken1] = useState<string | undefined>();
+  const [price, setPrice] = useState<BigNumber | undefined>();
+
+  const inputToken = useCurrency(token0);
+  const outputToken = useCurrency(token1);
+  // console.log('price: ', price)
+  // console.log(outputToken)
+  // console.log(order.amountIn)
 
   const inputAmount = useMemo(
     () =>
-      inputToken && order.inputAmount
-        ? CurrencyAmount.fromRawAmount(inputToken, order.inputAmount)
+      inputToken && order.amountIn
+        ? CurrencyAmount.fromRawAmount(inputToken, order.amountIn.toString())
         : undefined,
-    [inputToken, order.inputAmount]
+    [inputToken, order.amountIn]
   );
 
   const isEthereum = isRangeOrderSupportedChain(chainId ?? 1);
 
-  const rawMinReturn = useMemo(
-    () =>
-      order.adjustedMinReturn
-        ? order.adjustedMinReturn
-        : gelatoLibrary && chainId && order.minReturn
-        ? isEthereum
-          ? order.minReturn
-          : gelatoLibrary.getMinReturn(order.minReturn)
-        : undefined,
-    [
-      chainId,
-      gelatoLibrary,
-      order.adjustedMinReturn,
-      order.minReturn,
-      isEthereum,
-    ]
-  );
+  useEffect(() => {
+    async function getTokenList() {
+      if (poolContract) {
+        const t0 = await poolContract.token0();
+        setToken0(t0);
+        const t1 = await poolContract.token1();
+        setToken1(t1);
+      }
+    }
+    getTokenList()
+  }, [poolContract])
+
+  useEffect(() => {
+    async function getPrice() {
+      if (gelatoLibrary && order.pool && order.tickThreshold) {
+        const { upperPrice } = await gelatoLibrary.getPriceFromTick(order.pool, order.tickThreshold.toNumber());
+        setPrice(upperPrice);
+      }
+    }
+    getPrice()
+  }, [gelatoLibrary, order.pool, order.tickThreshold])
+
+  // const rawMinReturn = useMemo(
+  //   () =>
+  //     order.adjustedMinReturn
+  //       ? order.adjustedMinReturn
+  //       : gelatoLibrary && chainId && order.minReturn
+  //       ? isEthereum
+  //         ? order.minReturn
+  //         : gelatoLibrary.getMinReturn(order.minReturn)
+  //       : undefined,
+  //   [
+  //     chainId,
+  //     gelatoLibrary,
+  //     order.adjustedMinReturn,
+  //     order.minReturn,
+  //     isEthereum,
+  //   ]
+  // );
 
   const outputAmount = useMemo(
     () =>
-      outputToken && rawMinReturn
-        ? CurrencyAmount.fromRawAmount(outputToken, rawMinReturn)
-        : undefined,
-    [outputToken, rawMinReturn]
+      inputToken && outputToken && order.amountIn && price
+        ? CurrencyAmount.fromRawAmount(
+          outputToken,
+          CurrencyAmount.fromRawAmount(
+            inputToken,
+            order.amountIn.mul(price).toString()).toSignificant(inputToken.decimals))
+        :
+          undefined,
+    [inputToken, outputToken, order.amountIn, price]
   );
 
   const {
@@ -255,9 +294,9 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const trade = useTradeExactIn(inputAmount, outputToken ?? undefined, handler);
 
-  const isSubmissionPending = useIsTransactionPending(order.createdTxHash);
+  const isSubmissionPending = useIsTransactionPending(order.submittedTxHash ? order.submittedTxHash.toString() : undefined);
   const isCancellationPending = useIsTransactionPending(
-    order.cancelledTxHash ?? undefined
+    order.cancelledTxHash ? order.cancelledTxHash.toString() : undefined
   );
 
   // modal and loading
@@ -307,23 +346,23 @@ export default function OrderCard({ order }: { order: Order }) {
           }
         : undefined;
 
-    handleRangeOrderCancellation(order, orderDetails)
-      .then(({ hash }) => {
-        setCancellationState({
-          attemptingTxn: false,
-          showConfirm,
-          cancellationErrorMessage: undefined,
-          txHash: hash,
-        });
-      })
-      .catch((error) => {
-        setCancellationState({
-          attemptingTxn: false,
-          showConfirm,
-          cancellationErrorMessage: error.message,
-          txHash: undefined,
-        });
-      });
+    // handleRangeOrderCancellation(order, orderDetails)
+    //   .then(({ hash }) => {
+    //     setCancellationState({
+    //       attemptingTxn: false,
+    //       showConfirm,
+    //       cancellationErrorMessage: undefined,
+    //       txHash: hash,
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     setCancellationState({
+    //       attemptingTxn: false,
+    //       showConfirm,
+    //       cancellationErrorMessage: error.message,
+    //       txHash: undefined,
+    //     });
+    //   });
   }, [
     handleRangeOrderCancellation,
     showConfirm,
@@ -382,18 +421,18 @@ export default function OrderCard({ order }: { order: Order }) {
               onClick={() => {
                 if (!chainId) return;
 
-                if (order.status === "open" && !isSubmissionPending)
+                if (order.status === "submitted" && !isSubmissionPending)
                   setCancellationState({
                     attemptingTxn: false,
                     cancellationErrorMessage: undefined,
                     showConfirm: true,
                     txHash: undefined,
                   });
-                else if (order.status === "open" && isSubmissionPending)
+                else if (order.status === "submitted" && isSubmissionPending)
                   window.open(
                     getExplorerLink(
                       chainId,
-                      order.createdTxHash,
+                      order.submittedTxHash ? order.submittedTxHash.toString() : "",
                       ExplorerDataType.TRANSACTION
                     ),
                     "_blank"
@@ -402,7 +441,7 @@ export default function OrderCard({ order }: { order: Order }) {
                   window.open(
                     getExplorerLink(
                       chainId,
-                      order.cancelledTxHash,
+                      order.cancelledTxHash ? order.cancelledTxHash.toString() : "",
                       ExplorerDataType.TRANSACTION
                     ),
                     "_blank"
@@ -411,7 +450,7 @@ export default function OrderCard({ order }: { order: Order }) {
                   window.open(
                     getExplorerLink(
                       chainId,
-                      order.executedTxHash,
+                      order.executedTxHash ? order.executedTxHash.toString() : "",
                       ExplorerDataType.TRANSACTION
                     ),
                     "_blank"
@@ -420,14 +459,14 @@ export default function OrderCard({ order }: { order: Order }) {
               status={
                 isCancellationPending || isSubmissionPending
                   ? "pending"
-                  : order.status
+                  : order.status ?? "pending"
               }
             >
               {isSubmissionPending
                 ? "pending"
                 : isCancellationPending
                 ? "cancelling"
-                : order.status === "open"
+                : order.status === "submitted"
                 ? "cancel"
                 : order.status}
               {isSubmissionPending || isCancellationPending ? <Dots /> : null}
@@ -451,7 +490,7 @@ export default function OrderCard({ order }: { order: Order }) {
         <Aligner
           style={{
             marginTop: "-2px",
-            marginBottom: order.status === "open" ? "1px" : "20px",
+            marginBottom: order.status === "submitted" ? "1px" : "20px",
           }}
         >
           <OrderRow>
@@ -479,7 +518,7 @@ export default function OrderCard({ order }: { order: Order }) {
           </OrderRow>
         </Aligner>
 
-        {order.status === "open" ? (
+        {order.status === "submitted" ? (
           <Aligner style={{ marginTop: "-10px" }}>
             <OrderRow>
               <RowBetween>
