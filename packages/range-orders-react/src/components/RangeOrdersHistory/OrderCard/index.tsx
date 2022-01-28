@@ -240,7 +240,7 @@ export default function OrderCard({ order }: { order: Order }) {
       if (gelatoLibrary && order.pool && order.tickThreshold) {
         const { upperPrice } = await gelatoLibrary.getPriceFromTick(
           order.pool,
-          order.tickThreshold.toNumber()
+          Number(order.tickThreshold.toString())
         );
         setPrice(upperPrice);
       }
@@ -369,15 +369,7 @@ export default function OrderCard({ order }: { order: Order }) {
     //       txHash: undefined,
     //     });
     //   });
-  }, [
-    handleRangeOrderCancellation,
-    showConfirm,
-    inputToken,
-    outputToken,
-    inputAmount,
-    outputAmount,
-    order,
-  ]);
+  }, [handleRangeOrderCancellation, showConfirm, inputToken, outputToken, inputAmount, outputAmount]);
 
   const OrderCard = ({
     showStatusButton = true,
