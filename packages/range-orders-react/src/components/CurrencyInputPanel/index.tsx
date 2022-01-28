@@ -495,7 +495,7 @@ export default function CurrencyInputPanel({
                       fontSize={14}
                       style={{ display: "inline", cursor: "pointer" }}
                     >
-                      Select Range order price
+                      Select Range order tick
                     </TYPE.body>
                   </MouseoverTooltip>
                 </RowBetween>
@@ -512,7 +512,7 @@ export default function CurrencyInputPanel({
                   }}
                   disabled={!rangeLowerEnabled}
                 >
-                  <PriceAligner>{rangePriceLower}</PriceAligner>
+                  <PriceAligner>{lowerTick}</PriceAligner>
                 </PriceSelect>
                 <PriceSelect
                   selected={selectPriceB}
@@ -525,7 +525,7 @@ export default function CurrencyInputPanel({
                   }}
                   disabled={!rangeUpperEnabled}
                 >
-                  <PriceAligner>{rangePriceUpper}</PriceAligner>
+                  <PriceAligner>{upperTick}</PriceAligner>
                 </PriceSelect>
               </PriceRow>
               <ErrorRow>

@@ -32,6 +32,7 @@ import {
   setRangeUpperEnabled,
   setRangeLowerEnabled,
 } from "../../state/gorder/actions";
+import { tryParseAmount } from "../../utils/tryParseAmount";
 
 export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
@@ -41,6 +42,7 @@ export interface GelatoRangeOrdersHandlers {
   //   order: RangeOrderData
   // ) => Promise<TransactionResponse>;
   handleInput: (field: Field, value: string) => void;
+  updateRange: (field: Field, price: Price<Currency, Currency>) => void;
   handleCurrencySelection: (
     field: Field.INPUT | Field.OUTPUT,
     currency: Currency
@@ -138,7 +140,13 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   const handleInput = useCallback(
     (field: Field, value: string) => {
       onUserInput(field, value);
-      const updateRange = async () => {
+    },
+    [onUserInput]
+  );
+
+  const updateRange = useCallback(
+    (field: Field, price: Price<Currency, Currency>) => {
+      const update = async () => {
         // console.log("----------> Updating Range Prices <----------");
         if (!gelatoRangeOrders) {
           throw new Error("Could not reach Gelato Range Orders library");
@@ -159,38 +167,41 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
           priceValue &&
           Number(priceValue) > 0
         ) {
-          const parsedRate = parseUnits(priceValue, outputToken.decimals);
+          const rate = zeroForOne
+            ? price.toSignificant(inputToken.decimals)
+            : price.invert().toSignificant(inputToken.decimals);
+          const parsedRate = parseUnits(rate, outputToken.decimals);
           const prices = await gelatoRangeOrders.getNearestPrice(
             pool,
             parsedRate
           );
           const ticks = await gelatoRangeOrders.getNearTicks(pool, parsedRate);
-          console.log("prices", prices);
-          console.log("ticks", ticks);
+          // console.log("prices", prices);
+          // console.log("ticks", ticks);
           if (prices && ticks) {
             const {
               upperPrice,
               lowerPrice,
             }: { upperPrice: BigNumber; lowerPrice: BigNumber } = prices;
             const { upper, lower }: { upper: number; lower: number } = ticks;
-            if (upperPrice && lowerPrice)
+            if (upperPrice && lowerPrice && upper && lower)
               onRangeChange(upper, upperPrice, lower, lowerPrice);
           }
         }
       };
       if (field === Field.PRICE && Number(priceValue) > 0) {
-        updateRange();
+        update();
       }
     },
     [
-      onUserInput,
-      priceValue,
-      gelatoRangeOrders,
       chainId,
-      pool,
+      gelatoRangeOrders,
       inputToken,
-      outputToken,
       onRangeChange,
+      outputToken,
+      pool,
+      priceValue,
+      zeroForOne,
     ]
   );
 
@@ -340,6 +351,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
 
   return {
     handleInput,
+    updateRange,
     handleCurrencySelection,
     handleSwitchTokens,
     handleRateType,

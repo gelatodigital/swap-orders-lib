@@ -74,6 +74,7 @@ export default function GelatoRangeOrder({
   const {
     handlers: {
       handleInput,
+      updateRange,
       handleRateType,
       handleCurrencySelection,
       handleSwitchTokens,
@@ -157,6 +158,8 @@ export default function GelatoRangeOrder({
   const handleTypeDesiredRate = useCallback(
     (value: string) => {
       handleInput(Field.PRICE, value);
+      // if (price)
+      //   updateRange(Field.PRICE, price);
     },
     [handleInput]
   );
@@ -229,6 +232,10 @@ export default function GelatoRangeOrder({
       setApprovalSubmitted(true);
     }
   }, [approvalState, approvalSubmitted]);
+
+  useEffect(() => {
+    if (price) updateRange(Field.PRICE, price);
+  }, [price, updateRange]);
 
   // set order error text based on order state
   const [rangeError0, setRangeError0] = useState<boolean>(false);
@@ -521,7 +528,7 @@ export default function GelatoRangeOrder({
                           {/* we need to shorten this string on mobile */}
                           {approvalState === ApprovalState.APPROVED
                             ? `You can now use your ${currencies.input?.symbol} to place orders.`
-                            : `Allow the Gelato Limit Orders to use your 
+                            : `Allow the Gelato Range Orders to use your 
                               ${currencies.input?.symbol}.`}
                         </span>
                         {approvalState === ApprovalState.PENDING ||
@@ -533,7 +540,7 @@ export default function GelatoRangeOrder({
                           <CheckCircle size="20" color={theme.green1} />
                         ) : (
                           <MouseoverTooltip
-                            text={`You must give the Gelato Limit Orders smart contracts
+                            text={`You must give the Gelato Range Orders smart contracts
                                 permission to use your 
                                 ${currencies.input?.symbol}. You only have to do
                                 this once per token.`}
