@@ -91,7 +91,7 @@ const RangeOrdersHistoryHeader = ({
 );
 
 export default function GelatoRangeOrderHistory() {
-  const [orderTab, setOrderTab] = useState<Tab>("executed");
+  const [orderTab, setOrderTab] = useState<Tab>("submitted");
   const { account } = useWeb3();
   const theme = useTheme();
   const { open, cancelled, executed } = useGelatoRangeOrdersHistory();
