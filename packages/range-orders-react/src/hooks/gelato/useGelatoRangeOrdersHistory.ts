@@ -33,7 +33,7 @@ function parseOrderMap(order: any) {
     updatedAt: BigNumber.from(order.updatedAt),
     createdAtBlock: BigNumber.from(order.createdAtBlock),
     updatedAtBlock: BigNumber.from(order.updatedAtBlock),
-  }
+  };
 }
 
 export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory {
@@ -164,8 +164,12 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
           ).filter((order) => order.status === "cancelled");
 
           setCancelledOrders({
-            confirmed: cancelledOrdersLS.map(parseOrderMap).sort(newOrdersFirst),
-            pending: pendingCancelledOrdersLS.map(parseOrderMap).sort(newOrdersFirst),
+            confirmed: cancelledOrdersLS
+              .map(parseOrderMap)
+              .sort(newOrdersFirst),
+            pending: pendingCancelledOrdersLS
+              .map(parseOrderMap)
+              .sort(newOrdersFirst),
           });
         })
         .catch((e) => {
@@ -182,8 +186,12 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
           ).filter((order) => order.status === "cancelled");
 
           setCancelledOrders({
-            confirmed: cancelledOrdersLS.map(parseOrderMap).sort(newOrdersFirst),
-            pending: pendingCancelledOrdersLS.map(parseOrderMap).sort(newOrdersFirst),
+            confirmed: cancelledOrdersLS
+              .map(parseOrderMap)
+              .sort(newOrdersFirst),
+            pending: pendingCancelledOrdersLS
+              .map(parseOrderMap)
+              .sort(newOrdersFirst),
           });
         });
   }, [gelatoRangeOrders, account, chainId]);

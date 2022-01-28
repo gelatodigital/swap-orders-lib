@@ -369,7 +369,14 @@ export default function OrderCard({ order }: { order: Order }) {
     //       txHash: undefined,
     //     });
     //   });
-  }, [handleRangeOrderCancellation, showConfirm, inputToken, outputToken, inputAmount, outputAmount]);
+  }, [
+    handleRangeOrderCancellation,
+    showConfirm,
+    inputToken,
+    outputToken,
+    inputAmount,
+    outputAmount,
+  ]);
 
   const OrderCard = ({
     showStatusButton = true,
