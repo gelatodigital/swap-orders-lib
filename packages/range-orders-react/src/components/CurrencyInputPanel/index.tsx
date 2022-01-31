@@ -512,7 +512,7 @@ export default function CurrencyInputPanel({
                   }}
                   disabled={!rangeLowerEnabled}
                 >
-                  <PriceAligner>{lowerTick}</PriceAligner>
+                  <PriceAligner>{rangePriceLower}</PriceAligner>
                 </PriceSelect>
                 <PriceSelect
                   selected={selectPriceB}
@@ -525,7 +525,7 @@ export default function CurrencyInputPanel({
                   }}
                   disabled={!rangeUpperEnabled}
                 >
-                  <PriceAligner>{upperTick}</PriceAligner>
+                  <PriceAligner>{rangePriceUpper}</PriceAligner>
                 </PriceSelect>
               </PriceRow>
               <ErrorRow>

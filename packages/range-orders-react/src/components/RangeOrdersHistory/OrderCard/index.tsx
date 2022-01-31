@@ -9,7 +9,7 @@ import useTheme from "../../../hooks/useTheme";
 import { useCurrency } from "../../../hooks/Tokens";
 import CurrencyLogo from "../../CurrencyLogo";
 import { useGelatoRangeOrdersHandlers } from "../../../hooks/gelato";
-import { CurrencyAmount, Price, Token } from "@uniswap/sdk-core";
+import { CurrencyAmount, Price } from "@uniswap/sdk-core";
 import ConfirmCancellationModal from "../ConfirmCancellationModal";
 import { useTradeExactIn } from "../../../hooks/useTrade";
 import { Dots } from "../../order/styleds";
@@ -30,7 +30,6 @@ import { TYPE } from "../../../theme";
 import HoverInlineText from "../../HoverInlineText";
 import { formatUnits } from "@ethersproject/units";
 import { usePoolContract } from "../../../hooks/useContract";
-import getTokenList from "../../../utils/getTokenList";
 import { BigNumber } from "ethers";
 
 const handleColorType = (status: string, theme: DefaultTheme) => {
@@ -342,41 +341,24 @@ export default function OrderCard({ order }: { order: Order }) {
       txHash: undefined,
     });
 
-    const orderDetails =
-      inputToken?.symbol && outputToken?.symbol && inputAmount && outputAmount
-        ? {
-            inputTokenSymbol: inputToken.symbol,
-            outputTokenSymbol: outputToken.symbol,
-            inputAmount: inputAmount.toSignificant(4),
-            outputAmount: outputAmount.toSignificant(4),
-          }
-        : undefined;
-
-    // handleRangeOrderCancellation(order, orderDetails)
-    //   .then(({ hash }) => {
-    //     setCancellationState({
-    //       attemptingTxn: false,
-    //       showConfirm,
-    //       cancellationErrorMessage: undefined,
-    //       txHash: hash,
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     setCancellationState({
-    //       attemptingTxn: false,
-    //       showConfirm,
-    //       cancellationErrorMessage: error.message,
-    //       txHash: undefined,
-    //     });
-    //   });
-  }, [
-    handleRangeOrderCancellation,
-    showConfirm,
-    inputToken,
-    outputToken,
-    inputAmount,
-    outputAmount,
-  ]);
+    handleRangeOrderCancellation(order)
+      .then(({ hash }) => {
+        setCancellationState({
+          attemptingTxn: false,
+          showConfirm,
+          cancellationErrorMessage: undefined,
+          txHash: hash,
+        });
+      })
+      .catch((error) => {
+        setCancellationState({
+          attemptingTxn: false,
+          showConfirm,
+          cancellationErrorMessage: error.message,
+          txHash: undefined,
+        });
+      });
+  }, [handleRangeOrderCancellation, showConfirm, order]);
 
   const OrderCard = ({
     showStatusButton = true,

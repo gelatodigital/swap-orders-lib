@@ -55,7 +55,7 @@ export type RangeOrderData = {
   amountIn?: BigNumber;
   receiver?: string;
   feeToken?: string;
-  resolver: string;
+  resolver?: string;
   maxFeeAmount?: BigNumber;
   feeAmount?: BigNumber | undefined;
   amount0?: BigNumber | undefined;

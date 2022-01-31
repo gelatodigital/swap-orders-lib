@@ -210,14 +210,18 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const upperRange = utils.formatUnits(
+  // console.log('upperPrice: ', range.upperPrice);
+  // console.log('lowerPrice: ', range.lowerPrice);
+  const upperRange = useMemo(() => utils.formatUnits(
     range.upperPrice,
-    inputCurrency?.decimals ?? undefined
-  );
-  const lowerRange = utils.formatUnits(
+    outputCurrency?.decimals ?? undefined
+  ), [outputCurrency?.decimals, range.upperPrice]);
+  const lowerRange = useMemo(() => utils.formatUnits(
     range.lowerPrice,
-    inputCurrency?.decimals ?? undefined
-  );
+    outputCurrency?.decimals ?? undefined
+  ), [outputCurrency?.decimals, range.lowerPrice]);
+  // console.log('upperRange: ', upperRange);
+  // console.log('lowerRange: ', lowerRange);
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -395,6 +399,11 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   }
   // Get Range Order Upper and Lower prices
 
+  const lowerRangeNumber = useMemo(() => (zeroForOne ? Number(lowerRange) : Number(lowerRange) > 0.00 ? 1/Number(lowerRange) : 0), [lowerRange, zeroForOne]);
+  // console.log('lowerRangeNumber', lowerRangeNumber);
+  const upperRangeNumber = useMemo(() => (zeroForOne ? Number(upperRange) : Number(upperRange) > 0.00 ? 1/Number(upperRange) : 0), [upperRange, zeroForOne]);
+  // console.log('upperRangeNumber', upperRangeNumber);
+
   const formattedAmounts = {
     input:
       inputValue && inputValue !== ""
@@ -410,12 +419,12 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
         : rateType === Rate.MUL
         ? price?.toSignificant(6) ?? ""
         : price?.invert().toSignificant(6) ?? "",
-    rangePriceLower: Number(lowerRange).toLocaleString("en-US", {
+    rangePriceLower: lowerRangeNumber.toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,
     }),
     lowerTick: range.lower,
-    rangePriceUpper: Number(upperRange).toLocaleString("en-US", {
+    rangePriceUpper: upperRangeNumber.toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,
     }),

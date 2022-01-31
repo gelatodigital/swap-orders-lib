@@ -73,17 +73,17 @@ export function AdvancedSwapDetails() {
         slippagePercentage: undefined,
         gelatoFeePercentage: undefined,
       };
-    async () => {
-      const mr = await library.getMinReturn({
-        pool: "0x0000000000000000000000000000000000000000",
-        zeroForOne: true,
-        tickThreshold: 0,
-        amountIn: BigNumber.from(0),
-        receiver: "0x0000000000000000000000000000000000000000",
-        maxFeeAmount: BigNumber.from(0),
-      });
-      setMinReturn(mr.toString());
-    };
+    // async () => {
+    //   const mr = await library.getMinReturn({
+    //     pool: "0x0000000000000000000000000000000000000000",
+    //     zeroForOne: true,
+    //     tickThreshold: 0,
+    //     amountIn: BigNumber.from(0),
+    //     receiver: "0x0000000000000000000000000000000000000000",
+    //     maxFeeAmount: BigNumber.from(0),
+    //   });
+    //   setMinReturn(mr.toString());
+    // };
 
     const slippagePercentage = GelatoLimitOrders.slippageBPS / 100;
     const gelatoFeePercentage = GelatoLimitOrders.gelatoFeeBPS / 100;
