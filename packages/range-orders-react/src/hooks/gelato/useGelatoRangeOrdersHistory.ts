@@ -21,7 +21,10 @@ function parseOrderMap(order: any) {
   // console.log(order);
   return {
     ...order,
-    id: order.id && typeof order.id === 'object' ? order.id : BigNumber.from(order.id ?? 0),
+    id:
+      order.id && typeof order.id === "object"
+        ? order.id
+        : BigNumber.from(order.id ?? 0),
     tickThreshold: BigNumber.from(order.tickThreshold ?? 0),
     startTime: BigNumber.from(order.startTime ?? 0),
     expiryTime: BigNumber.from(order.expiryTime ?? 0),
@@ -222,9 +225,7 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
           );
 
           setExecutedOrders(
-            executedOrdersLS
-              .map(parseOrderMap)
-              .sort(newOrdersFirst)
+            executedOrdersLS.map(parseOrderMap).sort(newOrdersFirst)
           );
         })
         .catch((e) => {
@@ -234,9 +235,7 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
           );
 
           setExecutedOrders(
-            executedOrdersLS
-              .map(parseOrderMap)
-              .sort(newOrdersFirst)
+            executedOrdersLS.map(parseOrderMap).sort(newOrdersFirst)
           );
         });
   }, [gelatoRangeOrders, account, chainId]);

@@ -212,14 +212,22 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   const outputCurrency = useCurrency(outputCurrencyId);
   // console.log('upperPrice: ', range.upperPrice);
   // console.log('lowerPrice: ', range.lowerPrice);
-  const upperRange = useMemo(() => utils.formatUnits(
-    range.upperPrice,
-    outputCurrency?.decimals ?? undefined
-  ), [outputCurrency?.decimals, range.upperPrice]);
-  const lowerRange = useMemo(() => utils.formatUnits(
-    range.lowerPrice,
-    outputCurrency?.decimals ?? undefined
-  ), [outputCurrency?.decimals, range.lowerPrice]);
+  const upperRange = useMemo(
+    () =>
+      utils.formatUnits(
+        range.upperPrice,
+        outputCurrency?.decimals ?? undefined
+      ),
+    [outputCurrency?.decimals, range.upperPrice]
+  );
+  const lowerRange = useMemo(
+    () =>
+      utils.formatUnits(
+        range.lowerPrice,
+        outputCurrency?.decimals ?? undefined
+      ),
+    [outputCurrency?.decimals, range.lowerPrice]
+  );
   // console.log('upperRange: ', upperRange);
   // console.log('lowerRange: ', lowerRange);
 
@@ -399,9 +407,25 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   }
   // Get Range Order Upper and Lower prices
 
-  const lowerRangeNumber = useMemo(() => (zeroForOne ? Number(lowerRange) : Number(lowerRange) > 0.00 ? 1/Number(lowerRange) : 0), [lowerRange, zeroForOne]);
+  const lowerRangeNumber = useMemo(
+    () =>
+      zeroForOne
+        ? Number(lowerRange)
+        : Number(lowerRange) > 0.0
+        ? 1 / Number(lowerRange)
+        : 0,
+    [lowerRange, zeroForOne]
+  );
   // console.log('lowerRangeNumber', lowerRangeNumber);
-  const upperRangeNumber = useMemo(() => (zeroForOne ? Number(upperRange) : Number(upperRange) > 0.00 ? 1/Number(upperRange) : 0), [upperRange, zeroForOne]);
+  const upperRangeNumber = useMemo(
+    () =>
+      zeroForOne
+        ? Number(upperRange)
+        : Number(upperRange) > 0.0
+        ? 1 / Number(upperRange)
+        : 0,
+    [upperRange, zeroForOne]
+  );
   // console.log('upperRangeNumber', upperRangeNumber);
 
   const formattedAmounts = {
