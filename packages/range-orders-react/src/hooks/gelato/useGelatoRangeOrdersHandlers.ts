@@ -295,11 +295,12 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
           status: RangeOrderStatus.Submitted,
           updatedAt: now.toString(),
           feeToken: nativeCurrency?.wrapped.address,
-          amountIn: inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address
-            ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(
-                orderToSubmit.inputAmount
-              )
-            : BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+          amountIn:
+            inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address
+              ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(
+                  orderToSubmit.inputAmount
+                )
+              : BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
         } as unknown) as RangeOrderData,
       });
 
@@ -318,57 +319,60 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     ]
   );
 
-  const handleRangeOrderCancellation = useCallback(async (order: RangeOrderData) => {
-    console.log("Will cancel order...");
-    if (!gelatoRangeOrders) {
-      throw new Error("Could not reach Gelato Limit Orders library");
-    }
+  const handleRangeOrderCancellation = useCallback(
+    async (order: RangeOrderData) => {
+      console.log("Will cancel order...");
+      if (!gelatoRangeOrders) {
+        throw new Error("Could not reach Gelato Limit Orders library");
+      }
 
-    if (!chainId) {
-      throw new Error("No chainId");
-    }
+      if (!chainId) {
+        throw new Error("No chainId");
+      }
 
-    if (!gelatoRangeOrders?.signer) {
-      throw new Error("No signer");
-    }
+      if (!gelatoRangeOrders?.signer) {
+        throw new Error("No signer");
+      }
 
-    if (!order.pool) {
-      throw new Error("No pool");
-    }
+      if (!order.pool) {
+        throw new Error("No pool");
+      }
 
-    if (!account) {
-      throw new Error("No account");
-    }
-    
-    if (!order.amountIn) {
-      throw new Error("No amount in");
-    }
+      if (!account) {
+        throw new Error("No account");
+      }
 
-    if(!order.tickThreshold) {
-      throw new Error("No tick threshold");
-    }
+      if (!order.amountIn) {
+        throw new Error("No amount in");
+      }
 
-    const orderPayload: RangeOrderPayload = {
-      pool: order.pool,
-      zeroForOne,
-      amountIn: order.amountIn,
-      receiver: account,
-      maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
-      tickThreshold: Number(order.tickThreshold.toString()),
-    };
-    console.log(orderPayload);
-    console.log(order.id)
-    console.log(order.startTime?.toNumber() ?? 0)
-    const tx = await gelatoRangeOrders.cancelRangeOrder(
-      order.id,
-      orderPayload,
-      order.startTime?.toNumber() ?? 0
-    );
-    if(!tx) {
-      throw new Error("No transaction");
-    }
-    return tx;
-  }, [account, chainId, gelatoRangeOrders, zeroForOne]);
+      if (!order.tickThreshold) {
+        throw new Error("No tick threshold");
+      }
+
+      const orderPayload: RangeOrderPayload = {
+        pool: order.pool,
+        zeroForOne,
+        amountIn: order.amountIn,
+        receiver: account,
+        maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+        tickThreshold: Number(order.tickThreshold.toString()),
+      };
+      console.log(orderPayload);
+      console.log(order.id);
+      console.log(order.startTime?.toNumber() ?? 0);
+      const tx = await gelatoRangeOrders.cancelRangeOrder(
+        order.id,
+        orderPayload,
+        order.startTime?.toNumber() ?? 0
+      );
+      if (!tx) {
+        throw new Error("No transaction");
+      }
+      return tx;
+    },
+    [account, chainId, gelatoRangeOrders, zeroForOne]
+  );
 
   const handleRangeSelection = useCallback(async (tick) => {
     if (tick) {
