@@ -18,21 +18,22 @@ function newOrdersFirst(a: Order, b: Order) {
 }
 
 function parseOrderMap(order: any) {
+  // console.log(order);
   return {
     ...order,
-    id: BigNumber.from(order.id),
-    tickThreshold: BigNumber.from(order.tickThreshold),
-    startTime: BigNumber.from(order.startTime),
-    expiryTime: BigNumber.from(order.expiryTime),
-    amountIn: BigNumber.from(order.amountIn),
-    maxFeeAmount: BigNumber.from(order.maxFeeAmount),
+    id: order.id && typeof order.id === 'object' ? order.id : BigNumber.from(order.id ?? 0),
+    tickThreshold: BigNumber.from(order.tickThreshold ?? 0),
+    startTime: BigNumber.from(order.startTime ?? 0),
+    expiryTime: BigNumber.from(order.expiryTime ?? 0),
+    amountIn: BigNumber.from(order.amountIn ?? 0),
+    maxFeeAmount: BigNumber.from(order.maxFeeAmount ?? 0),
     feeAmount: BigNumber.from(order.feeAmount ?? 0),
     amount0: BigNumber.from(order.amount0 ?? 0),
     amount1: BigNumber.from(order.amount1 ?? 0),
-    createdAt: BigNumber.from(order.createdAt),
-    updatedAt: BigNumber.from(order.updatedAt),
-    createdAtBlock: BigNumber.from(order.createdAtBlock),
-    updatedAtBlock: BigNumber.from(order.updatedAtBlock),
+    createdAt: BigNumber.from(order.createdAt ?? 0),
+    updatedAt: BigNumber.from(order.updatedAt ?? 0),
+    createdAtBlock: BigNumber.from(order.createdAtBlock ?? 0),
+    updatedAtBlock: BigNumber.from(order.updatedAtBlock ?? 0),
   };
 }
 
@@ -222,24 +223,7 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
 
           setExecutedOrders(
             executedOrdersLS
-              .map((order: any) => {
-                return {
-                  ...order,
-                  id: BigNumber.from(order.id),
-                  tickThreshold: BigNumber.from(order.tickThreshold),
-                  startTime: BigNumber.from(order.startTime),
-                  expiryTime: BigNumber.from(order.expiryTime),
-                  amountIn: BigNumber.from(order.amountIn),
-                  maxFeeAmount: BigNumber.from(order.maxFeeAmount),
-                  feeAmount: BigNumber.from(order.feeAmount),
-                  amount0: BigNumber.from(order.amount0),
-                  amount1: BigNumber.from(order.amount1),
-                  createdAt: BigNumber.from(order.createdAt),
-                  updatedAt: BigNumber.from(order.updatedAt),
-                  createdAtBlock: BigNumber.from(order.createdAtBlock),
-                  updatedAtBlock: BigNumber.from(order.updatedAtBlock),
-                };
-              })
+              .map(parseOrderMap)
               .sort(newOrdersFirst)
           );
         })
@@ -251,24 +235,7 @@ export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory 
 
           setExecutedOrders(
             executedOrdersLS
-              .map((order: Order) => {
-                return {
-                  ...order,
-                  id: BigNumber.from(order.id),
-                  tickThreshold: BigNumber.from(order.tickThreshold),
-                  startTime: BigNumber.from(order.startTime),
-                  expiryTime: BigNumber.from(order.expiryTime),
-                  amountIn: BigNumber.from(order.amountIn),
-                  maxFeeAmount: BigNumber.from(order.maxFeeAmount),
-                  feeAmount: BigNumber.from(order.feeAmount),
-                  amount0: BigNumber.from(order.amount0),
-                  amount1: BigNumber.from(order.amount1),
-                  createdAt: BigNumber.from(order.createdAt),
-                  updatedAt: BigNumber.from(order.updatedAt),
-                  createdAtBlock: BigNumber.from(order.createdAtBlock),
-                  updatedAtBlock: BigNumber.from(order.updatedAtBlock),
-                };
-              })
+              .map(parseOrderMap)
               .sort(newOrdersFirst)
           );
         });

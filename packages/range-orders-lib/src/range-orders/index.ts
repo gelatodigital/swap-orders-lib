@@ -476,26 +476,12 @@ export class GelatoRangeOrder {
         to,
       },
       order: {
-        id: this._getKey({
-          resolver: this._moduleAddress,
-          creator: this._moduleAddress,
-          receiver: receiver,
-        } as RangeOrderData),
-        creator: this._moduleAddress.toLowerCase(),
-        receiver: receiver,
-        resolver: this._moduleAddress.toLowerCase(),
+        id: BigNumber.from(0),
+        creator: receiver.toLowerCase(),
+        receiver: receiver.toLowerCase(),
+        tickThreshold: BigNumber.from(tickThreshold),
+        zeroForOne,
       },
     };
-  }
-
-  private _getKey(order: RangeOrderData): BigNumber {
-    return BigNumber.from(
-      utils.keccak256(
-        this._abiEncoder.encode(
-          ["address", "address", "address"],
-          [order.resolver, order.creator, order.receiver]
-        )
-      )
-    );
   }
 }

@@ -158,14 +158,9 @@ export default function GelatoRangeOrder({
   const handleTypeDesiredRate = useCallback(
     (value: string) => {
       handleInput(Field.PRICE, value);
-      // if (price)
-      //   updateRange(Field.PRICE, price);
     },
     [handleInput]
   );
-  const handleFeeInput = useCallback((value: string) => {
-    console.log(value);
-  }, []);
   const handleTypeOutput = useCallback(
     (value: string) => {
       handleInput(Field.OUTPUT, value);
@@ -453,7 +448,7 @@ export default function GelatoRangeOrder({
               {maxFeeAmount && (
                 <FeeInputPanel
                   id="range-order-fee"
-                  onUserInput={handleFeeInput}
+                  onUserInput={() => console.log()}
                   value={maxFeeAmount}
                 />
               )}
