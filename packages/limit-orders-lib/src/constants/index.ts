@@ -1,7 +1,7 @@
 export const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 export const SLIPPAGE_BPS = 40; // 0.4%
-export const STOP_LIMIT_SLIPPAGE_BPS = 500 // 5%
+export const STOP_LIMIT_SLIPPAGE_BPS = 500; // 5%
 export const TWO_BPS_GELATO_FEE = 2; // 0.02%
 
 export const MAX_LIFETIME = 7889238; // 3 months in seconds

@@ -137,7 +137,8 @@ export class GelatoStopLimitOrders extends GelatoBase {
 
     const { privateKey: secret, address: witness } = new Wallet(fullSecret);
 
-    const { minReturn } = this.getFeeAndSlippageAdjustedMinReturn(maxReturnToBeParsed)
+    const { minReturn } =
+      this.getFeeAndSlippageAdjustedMinReturn(maxReturnToBeParsed);
 
     const payload = await this._encodeSubmitData(
       inputToken,
@@ -206,7 +207,7 @@ export class GelatoStopLimitOrders extends GelatoBase {
     const encodedData = this.abiEncoder.encode(
       ["address", "uint256", "address", "uint256"],
       [outputToken, minReturn, this.handlerAddress, maxReturn]
-    )
+    );
 
     let data, value, to;
     if (isNetworkGasToken(inputToken)) {
