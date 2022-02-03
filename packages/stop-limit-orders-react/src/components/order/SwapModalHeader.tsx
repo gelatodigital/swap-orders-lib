@@ -56,13 +56,7 @@ export default function SwapModalHeader({
   const [showInverted, setShowInverted] = useState<boolean>(true);
 
   const {
-    derivedOrderInfo: {
-      price,
-      parsedAmounts,
-      slippage,
-      rawAmounts,
-      currencies,
-    },
+    derivedOrderInfo: { price, parsedAmounts, slippage, rawAmounts },
   } = useGelatoStopLimitOrders();
 
   const library = useGelatoStopLimitOrdersLib();
@@ -100,9 +94,9 @@ export default function SwapModalHeader({
     () =>
       minReturn && minReturn.greaterThan(0) && inputAmount
         ? new Price({
-            quoteAmount: minReturn,
-            baseAmount: inputAmount,
-          })
+          quoteAmount: minReturn,
+          baseAmount: inputAmount,
+        })
         : undefined,
     [inputAmount, minReturn]
   );
@@ -137,7 +131,7 @@ export default function SwapModalHeader({
                 fontWeight={500}
                 color={
                   showAcceptChanges &&
-                  trade?.tradeType === TradeType.EXACT_OUTPUT
+                    trade?.tradeType === TradeType.EXACT_OUTPUT
                     ? theme.primary1
                     : ""
                 }

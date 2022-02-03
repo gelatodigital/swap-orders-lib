@@ -16,7 +16,7 @@ export type Handler =
   | "traderjoe"
   | "defyswap"
   | "pangolin"
-  | "quickswap_stoploss";
+  | "quickswap_stoplimit";
 
 export interface TransactionData {
   to: string;
@@ -62,12 +62,12 @@ export interface Order {
   data: string;
   inputData: string;
   handler: string | null;
+  isExpired: string | any;
 }
 
 export interface StopLimitOrder extends Order {
   maxReturn: string;
 }
-
 export interface PartialOrder {
   id: string;
   owner: string;

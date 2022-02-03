@@ -31,9 +31,14 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
   }>({ pending: [], confirmed: [] });
   const [executedOrders, setExecutedOrders] = useState<StopLimitOrder[]>([]);
 
-  const state = useSelector<AppState, AppState["gtransactions"]>(
-    (state) => state.gtransactions
+  const state = useSelector<AppState, AppState["gstoplimittransactions"]>(
+    (state) => state.gstoplimittransactions
   ) as any;
+
+  const transactions = useMemo(() => (chainId ? state[chainId] ?? {} : {}), [
+    chainId,
+    state,
+  ]);
 
   const fetchOpenOrders = useCallback(() => {
     if (gelatoStopLimitOrders && account && chainId)
@@ -198,11 +203,6 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
           setExecutedOrders(executedOrdersLS.sort(newOrdersFirst));
         });
   }, [gelatoStopLimitOrders, account, chainId]);
-
-  const transactions = useMemo(() => (chainId ? state[chainId] ?? {} : {}), [
-    chainId,
-    state,
-  ]);
 
   useEffect(() => {
     fetchOpenOrders();

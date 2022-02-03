@@ -4,3 +4,4 @@ export { isEthereumChain } from "./utils";
 export * from "./types";
 
 export * as utils from "./utils";
+export * as constants from "./constants";

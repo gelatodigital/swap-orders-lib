@@ -6,7 +6,7 @@ import {
   saveStopOrder,
 } from "../../utils/localStorageStopOrders";
 import {
-  addTransaction,
+  addStopLimitTransaction,
   checkedTransaction,
   clearAllTransactions,
   finalizeTransaction,
@@ -40,7 +40,7 @@ export const initialState: TransactionState = {};
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(
-      addTransaction,
+      addStopLimitTransaction,
       (
         transactions,
         { payload: { chainId, from, hash, summary, approval, type, order } }
@@ -48,6 +48,7 @@ export default createReducer(initialState, (builder) =>
         if (transactions[chainId]?.[hash]) {
           throw Error("Attempted to add existing transaction.");
         }
+
         const txs = transactions[chainId] ?? {};
         txs[hash] = {
           hash,

@@ -237,6 +237,7 @@ export const GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER = gql`
       updatedAtBlockHash
       data
       inputData
+      handler
     }
   }
 `;

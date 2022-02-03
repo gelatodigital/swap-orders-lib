@@ -14,7 +14,7 @@ export interface SerializableTransactionReceipt {
 
 export type TransactionType = "submission" | "cancellation" | "approval";
 
-export const addTransaction = createAction<{
+export const addStopLimitTransaction = createAction<{
   chainId: number;
   hash: string;
   from: string;
@@ -22,17 +22,17 @@ export const addTransaction = createAction<{
   order?: StopLimitOrder;
   approval?: { tokenAddress: string; spender: string };
   summary?: string;
-}>("gtransactions/addTransaction");
+}>("gstoplimittransactions/addStopLimitTransaction");
 export const clearAllTransactions = createAction<{ chainId: number }>(
-  "gtransactions/clearAllTransactions"
+  "gstoplimittransactions/clearAllTransactions"
 );
 export const finalizeTransaction = createAction<{
   chainId: number;
   hash: string;
   receipt: SerializableTransactionReceipt;
-}>("gtransactions/finalizeTransaction");
+}>("gstoplimittransactions/finalizeTransaction");
 export const checkedTransaction = createAction<{
   chainId: number;
   hash: string;
   blockNumber: number;
-}>("gtransactions/checkedTransaction");
+}>("gstoplimittransactions/checkedTransaction");

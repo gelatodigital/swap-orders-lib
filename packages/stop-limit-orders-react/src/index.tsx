@@ -9,8 +9,8 @@ import {
 import ApplicationUpdater from "./state/gapplication/updater";
 import ListsUpdater from "./state/glists/updater";
 import MulticallUpdater from "./state/gmulticall/updater";
-import TransactionUpdater from "./state/gtransactions/updater";
-import { clearAllTransactions } from "./state/gtransactions/actions";
+import TransactionUpdater from "./state/gstoplimittransactions/updater";
+import { clearAllTransactions } from "./state/gstoplimittransactions/actions";
 import { tryParseAmount } from "./state/gstoplimit/hooks";
 import {
   useGelatoStopLimitOrders,
@@ -31,7 +31,7 @@ import {
   ApprovalState,
   useApproveCallbackFromInputCurrencyAmount,
 } from "./hooks/useApproveCallback";
-import { useTransactionAdder } from "./state/gtransactions/hooks";
+import { useTransactionAdder } from "./state/gstoplimittransactions/hooks";
 import { clearOrdersLocalStorage } from "./utils/localStorageStopOrders";
 
 export function GelatoProvider({

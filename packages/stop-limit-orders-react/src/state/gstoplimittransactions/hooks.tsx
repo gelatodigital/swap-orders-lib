@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useWeb3 } from "../../web3";
 import { AppDispatch, AppState } from "../index";
-import { addTransaction, TransactionType } from "./actions";
+import { addStopLimitTransaction, TransactionType } from "./actions";
 import { TransactionDetails } from "./reducer";
 
 // helper that can take a ethers library transaction response and add it to the list of transactions
@@ -45,7 +45,7 @@ export function useTransactionAdder(): (
       }
 
       dispatch(
-        addTransaction({
+        addStopLimitTransaction({
           hash,
           from: account,
           order,
@@ -64,8 +64,8 @@ export function useTransactionAdder(): (
 export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
   const { chainId } = useWeb3();
 
-  const state = useSelector<AppState, AppState["gtransactions"]>(
-    (state) => state.gtransactions
+  const state = useSelector<AppState, AppState["gstoplimittransactions"]>(
+    (state) => state.gstoplimittransactions
   );
 
   return chainId ? state[chainId] ?? {} : {};

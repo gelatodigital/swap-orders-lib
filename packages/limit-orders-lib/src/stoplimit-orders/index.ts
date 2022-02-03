@@ -29,6 +29,7 @@ import {
   queryStopLimitOrders,
   queryStopLimitExecutedOrders,
   queryStopLimitCancelledOrders,
+  queryPastOrders,
 } from "../utils/queries/stoplimit";
 
 export class GelatoStopLimitOrders extends GelatoBase {
@@ -40,10 +41,11 @@ export class GelatoStopLimitOrders extends GelatoBase {
     if (handler && !isValidChainIdAndHandler(chainId, handler)) {
       throw new Error("Invalid chainId and handler");
     }
-    const sotplossHandlers = ["quickswap_stoploss"];
+
+    const sotplossHandlers = ["quickswap_stoplimit"];
 
     if (handler && !sotplossHandlers.includes(handler)) {
-      throw new Error("Wrong handler");
+      throw new Error("Handler not supported");
     }
 
     const moduleAddress = GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId];
@@ -51,7 +53,7 @@ export class GelatoStopLimitOrders extends GelatoBase {
     if (!moduleAddress) throw new Error("Invalid chainId and handler");
 
     const handlerAddress =
-      handler === "quickswap_stoploss"
+      handler === "quickswap_stoplimit"
         ? HANDLERS_ADDRESSES[chainId][handler]?.toLowerCase()
         : undefined;
     super(chainId, moduleAddress, signerOrProvider, handler, handlerAddress);
@@ -62,7 +64,7 @@ export class GelatoStopLimitOrders extends GelatoBase {
     outputToken: string,
     inputAmount: BigNumberish,
     maxReturn: BigNumberish,
-    userSlippage: number,
+    userSlippage = 500,
     checkAllowance = true,
     overrides?: Overrides
   ): Promise<ContractTransaction> {
@@ -70,7 +72,7 @@ export class GelatoStopLimitOrders extends GelatoBase {
 
     if (!maxReturn) throw new Error("No StopLimit defined");
 
-    if (!userSlippage) throw new Error("No slippage defined");
+    // if (!userSlippage) throw new Error("No slippage defined");
 
     const owner = await this.signer.getAddress();
 
@@ -125,7 +127,9 @@ export class GelatoStopLimitOrders extends GelatoBase {
   ): Promise<TransactionDataWithSecret> {
     if (!maxReturnToBeParsed) throw new Error("No StopLimit defined");
 
-    if (!userSlippage) throw new Error("No slippage defined");
+    if (!this.handlerAddress) throw new Error("No handlerAddress");
+
+    // if (!userSlippage) throw new Error("No slippage defined");
 
     const randomSecret = utils.hexlify(utils.randomBytes(19)).replace("0x", "");
     // 0x67656c61746f6e6574776f726b = gelatonetwork in hex
@@ -133,14 +137,8 @@ export class GelatoStopLimitOrders extends GelatoBase {
 
     const { privateKey: secret, address: witness } = new Wallet(fullSecret);
 
-    const { minReturn: maxReturn } = !isEthereumChain(this.chainId)
-      ? this.getFeeAndSlippageAdjustedMinReturn(maxReturnToBeParsed)
-      : { minReturn: maxReturnToBeParsed };
-
-    const { minReturn } = this.getFeeAndSlippageAdjustedMinReturn(
-      maxReturnToBeParsed,
-      userSlippage
-    );
+    const { minReturn } =
+      this.getFeeAndSlippageAdjustedMinReturn(maxReturnToBeParsed);
 
     const payload = await this._encodeSubmitData(
       inputToken,
@@ -148,21 +146,16 @@ export class GelatoStopLimitOrders extends GelatoBase {
       owner,
       witness,
       inputAmount,
-      maxReturn,
+      maxReturnToBeParsed,
       minReturn,
       secret,
       checkAllowance
     );
 
-    const encodedData = this.handlerAddress
-      ? this.abiEncoder.encode(
-          ["address", "uint256", "address", "uint256"],
-          [outputToken, minReturn, this.handlerAddress, maxReturn]
-        )
-      : this.abiEncoder.encode(
-          ["address", "uint256", "address", "uint256"],
-          [outputToken, minReturn, "", maxReturn]
-        );
+    const encodedData = this.abiEncoder.encode(
+      ["address", "uint256", "address", "uint256"],
+      [outputToken, minReturn, this.handlerAddress, maxReturnToBeParsed]
+    );
 
     return {
       payload,
@@ -184,7 +177,7 @@ export class GelatoStopLimitOrders extends GelatoBase {
         witness: witness.toLowerCase(),
         inputAmount: inputAmount.toString(),
         minReturn: minReturn.toString(),
-        maxReturn: maxReturn.toString(),
+        maxReturn: maxReturnToBeParsed.toString(),
         adjustedMinReturn: maxReturnToBeParsed.toString(),
         inputData: payload.data.toString(),
         secret: secret.toLowerCase(),
@@ -206,18 +199,15 @@ export class GelatoStopLimitOrders extends GelatoBase {
   ): Promise<TransactionData> {
     if (!this.provider) throw new Error("No provider");
 
+    if (!this.handlerAddress) throw new Error("No handlerAddress");
+
     if (inputToken.toLowerCase() === outputToken.toLowerCase())
       throw new Error("Input token and output token can not be equal");
 
-    const encodedData = this.handlerAddress
-      ? this.abiEncoder.encode(
-          ["address", "uint256", "address", "uint256"],
-          [outputToken, minReturn, this.handlerAddress, maxReturn]
-        )
-      : this.abiEncoder.encode(
-          ["address", "uint256", "address", "uint256"],
-          [outputToken, minReturn, "", maxReturn]
-        );
+    const encodedData = this.abiEncoder.encode(
+      ["address", "uint256", "address", "uint256"],
+      [outputToken, minReturn, this.handlerAddress, maxReturn]
+    );
 
     let data, value, to;
     if (isNetworkGasToken(inputToken)) {
@@ -264,81 +254,56 @@ export class GelatoStopLimitOrders extends GelatoBase {
     return { data, value, to };
   }
 
-  public async getOpenOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
+  public async getOpenStopLimitOrders(
+    owner: string
   ): Promise<StopLimitOrder[]> {
     const orders = await queryStopLimitOrders(owner, this._chainId);
 
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+    }));
   }
 
-  public async getOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
-  ): Promise<StopLimitOrder[]> {
+  public async getStopLimitOrders(owner: string): Promise<StopLimitOrder[]> {
     const orders = await queryStopLimitOrders(owner, this._chainId);
 
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+    }));
   }
 
-  public async getExecutedOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
+  public async getExecutedStopLimitOrders(
+    owner: string
   ): Promise<StopLimitOrder[]> {
     const orders = await queryStopLimitExecutedOrders(owner, this._chainId);
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+    }));
   }
 
-  public async getCancelledOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
+  public async getCancelledStopLimitOrders(
+    owner: string
   ): Promise<StopLimitOrder[]> {
     const orders = await queryStopLimitCancelledOrders(owner, this._chainId);
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+    }));
+  }
+
+  public async getPastStopLimitOrders(
+    owner: string
+  ): Promise<StopLimitOrder[]> {
+    const isEthereumNetwork = isEthereumChain(this._chainId);
+    const orders = await queryPastOrders(owner, this._chainId);
+    return orders.map((order) => ({
+      ...order,
+      adjustedMinReturn: isEthereumNetwork
+        ? order.minReturn
+        : this.getAdjustedMinReturn(order.minReturn),
+    }));
   }
 }
