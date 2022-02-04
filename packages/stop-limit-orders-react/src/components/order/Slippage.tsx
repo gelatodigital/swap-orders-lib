@@ -41,17 +41,17 @@ const StyledInput = styled(NumericalInput)`
   background-color: transparent;
 `;
 
-
 const SlippageText = () => (
   <>
     When your stop loss order is executed your tokens will be swapped. Your
     slippage tolerance dictates how much slippage you are willing to accept for
-    this swap. The smaller the value here the more risk there is that
-    your stop loss will not execute. We discoverd that 5% is the sweet spot for execution tolerance .
+    this swap. The smaller the value here the more risk there is that your stop
+    loss will not execute. We discoverd that 5% is the sweet spot for execution
+    tolerance .
   </>
 );
 
-const Slippage = () =>
+const Slippage = () => (
   <StyledSwap>
     <RowBetween>
       <RowFixed>
@@ -62,11 +62,9 @@ const Slippage = () =>
           <StyledInfo />
         </MouseoverTooltipContent>
       </RowFixed>
-      <RowFixed>
-        5%
-      </RowFixed>
+      <RowFixed>5%</RowFixed>
     </RowBetween>
   </StyledSwap>
+);
 
-
-export default Slippage
+export default Slippage;

@@ -77,16 +77,16 @@ export default createReducer<StopLimitOrderState>(initialState, (builder) =>
     .addCase(typeInput, (state, { payload: { field, typedValue } }) => {
       return field === Field.INPUT
         ? {
-          ...state,
-          inputValue: typedValue,
-          independentField: field,
-          typedValue,
-        }
+            ...state,
+            inputValue: typedValue,
+            independentField: field,
+            typedValue,
+          }
         : {
-          ...state,
-          independentField: field,
-          typedValue,
-        };
+            ...state,
+            independentField: field,
+            typedValue,
+          };
     })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
       state.recipient = recipient;

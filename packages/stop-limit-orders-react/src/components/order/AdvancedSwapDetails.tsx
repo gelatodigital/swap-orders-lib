@@ -36,17 +36,19 @@ export function AdvancedSwapDetails() {
   const realExecutionRateWithSymbols = useMemo(
     () =>
       parsedAmounts.input?.currency &&
-        parsedAmounts.output?.currency &&
-        realExecutionPriceAsString
+      parsedAmounts.output?.currency &&
+      realExecutionPriceAsString
         ? realExecutionPriceAsString === "never executes"
           ? realExecutionPriceAsString
-          : `1 ${isInvertedRate
-            ? parsedAmounts.output.currency.symbol
-            : parsedAmounts.input.currency.symbol
-          } = ${realExecutionPriceAsString} ${isInvertedRate
-            ? parsedAmounts.input.currency.symbol
-            : parsedAmounts.output.currency.symbol
-          }`
+          : `1 ${
+              isInvertedRate
+                ? parsedAmounts.output.currency.symbol
+                : parsedAmounts.input.currency.symbol
+            } = ${realExecutionPriceAsString} ${
+              isInvertedRate
+                ? parsedAmounts.input.currency.symbol
+                : parsedAmounts.output.currency.symbol
+            }`
         : undefined,
     [parsedAmounts, realExecutionPriceAsString, isInvertedRate]
   );
@@ -64,7 +66,7 @@ export function AdvancedSwapDetails() {
       };
 
     const { minReturn } = library.getFeeAndSlippageAdjustedMinReturn(
-      rawOutputAmount,
+      rawOutputAmount
     );
 
     const slippagePercentage = 500 / 100;
@@ -125,12 +127,13 @@ export function AdvancedSwapDetails() {
           <RowBetween>
             <RowFixed>
               <MouseoverTooltip
-                text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${realExecutionRateWithSymbols
-                  ? `Assuming current gas price it should execute when ` +
-                  realExecutionRateWithSymbols +
-                  "."
-                  : ""
-                  }`}
+                text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                  realExecutionRateWithSymbols
+                    ? `Assuming current gas price it should execute when ` +
+                      realExecutionRateWithSymbols +
+                      "."
+                    : ""
+                }`}
               >
                 <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
                   Real Execution Price (?)
@@ -158,8 +161,9 @@ export function AdvancedSwapDetails() {
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
           {minReturn
-            ? `${minReturn.toSignificant(4)} ${outputAmount ? outputAmount.currency.symbol : "-"
-            }`
+            ? `${minReturn.toSignificant(4)} ${
+                outputAmount ? outputAmount.currency.symbol : "-"
+              }`
             : "-"}
         </TYPE.black>
       </RowBetween>
