@@ -56,7 +56,7 @@ export default function SwapModalHeader({
   const [showInverted, setShowInverted] = useState<boolean>(true);
 
   const {
-    derivedOrderInfo: { price, parsedAmounts, slippage, rawAmounts },
+    derivedOrderInfo: { price, parsedAmounts, rawAmounts },
   } = useGelatoStopLimitOrders();
 
   const library = useGelatoStopLimitOrdersLib();
@@ -76,8 +76,7 @@ export default function SwapModalHeader({
       };
 
     const { minReturn } = library.getFeeAndSlippageAdjustedMinReturn(
-      rawOutputAmount,
-      slippage
+      rawOutputAmount
     );
 
     const minReturnParsed = CurrencyAmount.fromRawAmount(
@@ -88,20 +87,20 @@ export default function SwapModalHeader({
     return {
       minReturn: minReturnParsed,
     };
-  }, [outputAmount, library, rawOutputAmount, slippage]);
+  }, [outputAmount, library, rawOutputAmount]);
 
   const limitPrice = useMemo(
     () =>
       minReturn && minReturn.greaterThan(0) && inputAmount
         ? new Price({
-            quoteAmount: minReturn,
-            baseAmount: inputAmount,
-          })
+          quoteAmount: minReturn,
+          baseAmount: inputAmount,
+        })
         : undefined,
     [inputAmount, minReturn]
   );
 
-  if (!inputAmount || !outputAmount || !outputAmount || !library || !slippage)
+  if (!inputAmount || !outputAmount || !outputAmount || !library)
     return null;
 
   return (
@@ -131,7 +130,7 @@ export default function SwapModalHeader({
                 fontWeight={500}
                 color={
                   showAcceptChanges &&
-                  trade?.tradeType === TradeType.EXACT_OUTPUT
+                    trade?.tradeType === TradeType.EXACT_OUTPUT
                     ? theme.primary1
                     : ""
                 }
@@ -230,40 +229,6 @@ export default function SwapModalHeader({
           </RowBetween>
         </SwapShowAcceptChanges>
       ) : null}
-
-      {/* <AutoColumn
-        justify="flex-start"
-        gap="sm"
-        style={{ padding: ".75rem 1rem" }}
-      >
-        {trade.tradeType === TradeType.EXACT_INPUT ? (
-          <TYPE.italic
-            fontWeight={400}
-            textAlign="left"
-            style={{ width: "100%" }}
-          >
-            {`Output is estimated. You will receive at least `}
-            <b>
-              {trade.minimumAmountOut(allowedSlippage).toSignificant(6)}{" "}
-              {outputAmount.currency.symbol}
-            </b>
-            {" or the transaction will revert."}
-          </TYPE.italic>
-        ) : (
-          <TYPE.italic
-            fontWeight={400}
-            textAlign="left"
-            style={{ width: "100%" }}
-          >
-            {`Input is estimated. You will sell at most `}
-            <b>
-              {trade.maximumAmountIn(allowedSlippage).toSignificant(6)}{" "}
-              {inputAmount.currency.symbol}
-            </b>
-            {" or the transaction will revert."}
-          </TYPE.italic>
-        )}
-      </AutoColumn> */}
       {recipient !== null ? (
         <AutoColumn
           justify="center"

@@ -8,7 +8,6 @@ import {
   switchCurrencies,
   setRecipient,
   setRateType,
-  setSlippage,
 } from "./actions";
 
 export interface StopLimitOrderState {
@@ -25,7 +24,6 @@ export interface StopLimitOrderState {
   // the typed recipient address or ENS name, or null if swap should go to sender
   readonly recipient: string | null;
   readonly rateType: Rate;
-  readonly slippage: number;
 }
 
 export const initialState: StopLimitOrderState = {
@@ -40,7 +38,6 @@ export const initialState: StopLimitOrderState = {
   },
   rateType: Rate.MUL,
   recipient: null,
-  slippage: 0,
 };
 
 export default createReducer<StopLimitOrderState>(initialState, (builder) =>
@@ -80,24 +77,21 @@ export default createReducer<StopLimitOrderState>(initialState, (builder) =>
     .addCase(typeInput, (state, { payload: { field, typedValue } }) => {
       return field === Field.INPUT
         ? {
-            ...state,
-            inputValue: typedValue,
-            independentField: field,
-            typedValue,
-          }
+          ...state,
+          inputValue: typedValue,
+          independentField: field,
+          typedValue,
+        }
         : {
-            ...state,
-            independentField: field,
-            typedValue,
-          };
+          ...state,
+          independentField: field,
+          typedValue,
+        };
     })
     .addCase(setRecipient, (state, { payload: { recipient } }) => {
       state.recipient = recipient;
     })
     .addCase(setRateType, (state, { payload: { rateType } }) => {
       state.rateType = rateType;
-    })
-    .addCase(setSlippage, (state, { payload: { slippage } }) => {
-      state.slippage = parseFloat(slippage) * 100;
     })
 );

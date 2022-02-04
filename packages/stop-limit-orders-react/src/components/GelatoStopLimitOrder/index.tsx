@@ -76,7 +76,7 @@ enum Rate {
   MUL = "MUL",
 }
 
-const PoweredByWrapper = styled(PoweredByGelato)<{ size: number }>`
+const PoweredByWrapper = styled(PoweredByGelato) <{ size: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
   height: ${() => "26px"};
   width: ${({ size }) => (size ? size + "px" : "32px")};
@@ -108,7 +108,6 @@ export default function GelatoStopLimitOrder({
       handleCurrencySelection,
       handleSwitchTokens,
       handleStopLimitOrderSubmission,
-      handleSlippage,
     },
     derivedOrderInfo: {
       parsedAmounts,
@@ -119,7 +118,6 @@ export default function GelatoStopLimitOrder({
       inputError,
       rawAmounts,
       price,
-      slippage,
     },
     orderState: { independentField, rateType },
   } = useGelatoStopLimitOrders();
@@ -198,11 +196,11 @@ export default function GelatoStopLimitOrder({
     }
   }, [approvalState, approvalSubmitted]);
 
-  const allowedSlippage = new Percent(slippage, 10_000);
+  const allowedSlippage = new Percent(500, 10_000);
   const userHasSpecifiedInputOutput = Boolean(
     (independentField === Field.INPUT || independentField === Field.OUTPUT) &&
-      currencies.input &&
-      currencies.output
+    currencies.input &&
+    currencies.output
   );
   const routeNotFound = !trade?.route;
   const isLoadingRoute =
@@ -216,7 +214,7 @@ export default function GelatoStopLimitOrder({
   );
   const showMaxButton = Boolean(
     maxInputAmount?.greaterThan(0) &&
-      !parsedAmounts.input?.equalTo(maxInputAmount)
+    !parsedAmounts.input?.equalTo(maxInputAmount)
   );
 
   const handleSwap = useCallback(() => {
@@ -262,7 +260,6 @@ export default function GelatoStopLimitOrder({
           : currencies.output?.wrapped.address,
         inputAmount: rawAmounts.input,
         outputAmount: rawAmounts.output,
-        slippage,
         owner: account,
       })
         .then(({ hash }) => {
@@ -303,7 +300,6 @@ export default function GelatoStopLimitOrder({
     rawAmounts.input,
     rawAmounts.output,
     account,
-    slippage,
   ]);
 
   const [showInverted, setShowInverted] = useState<boolean>(false);
@@ -370,18 +366,6 @@ export default function GelatoStopLimitOrder({
     await approveCallback();
   }, [approveCallback]);
 
-  const [activeTab, setActiveTab] = useState(1);
-  const [slippageValue, setSlippage] = useState("2");
-
-  const handleSlippageInput = (value: string) => {
-    handleSlippage(value);
-    setSlippage(value);
-  };
-
-  useEffect(() => {
-    setActiveTab(1);
-    handleSlippageInput("2");
-  }, []);
 
   return (
     <Fragment>
@@ -492,10 +476,7 @@ export default function GelatoStopLimitOrder({
               />
               <Row>
                 <Slippage
-                  handleActiveTab={setActiveTab}
-                  activeTab={activeTab}
-                  value={slippageValue}
-                  handleInput={handleSlippageInput}
+
                 />
               </Row>
             </div>
@@ -574,8 +555,8 @@ export default function GelatoStopLimitOrder({
                               ${currencies.input?.symbol}`}
                         </span>
                         {approvalState === ApprovalState.PENDING ||
-                        (approvalSubmitted &&
-                          approvalState === ApprovalState.NOT_APPROVED) ? (
+                          (approvalSubmitted &&
+                            approvalState === ApprovalState.NOT_APPROVED) ? (
                           <Loader stroke="white" />
                         ) : approvalSubmitted &&
                           approvalState === ApprovalState.APPROVED ? (

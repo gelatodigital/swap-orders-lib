@@ -21,7 +21,6 @@ import {
   setRecipient,
   switchCurrencies,
   typeInput,
-  setSlippage,
 } from "./actions";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "..";
@@ -46,24 +45,24 @@ export function applyExchangeRateTo(
   if (isInverted) {
     return parsedExchangeRate && parsedInputAmount
       ? parsedInputAmount
-          ?.multiply(
-            JSBI.exponentiate(
-              JSBI.BigInt(10),
-              JSBI.BigInt(inputCurrency.decimals)
-            )
+        ?.multiply(
+          JSBI.exponentiate(
+            JSBI.BigInt(10),
+            JSBI.BigInt(inputCurrency.decimals)
           )
-          ?.divide(parsedExchangeRate.asFraction)
+        )
+        ?.divide(parsedExchangeRate.asFraction)
       : undefined;
   } else {
     return parsedExchangeRate && parsedInputAmount
       ? parsedInputAmount
-          ?.multiply(parsedExchangeRate.asFraction)
-          .divide(
-            JSBI.exponentiate(
-              JSBI.BigInt(10),
-              JSBI.BigInt(outputCurrency.decimals)
-            )
+        ?.multiply(parsedExchangeRate.asFraction)
+        .divide(
+          JSBI.exponentiate(
+            JSBI.BigInt(10),
+            JSBI.BigInt(outputCurrency.decimals)
           )
+        )
       : undefined;
   }
 }
@@ -80,7 +79,6 @@ export function useOrderActionHandlers(): {
   onUserInput: (field: Field, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
   onChangeRateType: (rateType: Rate) => void;
-  onSlippageInput: (value: string) => void;
 } {
   const dispatch = useDispatch();
   const onCurrencySelection = useCallback(
@@ -91,8 +89,8 @@ export function useOrderActionHandlers(): {
           currencyId: currency.isToken
             ? currency.address
             : currency.isNative
-            ? "ETH"
-            : "",
+              ? "ETH"
+              : "",
         })
       );
     },
@@ -124,12 +122,6 @@ export function useOrderActionHandlers(): {
     [dispatch]
   );
 
-  const onSlippageInput = useCallback(
-    (slippage: string) => {
-      dispatch(setSlippage({ slippage }));
-    },
-    [dispatch]
-  );
 
   return {
     onSwitchTokens,
@@ -137,7 +129,6 @@ export function useOrderActionHandlers(): {
     onUserInput,
     onChangeRecipient,
     onChangeRateType,
-    onSlippageInput,
   };
 }
 
@@ -188,7 +179,6 @@ export interface DerivedOrderInfo {
     output: string | undefined;
   };
   price: Price<Currency, Currency> | undefined;
-  slippage: number;
 }
 
 // from the current swap inputs, compute the best trade and return it.
@@ -202,7 +192,6 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
     rateType,
     inputValue,
-    slippage,
   } = useOrderState();
 
   const inputCurrency = useCurrency(inputCurrencyId);
@@ -218,20 +207,20 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   const desiredRateAppliedAsCurrencyAmount =
     isDesiredRateUpdate && inputValue && inputCurrency && outputCurrency
       ? applyExchangeRateTo(
-          inputValue,
-          typedValue,
-          inputCurrency,
-          outputCurrency,
-          rateType === Rate.MUL ? false : true
-        )
+        inputValue,
+        typedValue,
+        inputCurrency,
+        outputCurrency,
+        rateType === Rate.MUL ? false : true
+      )
       : undefined;
 
   const desiredRateApplied =
     isDesiredRateUpdate &&
-    inputValue &&
-    inputCurrency &&
-    outputCurrency &&
-    desiredRateAppliedAsCurrencyAmount
+      inputValue &&
+      inputCurrency &&
+      outputCurrency &&
+      desiredRateAppliedAsCurrencyAmount
       ? desiredRateAppliedAsCurrencyAmount?.toSignificant(6)
       : typedValue;
 
@@ -242,13 +231,13 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   const parsedAmountToUse = isDesiredRateUpdate
     ? tryParseAmount(
-        desiredRateApplied,
-        (isExactIn ? inputCurrency : outputCurrency) ?? undefined
-      )
+      desiredRateApplied,
+      (isExactIn ? inputCurrency : outputCurrency) ?? undefined
+    )
     : tryParseAmount(
-        typedValue,
-        (isExactIn ? inputCurrency : outputCurrency) ?? undefined
-      );
+      typedValue,
+      (isExactIn ? inputCurrency : outputCurrency) ?? undefined
+    );
 
   const bestTradeExactIn = useTradeExactIn(
     isExactIn ? parsedAmountToUse : undefined,
@@ -316,24 +305,6 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     inputError = inputError ?? "Select a token";
   }
 
-  // const adjustedMinRetun = useMemo(
-  //   () => library && slippage && rawOutputAmount ?
-  //     library.getFeeAndSlippageAdjustedMinReturn(
-  //       awAmounts.input,
-  //       slippage
-  //     ) : undefined,
-  //   [slippage, rawAmounts.input, library]
-  // );
-
-  // const limiPrice = useMemo(() => {
-  //   if (!parsedAmounts.input || !parsedAmounts.output) return undefined;
-
-  //   return new Price({
-  //     baseAmount: parsedAmounts.input,
-  //     quoteAmount: parsedAmounts.output,
-  //   });
-  // }, [parsedAmounts.input, parsedAmounts.minOutput]);
-
   const price = useMemo(() => {
     if (!parsedAmounts.input || !parsedAmounts.output) return undefined;
 
@@ -351,21 +322,6 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       inputError =
         inputError ??
         "Only possible to place stop limit order below market rate";
-
-    //   rateType === Rate.MUL &&
-    //   (price.lessThan(trade.executionPrice.asFraction) ||
-    //     price.equalTo(trade.executionPrice.asFraction))
-    // )
-    //   inputError =
-    //     inputError ?? "Only possible to place sell orders above market rate";
-
-    // if (
-    //   rateType === Rate.DIV &&
-    //   (price.invert().greaterThan(trade.executionPrice.invert().asFraction) ||
-    //     price.invert().equalTo(trade.executionPrice.invert().asFraction))
-    // )
-    //   inputError =
-    //     inputError ?? "Only possible to place buy orders below market rate";
   }
 
   // compare input to balance
@@ -386,32 +342,32 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       independentField === Field.PRICE
         ? typedValue
         : rateType === Rate.MUL
-        ? price?.toSignificant(6) ?? ""
-        : price?.invert().toSignificant(6) ?? "",
+          ? price?.toSignificant(6) ?? ""
+          : price?.invert().toSignificant(6) ?? "",
   };
 
   const rawAmounts = useMemo(
     () => ({
       input: inputCurrency
         ? parsedAmounts.input
-            ?.multiply(
-              JSBI.exponentiate(
-                JSBI.BigInt(10),
-                JSBI.BigInt(inputCurrency.decimals)
-              )
+          ?.multiply(
+            JSBI.exponentiate(
+              JSBI.BigInt(10),
+              JSBI.BigInt(inputCurrency.decimals)
             )
-            .toFixed(0)
+          )
+          .toFixed(0)
         : undefined,
 
       output: outputCurrency
         ? parsedAmounts.output
-            ?.multiply(
-              JSBI.exponentiate(
-                JSBI.BigInt(10),
-                JSBI.BigInt(outputCurrency.decimals)
-              )
+          ?.multiply(
+            JSBI.exponentiate(
+              JSBI.BigInt(10),
+              JSBI.BigInt(outputCurrency.decimals)
             )
-            .toFixed(0)
+          )
+          .toFixed(0)
         : undefined,
     }),
     [inputCurrency, outputCurrency, parsedAmounts]
@@ -426,6 +382,5 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     parsedAmounts,
     price,
     rawAmounts,
-    slippage,
   };
 }

@@ -64,15 +64,12 @@ export class GelatoStopLimitOrders extends GelatoBase {
     outputToken: string,
     inputAmount: BigNumberish,
     maxReturn: BigNumberish,
-    userSlippage = 500,
     checkAllowance = true,
     overrides?: Overrides
   ): Promise<ContractTransaction> {
     if (!this.signer) throw new Error("No signer");
 
     if (!maxReturn) throw new Error("No StopLimit defined");
-
-    // if (!userSlippage) throw new Error("No slippage defined");
 
     const owner = await this.signer.getAddress();
 
@@ -81,7 +78,6 @@ export class GelatoStopLimitOrders extends GelatoBase {
       outputToken,
       inputAmount,
       maxReturn,
-      userSlippage,
       owner,
       checkAllowance
     );
@@ -99,7 +95,6 @@ export class GelatoStopLimitOrders extends GelatoBase {
     outputToken: string,
     inputAmount: BigNumberish,
     maxReturn: BigNumberish,
-    userSlippage: number,
     owner: string,
     checkAllowance = true
   ): Promise<TransactionData> {
@@ -108,7 +103,6 @@ export class GelatoStopLimitOrders extends GelatoBase {
       outputToken,
       inputAmount,
       maxReturn,
-      userSlippage,
       owner,
       checkAllowance
     );
@@ -121,15 +115,12 @@ export class GelatoStopLimitOrders extends GelatoBase {
     outputToken: string,
     inputAmount: BigNumberish,
     maxReturnToBeParsed: BigNumberish,
-    userSlippage: number,
     owner: string,
     checkAllowance = true
   ): Promise<TransactionDataWithSecret> {
     if (!maxReturnToBeParsed) throw new Error("No StopLimit defined");
 
     if (!this.handlerAddress) throw new Error("No handlerAddress");
-
-    // if (!userSlippage) throw new Error("No slippage defined");
 
     const randomSecret = utils.hexlify(utils.randomBytes(19)).replace("0x", "");
     // 0x67656c61746f6e6574776f726b = gelatonetwork in hex

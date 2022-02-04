@@ -18,7 +18,6 @@ export interface GelatoStopLimitOrdersHandlers {
     outputToken: string;
     inputAmount: string;
     outputAmount: string;
-    slippage: number;
     owner: string;
     overrides?: Overrides;
   }) => Promise<TransactionResponse>;
@@ -40,7 +39,6 @@ export interface GelatoStopLimitOrdersHandlers {
   ) => void;
   handleSwitchTokens: () => void;
   handleRateType: (rateType: Rate, price?: Price<Currency, Currency>) => void;
-  handleSlippage: (slippage: string) => void;
 }
 
 export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrdersHandlers {
@@ -57,7 +55,6 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
     onCurrencySelection,
     onUserInput,
     onChangeRateType,
-    onSlippageInput,
   } = useOrderActionHandlers();
 
   const handleStopLimitOrderSubmission = useCallback(
@@ -67,7 +64,6 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
         outputToken: string;
         inputAmount: string;
         outputAmount: string;
-        slippage: number;
         owner: string;
       },
       overrides?: Overrides
@@ -93,7 +89,6 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
         orderToSubmit.outputToken,
         orderToSubmit.inputAmount,
         orderToSubmit.outputAmount,
-        orderToSubmit.slippage,
         orderToSubmit.owner
       );
 
@@ -149,10 +144,10 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
 
       const checkIfOrderExists = Boolean(
         orderToCancel.module &&
-          orderToCancel.inputToken &&
-          orderToCancel.owner &&
-          orderToCancel.witness &&
-          orderToCancel.data
+        orderToCancel.inputToken &&
+        orderToCancel.owner &&
+        orderToCancel.witness &&
+        orderToCancel.data
       );
 
       const tx = await gelatoStopLimitOrders.cancelStopLimitOrder(
@@ -214,13 +209,6 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
     [onChangeRateType, onUserInput]
   );
 
-  const handleSlippage = useCallback(
-    (slippage: string) => {
-      onSlippageInput(slippage);
-    },
-    [onSlippageInput]
-  );
-
   return {
     handleStopLimitOrderSubmission,
     handleStopLimitOrderCancellation,
@@ -228,6 +216,5 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
     handleCurrencySelection,
     handleSwitchTokens,
     handleRateType,
-    handleSlippage,
   };
 }
