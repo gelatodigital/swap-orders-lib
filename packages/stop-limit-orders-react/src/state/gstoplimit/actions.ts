@@ -27,7 +27,3 @@ export const setRecipient = createAction<{ recipient: string | null }>(
 export const setRateType = createAction<{ rateType: Rate }>(
   "gstoplimit/setRateType"
 );
-
-export const setSlippage = createAction<{ slippage: string }>(
-  "gstoplimit/setSlippage"
-);

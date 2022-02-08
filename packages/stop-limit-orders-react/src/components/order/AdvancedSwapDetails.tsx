@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { GelatoStopLimitOrders, utils } from "@gelatonetwork/limit-orders-lib";
+import { GelatoStopLimitOrders } from "@gelatonetwork/limit-orders-lib";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { formatUnits } from "@ethersproject/units";
@@ -19,7 +19,7 @@ export function AdvancedSwapDetails() {
   const theme = useTheme();
   const { chainId } = useWeb3();
   const {
-    derivedOrderInfo: { parsedAmounts, rawAmounts, slippage },
+    derivedOrderInfo: { parsedAmounts, rawAmounts },
     orderState: { rateType },
   } = useGelatoStopLimitOrders();
 
@@ -65,19 +65,11 @@ export function AdvancedSwapDetails() {
         gelatoFeePercentage: undefined,
       };
 
-    // if (utils.isEthereumChain(chainId))
-    //   return {
-    //     minReturn: outputAmount,
-    //     slippagePercentage: undefined,
-    //     gelatoFeePercentage: undefined,
-    //   };
-
     const { minReturn } = library.getFeeAndSlippageAdjustedMinReturn(
-      rawOutputAmount,
-      slippage
+      rawOutputAmount
     );
 
-    const slippagePercentage = slippage / 100;
+    const slippagePercentage = 500 / 100;
     const gelatoFeePercentage = GelatoStopLimitOrders.gelatoFeeBPS / 100;
 
     const minReturnParsed = CurrencyAmount.fromRawAmount(

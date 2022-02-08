@@ -2,6 +2,7 @@ import { request } from "graphql-request";
 import {
   STOP_LIMIT_ORDER_SUBGRAPH_URL,
   GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS,
+  MAX_LIFETIME,
 } from "../../constants";
 import { StopLimitOrder } from "../../types";
 import { GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER } from "./constants";
@@ -23,7 +24,7 @@ export const queryStopLimitOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders);
   } catch (error) {
@@ -49,7 +50,7 @@ export const queryOpenStopLimitOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders).filter(
       (order) => order.status === "open"
@@ -76,7 +77,7 @@ export const queryStopLimitExecutedOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders).filter(
       (order) => order.status === "executed"
@@ -103,7 +104,7 @@ export const queryStopLimitCancelledOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders).filter(
       (order) => order.status === "cancelled"
@@ -130,7 +131,7 @@ export const queryPastOrders = async (
         )
       : { orders: [] };
 
-    const orders = dataStopLimitSubgraph.orders;
+    const orders = [...dataStopLimitSubgraph.orders];
 
     return _getUniqueOrdersWithHandler(orders).filter(
       (order) => order.status !== "open"
@@ -140,20 +141,22 @@ export const queryPastOrders = async (
   }
 };
 
+const checkExpiration = (allOrders: StopLimitOrder[]): StopLimitOrder[] =>
+  allOrders.map((order: StopLimitOrder) => {
+    order.isExpired =
+      Date.now() > (parseInt(order.createdAt) + MAX_LIFETIME) * 1000;
+    return { ...order };
+  });
+
 export const _getUniqueOrdersWithHandler = (
   allOrders: StopLimitOrder[]
 ): StopLimitOrder[] =>
-  [...new Map(allOrders.map((order) => [order.id, order])).values()]
+  [
+    ...new Map(
+      checkExpiration(allOrders)
+        // filter out wrong module
+        .map((order) => [order.id, order])
+    ).values(),
+  ]
     // sort by `updatedAt` asc so that the most recent one will be used
-    .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
-    .map((order) => {
-      let handler;
-      try {
-        const hasHandler = order.data.length === 194;
-        handler = hasHandler ? "0x" + order.data.substr(154, 194) : null;
-      } catch (e) {
-        handler = null;
-      }
-
-      return { ...order, handler };
-    });
+    .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt));

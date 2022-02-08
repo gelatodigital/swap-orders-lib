@@ -1,7 +1,10 @@
 export const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 export const SLIPPAGE_BPS = 40; // 0.4%
+export const STOP_LIMIT_SLIPPAGE_BPS = 500; // 5%
 export const TWO_BPS_GELATO_FEE = 2; // 0.02%
+
+export const MAX_LIFETIME = 7889238; // 3 months in seconds
 
 export const CHAIN_ID = {
   MAINNET: 1,
@@ -21,13 +24,14 @@ export const HANDLERS_ADDRESSES = {
   // UniswapV2Router02Handler
   [CHAIN_ID.ROPSTEN]: {
     ["uniswap"]: "0x1f397f95d31eb20183b69d685a5060cfdefd508b",
+    ["quickswap_stoplimit"]: "0x87bE4Eb9dFb2DefcEA035D3010f33584Fc8ddDB5",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.MATIC]: {
     ["quickswap"]: "0xaccbd2c6ad75ad3394dc5f4b1f606bf111e4eae3",
     ["polydex"]: "0x00fc86d360162e4672ec6B427E12ed36F39f1f53",
     ["cafeswap"]: "0xd167afcee4e9a89e69646fd3c27e58b61d1b7f97",
-    ["quickswap_stoploss"]: "0x6EA82C72732389c5149326e048A46Be9F8bec8E8",
+    ["quickswap_stoplimit"]: "0xed933b9efde1bbe9008c6d0e613aa4c6498a216d",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.FANTOM]: {
@@ -59,8 +63,8 @@ export const NETWORK_NAME = {
 
 export const NETWORK_HANDLERS = {
   [CHAIN_ID.MAINNET]: ["uniswap"],
-  [CHAIN_ID.ROPSTEN]: ["uniswap"],
-  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoploss"],
+  [CHAIN_ID.ROPSTEN]: ["uniswap", "quickswap_stoplimit"],
+  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoplimit"],
   [CHAIN_ID.FANTOM]: ["spiritswap", "spookyswap", "bombswap", "defyswap"],
   [CHAIN_ID.BSC]: ["pancakeswap"],
   [CHAIN_ID.AVAX]: ["traderjoe", "pangolin"],
@@ -168,7 +172,8 @@ export const NATIVE_WRAPPED_TOKEN_ADDRESS = {
 export const GENERIC_GAS_LIMIT_ORDER_EXECUTION = "400000";
 
 export const GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS = {
-  [CHAIN_ID.MATIC]: "0xE912CD26C4A4cfffc175A297F1328aB23313a1a7",
+  [CHAIN_ID.ROPSTEN]: "0xDC41072F4aFE7e4a7ea0f21d13a92662Fe733C55",
+  [CHAIN_ID.MATIC]: "0x81967ac4ce8e2d94f7e4b4cf3d2e760605079604",
 };
 
 export const STOP_LIMIT_ORDER_SUBGRAPH_URL = {
