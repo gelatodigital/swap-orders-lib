@@ -21,9 +21,14 @@
   },
   "license": "GPL-3.0-only",
   "author": "Gelato Network",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "browser": "dist/index.umd.js",
+  "module": "./dist/index.esm.js",
+  "main": "./dist/index.cjs.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js"
+    }
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist"
