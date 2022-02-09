@@ -17,7 +17,7 @@ import {
   GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER,
   NETWORK_HANDLERS,
   STOP_LIMIT_SLIPPAGE_BPS,
-  STOP_LIMIT_ORDER_SUBGRAPH_URL,
+  SUBGRAPH_URL,
   TWO_BPS_GELATO_FEE,
 } from "../constants";
 import {
@@ -120,7 +120,7 @@ export class GelatoBase {
     }
 
     this._chainId = chainId;
-    this._subgraphUrl = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId];
+    this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
       ? signerOrProvider
       : undefined;

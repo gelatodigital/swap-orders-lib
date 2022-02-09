@@ -11,8 +11,9 @@ import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
 import {
   ETH_ADDRESS,
-  GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS,
+  GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS,
   HANDLERS_ADDRESSES,
+  NETWORK_STOP_LIMIT_HANDLERS,
 } from "../constants";
 import { ERC20__factory } from "../contracts/types";
 
@@ -42,20 +43,21 @@ export class GelatoStopLimitOrders extends GelatoBase {
       throw new Error("Invalid chainId and handler");
     }
 
-    const sotplossHandlers = ["quickswap_stoplimit"];
+    const sotplossHandlers = NETWORK_STOP_LIMIT_HANDLERS[chainId];
+
+    if (!handler) {
+      throw new Error("No Handler defined");
+    }
 
     if (handler && !sotplossHandlers.includes(handler)) {
       throw new Error("Handler not supported");
     }
 
-    const moduleAddress = GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId];
+    const moduleAddress = GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS[chainId];
 
     if (!moduleAddress) throw new Error("Invalid chainId and handler");
 
-    const handlerAddress =
-      handler === "quickswap_stoplimit"
-        ? HANDLERS_ADDRESSES[chainId][handler]?.toLowerCase()
-        : undefined;
+    const handlerAddress = HANDLERS_ADDRESSES[chainId][handler]?.toLowerCase();
     super(chainId, moduleAddress, signerOrProvider, handler, handlerAddress);
   }
 

@@ -13,6 +13,7 @@ export type Handler =
   | "polydex"
   | "cafeswap"
   | "pancakeswap"
+  | "pancakeswap_stoplimit"
   | "traderjoe"
   | "defyswap"
   | "pangolin"
@@ -42,6 +43,7 @@ export interface Order {
   inputToken: string;
   outputToken: string;
   minReturn: string;
+  maxReturn?: string;
   adjustedMinReturn: string;
   module: string;
   witness: string;

@@ -2,14 +2,14 @@ import { request } from "graphql-request";
 import {
   OLD_SUBGRAPH_URL,
   SUBGRAPH_URL,
-  GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS,
+  GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS,
   MAX_LIFETIME,
 } from "../../constants";
 import { Order } from "../../types";
 import { GET_ALL_ORDERS_BY_OWNER, GET_ORDER_BY_ID } from "./constants";
 
 const StopLimitModule = (chainId: number) =>
-  GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase();
+  GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS[chainId].toLowerCase();
 
 export const queryOrder = async (
   orderId: string,

@@ -2,7 +2,7 @@ import { StopLimitOrder, constants } from "@gelatonetwork/limit-orders-lib";
 import { get, set, clear } from "local-storage";
 
 const LS_STOP_ORDERS = "gstoplimit_";
-const { GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS } = constants;
+const { GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS } = constants;
 
 export function clearOrdersLocalStorage() {
   return clear();
@@ -30,7 +30,7 @@ export function saveStopOrder(
 ) {
   if (
     order.module !==
-    GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase()
+    GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS[chainId].toLowerCase()
   )
     return;
   const key = pending

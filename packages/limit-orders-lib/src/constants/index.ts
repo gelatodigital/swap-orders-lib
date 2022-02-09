@@ -2,7 +2,7 @@ export const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 export const SLIPPAGE_BPS = 40; // 0.4%
 export const STOP_LIMIT_SLIPPAGE_BPS = 500; // 5%
-export const TWO_BPS_GELATO_FEE = 2; // 0.02%
+export const TWO_BPS_GELATO_FEE = 10; // 0.1%
 
 export const MAX_LIFETIME = 7889238; // 3 months in seconds
 
@@ -43,6 +43,7 @@ export const HANDLERS_ADDRESSES = {
   // UniswapV2Router02Handler
   [CHAIN_ID.BSC]: {
     ["pancakeswap"]: "0x88f8CCC064bA2D39cF08D57B6e7504a7B6bE8E4e",
+    ["pancakeswap_stoplimit"]: "0x6ea82c72732389c5149326e048a46be9f8bec8e8",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.AVAX]: {
@@ -66,8 +67,14 @@ export const NETWORK_HANDLERS = {
   [CHAIN_ID.ROPSTEN]: ["uniswap", "quickswap_stoplimit"],
   [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoplimit"],
   [CHAIN_ID.FANTOM]: ["spiritswap", "spookyswap", "bombswap", "defyswap"],
-  [CHAIN_ID.BSC]: ["pancakeswap"],
+  [CHAIN_ID.BSC]: ["pancakeswap", "pancakeswap_stoplimit"],
   [CHAIN_ID.AVAX]: ["traderjoe", "pangolin"],
+};
+
+export const NETWORK_STOP_LIMIT_HANDLERS = {
+  [CHAIN_ID.ROPSTEN]: ["quickswap_stoplimit"],
+  [CHAIN_ID.MATIC]: ["quickswap_stoplimit"],
+  [CHAIN_ID.BSC]: ["pancakeswap_stoplimit"],
 };
 
 export const OLD_SUBGRAPH_URL = {
@@ -171,12 +178,8 @@ export const NATIVE_WRAPPED_TOKEN_ADDRESS = {
 
 export const GENERIC_GAS_LIMIT_ORDER_EXECUTION = "400000";
 
-export const GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS = {
+export const GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS = {
   [CHAIN_ID.ROPSTEN]: "0xDC41072F4aFE7e4a7ea0f21d13a92662Fe733C55",
   [CHAIN_ID.MATIC]: "0x81967ac4ce8e2d94f7e4b4cf3d2e760605079604",
-};
-
-export const STOP_LIMIT_ORDER_SUBGRAPH_URL = {
-  [CHAIN_ID.MATIC]:
-    "https://api.thegraph.com/subgraphs/name/harrytgerman/stoplimitorder",
+  [CHAIN_ID.BSC]: "0xe912cd26c4a4cfffc175a297f1328ab23313a1a7",
 };
