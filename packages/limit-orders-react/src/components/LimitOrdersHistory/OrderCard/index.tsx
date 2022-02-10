@@ -56,6 +56,11 @@ const OrderPanel = styled.div`
   width: "100%";
 `;
 
+const ExpiredText = styled.span`
+  color: ${({ theme }) => theme.text4};
+  margin-right: 5px;
+`;
+
 const Container = styled.div<{ hideInput: boolean }>`
   border-radius: ${({ hideInput }) => (hideInput ? "16px" : "20px")};
   border: 1px solid
@@ -378,6 +383,8 @@ export default function OrderCard({ order }: { order: Order }) {
           ) : (
             <Dots />
           )}
+          <Spacer />
+          {order.isExpired ? <ExpiredText>Order expired </ExpiredText> : ""}
           <Spacer />
           {showStatusButton ? (
             <OrderStatus
