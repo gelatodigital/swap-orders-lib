@@ -5,7 +5,6 @@ import { Input as NumericalInput } from "../NumericalInput";
 import { TYPE } from "../../theme";
 import { RowFixed } from "../Row";
 import { MouseoverTooltip } from "../Tooltip";
-import useGasPrice from "../../hooks/useGasPrice";
 import { useCurrency } from "../../hooks/Tokens";
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`

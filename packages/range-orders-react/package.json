@@ -29,11 +29,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "npx rollup -c",
+    "build": "yarn compile-v3-contract-types && npx rollup -c",
     "copy-contracts-types": "cp ./src/contracts/types/*.d.ts ./dist/src/contracts/types",
     "copy-assets": "cp ./src/react/assets/**/*.png ./dist/src/react/assets",
     "format": "prettier --write .",
     "generate-contracts-typings": "typechain --target=ethers-v5 --outDir src/contracts/types './src/**/abis/*.json'",
+    "compile-v3-contract-types": "typechain --target=ethers-v5 --outDir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*.json\"",
     "lint": "eslint --cache .",
     "prepare": "yarn build && yarn format && yarn lint",
     "pre-commit": "yarn prepare"
@@ -102,6 +103,11 @@
     "@uniswap/sdk-core": "^3.0.0-alpha.3",
     "@uniswap/token-lists": "^1.0.0-beta.24",
     "@uniswap/v2-sdk": "^3.0.0-alpha.2",
+    "@uniswap/v3-core": "^1.0.1",
+    "@uniswap/v3-periphery": "1.0.0",
+    "@uniswap/v3-sdk": "^3.8.2",
+    "@web3-react/core": "^6.1.9",
+    "@web3-react/injected-connector": "^6.0.7",
     "ethers": "^5.4.6",
     "local-storage": "^2.0.0",
     "lodash.flatmap": "^4.5.0",

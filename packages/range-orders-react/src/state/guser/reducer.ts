@@ -26,6 +26,7 @@ export interface UserState {
 
   timestamp: number;
   URLWarningVisible: boolean;
+  userSingleHopOnly: boolean;
 }
 
 function pairKey(token0Address: string, token1Address: string) {
@@ -37,6 +38,7 @@ export const initialState: UserState = {
   pairs: {},
   timestamp: currentTimestamp(),
   URLWarningVisible: true,
+  userSingleHopOnly: false,
 };
 
 export default createReducer(initialState, (builder) =>

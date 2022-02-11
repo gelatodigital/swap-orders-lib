@@ -28,3 +28,6 @@ export const removeSerializedPair = createAction<{
   tokenAAddress: string;
   tokenBAddress: string;
 }>("ruser/removeSerializedPair");
+export const updateUserSingleHopOnly = createAction<{
+  userSingleHopOnly: boolean;
+}>("user/updateUserSingleHopOnly");

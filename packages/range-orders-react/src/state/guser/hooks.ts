@@ -17,6 +17,7 @@ import {
   removeSerializedToken,
   SerializedPair,
   SerializedToken,
+  updateUserSingleHopOnly,
 } from "./actions";
 
 function serializeToken(token: Token): SerializedToken {
@@ -193,4 +194,27 @@ export function useTrackedTokenPairs(): [Token, Token][] {
 
     return Object.keys(keyed).map((key) => keyed[key]);
   }, [combinedList]);
+}
+
+export function useUserSingleHopOnly(): [
+  boolean,
+  (newSingleHopOnly: boolean) => void
+] {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const singleHopOnly = useSelector<
+    AppState,
+    AppState["ruser"]["userSingleHopOnly"]
+  >((state) => state.ruser.userSingleHopOnly);
+
+  const setSingleHopOnly = useCallback(
+    (newSingleHopOnly: boolean) => {
+      dispatch(
+        updateUserSingleHopOnly({ userSingleHopOnly: newSingleHopOnly })
+      );
+    },
+    [dispatch]
+  );
+
+  return [singleHopOnly, setSingleHopOnly];
 }

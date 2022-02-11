@@ -112,6 +112,14 @@ export const UNI: { [chainId: number]: Token } = {
   [43114]: new Token(56, UNI_ADDRESS[43114], 18, "UNI.e", "Uniswap"),
 };
 
+export const USDC_POLYGON = new Token(
+  137,
+  "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
+  6,
+  "USDC",
+  "USD//C"
+);
+
 export const getBaseTokenLogoURLByTokenSymbol = (
   symbol: string | undefined
 ): string | undefined => {

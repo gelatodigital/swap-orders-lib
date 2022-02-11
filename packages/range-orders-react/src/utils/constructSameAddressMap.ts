@@ -7,5 +7,6 @@ export function constructSameAddressMap<T extends string>(
     [42]: address,
     [4]: address,
     [5]: address,
+    [137]: address,
   };
 }
