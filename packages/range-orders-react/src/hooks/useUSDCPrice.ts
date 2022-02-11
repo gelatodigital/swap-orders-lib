@@ -41,36 +41,38 @@ export default function useUSDCPrice(
 
   return useMemo(() => {
     if (!currency || !stablecoin) {
-      return undefined
+      return undefined;
     }
 
     // handle usdc
     if (currency?.wrapped.equals(stablecoin)) {
-      return new Price(stablecoin, stablecoin, '1', '1')
+      return new Price(stablecoin, stablecoin, "1", "1");
     }
 
     // use v2 price if available, v3 as fallback
     if (v2USDCTrade) {
-      const { numerator, denominator } = v2USDCTrade.route.midPrice
-      return new Price(currency, stablecoin, denominator, numerator)
+      const { numerator, denominator } = v2USDCTrade.route.midPrice;
+      return new Price(currency, stablecoin, denominator, numerator);
     } else if (v3USDCTrade.trade) {
-      const { numerator, denominator } = v3USDCTrade.trade.route.midPrice
-      return new Price(currency, stablecoin, denominator, numerator)
+      const { numerator, denominator } = v3USDCTrade.trade.route.midPrice;
+      return new Price(currency, stablecoin, denominator, numerator);
     }
 
-    return undefined
-  }, [currency, stablecoin, v2USDCTrade, v3USDCTrade.trade])
+    return undefined;
+  }, [currency, stablecoin, v2USDCTrade, v3USDCTrade.trade]);
 }
 
-export function useUSDCValue(currencyAmount: CurrencyAmount<Currency> | undefined | null) {
-  const price = useUSDCPrice(currencyAmount?.currency)
+export function useUSDCValue(
+  currencyAmount: CurrencyAmount<Currency> | undefined | null
+) {
+  const price = useUSDCPrice(currencyAmount?.currency);
 
   return useMemo(() => {
-    if (!price || !currencyAmount) return null
+    if (!price || !currencyAmount) return null;
     try {
-      return price.quote(currencyAmount)
+      return price.quote(currencyAmount);
     } catch (error) {
-      return null
+      return null;
     }
-  }, [currencyAmount, price])
+  }, [currencyAmount, price]);
 }
