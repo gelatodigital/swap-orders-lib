@@ -220,23 +220,7 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
 
   const rawMinReturn = useMemo(() => order.minReturn, [order.minReturn]);
 
-  const rawMaxReturn = useMemo(
-    () =>
-      order.adjustedMinReturn
-        ? order.adjustedMinReturn
-        : gelatoLibrary && chainId && order.maxReturn
-        ? isEthereum
-          ? order.maxReturn
-          : gelatoLibrary.getAdjustedMinReturn(order.minReturn)
-        : undefined,
-    [
-      chainId,
-      gelatoLibrary,
-      order.maxReturn,
-      order.adjustedMinReturn,
-      isEthereum,
-    ]
-  );
+  const rawMaxReturn = useMemo(() => order.maxReturn, [order.maxReturn]);
 
   const maxOutputAmount = useMemo(
     () =>
@@ -416,22 +400,36 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
             <Dots />
           )}
           <Spacer />
-          {order.isExpired ? <ExpiredText>Order expired </ExpiredText> : ""}
-
-          <span></span>
           {showStatusButton ? (
             <OrderStatus
               clickable={true}
               onClick={() => {
                 if (!chainId) return;
 
-                if (order.status === "open" && !isSubmissionPending)
+                if (
+                  order.status === "open" &&
+                  !order.isExpired &&
+                  !isSubmissionPending
+                )
                   setCancellationState({
                     attemptingTxn: false,
                     cancellationErrorMessage: undefined,
                     showConfirm: true,
                     txHash: undefined,
                   });
+                else if (
+                  order.status === "open" &&
+                  order.isExpired &&
+                  !isSubmissionPending
+                )
+                  window.open(
+                    getExplorerLink(
+                      chainId,
+                      order.createdTxHash,
+                      ExplorerDataType.TRANSACTION
+                    ),
+                    "_blank"
+                  );
                 else if (order.status === "open" && isSubmissionPending)
                   window.open(
                     getExplorerLink(
@@ -463,6 +461,8 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
               status={
                 isCancellationPending || isSubmissionPending
                   ? "pending"
+                  : order.status === "open" && order.isExpired
+                  ? "expired"
                   : order.status
               }
             >
@@ -470,6 +470,8 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
                 ? "pending"
                 : isCancellationPending
                 ? "cancelling"
+                : order.status === "open" && order.isExpired
+                ? "expired"
                 : order.status === "open"
                 ? "cancel"
                 : order.status}

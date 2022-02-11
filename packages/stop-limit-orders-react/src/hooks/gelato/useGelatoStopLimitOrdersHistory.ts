@@ -11,6 +11,7 @@ export interface GelatoStopLimitOrdersHistory {
   open: { pending: StopLimitOrder[]; confirmed: StopLimitOrder[] };
   cancelled: { pending: StopLimitOrder[]; confirmed: StopLimitOrder[] };
   executed: StopLimitOrder[];
+  expired: StopLimitOrder[];
 }
 function newOrdersFirst(a: StopLimitOrder, b: StopLimitOrder) {
   return Number(b.updatedAt) - Number(a.updatedAt);
@@ -30,6 +31,7 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
     confirmed: StopLimitOrder[];
   }>({ pending: [], confirmed: [] });
   const [executedOrders, setExecutedOrders] = useState<StopLimitOrder[]>([]);
+  const [expiredOrders, setExpiredOrders] = useState<StopLimitOrder[]>([]);
 
   const state = useSelector<AppState, AppState["gstoplimittransactions"]>(
     (state) => state.gstoplimittransactions
@@ -55,7 +57,8 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
             if (
               !orderExists ||
               (orderExists &&
-                Number(orderExists.updatedAt) < Number(order.updatedAt))
+                Number(orderExists.updatedAt) < Number(order.updatedAt)) ||
+              orderExists.isExpired !== order.isExpired
             ) {
               saveStopOrder(chainId, account, order);
             }
@@ -65,10 +68,15 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
             (order) => order.status === "open"
           );
 
+          setExpiredOrders(
+            orders.filter((order) => order.status === "open" && order.isExpired)
+          );
+
           const pendingOrdersLS = getLSOrders(chainId, account, true);
 
           setOpenOrders({
             confirmed: openOrdersLS
+              .filter((order) => !order.isExpired)
               .filter((order: StopLimitOrder) => {
                 const orderCancelled = pendingOrdersLS
                   .filter((pendingOrder) => pendingOrder.status === "cancelled")
@@ -92,8 +100,15 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
 
           const pendingOrdersLS = getLSOrders(chainId, account, true);
 
+          setExpiredOrders(
+            openOrdersLS.filter(
+              (order) => order.status === "open" && order.isExpired
+            )
+          );
+
           setOpenOrders({
             confirmed: openOrdersLS
+              .filter((order) => !order.isExpired)
               .filter((order: StopLimitOrder) => {
                 const orderCancelled = pendingOrdersLS
                   .filter((pendingOrder) => pendingOrder.status === "cancelled")
@@ -223,5 +238,6 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
     open: openOrders,
     cancelled: cancelledOrders,
     executed: executedOrders,
+    expired: expiredOrders,
   };
 }

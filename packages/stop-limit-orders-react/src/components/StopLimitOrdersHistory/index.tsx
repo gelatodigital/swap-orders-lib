@@ -88,7 +88,7 @@ const LimitOrdersHistoryHeader = ({
   </StyledLimitOrderHistoryHeader>
 );
 
-type Tab = "open" | "cancelled" | "executed";
+type Tab = "open" | "cancelled" | "executed" | "expired";
 
 export default function StopLimitOrdersHistory() {
   const [orderTab, setOrderTab] = useState<Tab>("open");
@@ -97,7 +97,12 @@ export default function StopLimitOrdersHistory() {
 
   const theme = useTheme();
 
-  const { open, cancelled, executed } = useGelatoStopLimitOrdersHistory();
+  const {
+    open,
+    cancelled,
+    executed,
+    expired,
+  } = useGelatoStopLimitOrdersHistory();
 
   const fixedListRef = useRef<FixedSizeList>();
 
@@ -146,6 +151,11 @@ export default function StopLimitOrdersHistory() {
             title={"Executed"}
             active={orderTab === "executed"}
             onClick={() => handleActiveHeader("executed")}
+          />
+          <LimitOrdersHistoryHeader
+            title={"Expired"}
+            active={orderTab === "expired"}
+            onClick={() => handleActiveHeader("expired")}
           />
         </HeaderTitles>
 
@@ -225,6 +235,33 @@ export default function StopLimitOrdersHistory() {
                 width="100%"
                 itemData={allCancelledOrders}
                 itemCount={allCancelledOrders.length}
+                itemSize={itemSize}
+                itemKey={itemKey}
+              >
+                {Row}
+              </FixedSizeList>
+            ) : null}
+
+            {orderTab === "expired" && !expired.length ? (
+              <TYPE.body
+                color={theme.text3}
+                style={{
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                  textAlign: "center",
+                }}
+                fontWeight={400}
+                fontSize={16}
+              >
+                {"No expired orders"}
+              </TYPE.body>
+            ) : orderTab === "expired" ? (
+              <FixedSizeList
+                height={438}
+                ref={fixedListRef as any}
+                width="100%"
+                itemData={expired}
+                itemCount={expired.length}
                 itemSize={itemSize}
                 itemKey={itemKey}
               >
