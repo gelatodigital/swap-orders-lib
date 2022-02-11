@@ -1,4 +1,5 @@
 import { constructSameAddressMap } from "../utils/constructSameAddressMap";
+import { FACTORY_ADDRESS as V3_FACTORY_ADDRESS } from "@uniswap/v3-sdk";
 
 export const UNI_ADDRESS = constructSameAddressMap(
   "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984"
@@ -33,6 +34,11 @@ export const ARGENT_WALLET_DETECTOR_ADDRESS: { [chainId: number]: string } = {
 export const QUOTER_ADDRESSES = constructSameAddressMap(
   "0xb27308f9F90D607463bb33eA1BeBb41C27CE5AB6"
 );
+
+export const V3_CORE_FACTORY_ADDRESSES = constructSameAddressMap(
+  V3_FACTORY_ADDRESS
+);
+
 export const NONFUNGIBLE_POSITION_MANAGER_ADDRESSES = constructSameAddressMap(
   "0xC36442b4a4522E871399CD717aBDD847Ab11FE88"
 );

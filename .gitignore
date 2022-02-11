@@ -7,3 +7,5 @@ dist/
 stats.html
 
 .eslintcache
+
+packages/range-orders-react/src/types/v3
