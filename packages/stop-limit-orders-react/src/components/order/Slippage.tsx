@@ -46,8 +46,7 @@ const SlippageText = () => (
     When your stop loss order is executed your tokens will be swapped. Your
     slippage tolerance dictates how much slippage you are willing to accept for
     this swap. The smaller the value here the more risk there is that your stop
-    loss will not execute. We discoverd that 5% is the sweet spot for execution
-    tolerance .
+    loss will not execute. Currently the Slippage is set to a fixed 5%.
   </>
 );
 

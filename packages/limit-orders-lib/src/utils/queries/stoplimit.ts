@@ -2,7 +2,7 @@ import { request } from "graphql-request";
 import {
   SUBGRAPH_URL,
   GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS,
-  MAX_LIFETIME,
+  MAX_LIFETIME_IN_SECONDS,
 } from "../../constants";
 import { StopLimitOrder } from "../../types";
 import { GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER } from "./constants";
@@ -24,9 +24,9 @@ export const queryStopLimitOrders = async (
         )
       : { orders: [] };
 
-    const orders = [...dataStopLimitSubgraph.orders];
+    const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders);
+    return _getUniqueOrdersWithExpiry(orders);
   } catch (error) {
     console.error(error);
     throw new Error("Could not query subgraph for all orders");
@@ -50,9 +50,9 @@ export const queryOpenStopLimitOrders = async (
         )
       : { orders: [] };
 
-    const orders = [...dataStopLimitSubgraph.orders];
+    const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders).filter(
+    return _getUniqueOrdersWithExpiry(orders).filter(
       (order) => order.status === "open"
     );
   } catch (error) {
@@ -77,9 +77,9 @@ export const queryStopLimitExecutedOrders = async (
         )
       : { orders: [] };
 
-    const orders = [...dataStopLimitSubgraph.orders];
+    const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders).filter(
+    return _getUniqueOrdersWithExpiry(orders).filter(
       (order) => order.status === "executed"
     );
   } catch (error) {
@@ -104,9 +104,9 @@ export const queryStopLimitCancelledOrders = async (
         )
       : { orders: [] };
 
-    const orders = [...dataStopLimitSubgraph.orders];
+    const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders).filter(
+    return _getUniqueOrdersWithExpiry(orders).filter(
       (order) => order.status === "cancelled"
     );
   } catch (error) {
@@ -131,9 +131,9 @@ export const queryPastOrders = async (
         )
       : { orders: [] };
 
-    const orders = [...dataStopLimitSubgraph.orders];
+    const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders).filter(
+    return _getUniqueOrdersWithExpiry(orders).filter(
       (order) => order.status !== "open"
     );
   } catch (error) {
@@ -141,22 +141,19 @@ export const queryPastOrders = async (
   }
 };
 
-const checkExpiration = (allOrders: StopLimitOrder[]): StopLimitOrder[] =>
-  allOrders.map((order: StopLimitOrder) => {
-    order.isExpired =
-      Date.now() > (parseInt(order.createdAt) + MAX_LIFETIME) * 1000;
-    return { ...order };
-  });
-
-export const _getUniqueOrdersWithHandler = (
+export const _getUniqueOrdersWithExpiry = (
   allOrders: StopLimitOrder[]
 ): StopLimitOrder[] =>
-  [
-    ...new Map(
-      checkExpiration(allOrders)
-        // filter out wrong module
-        .map((order) => [order.id, order])
-    ).values(),
-  ]
+  [...new Map(allOrders.map((order) => [order.id, order])).values()]
     // sort by `updatedAt` asc so that the most recent one will be used
-    .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt));
+    .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
+    // add expiry to order obj
+    .map((order) => {
+      const isExpired: boolean =
+        Date.now() >
+        (parseInt(order.createdAt) + MAX_LIFETIME_IN_SECONDS) * 1000;
+      return {
+        ...order,
+        isExpired,
+      };
+    });

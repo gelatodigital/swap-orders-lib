@@ -250,40 +250,52 @@ export class GelatoStopLimitOrders extends GelatoBase {
   public async getOpenStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
+    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryStopLimitOrders(owner, this._chainId);
 
     return orders.map((order) => ({
       ...order,
-      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      adjustedMinReturn: isEthereumNetwork
+        ? order.minReturn
+        : this.getAdjustedMinReturn(order.minReturn),
     }));
   }
 
   public async getStopLimitOrders(owner: string): Promise<StopLimitOrder[]> {
+    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryStopLimitOrders(owner, this._chainId);
 
     return orders.map((order) => ({
       ...order,
-      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      adjustedMinReturn: isEthereumNetwork
+        ? order.minReturn
+        : this.getAdjustedMinReturn(order.minReturn),
     }));
   }
 
   public async getExecutedStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
+    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryStopLimitExecutedOrders(owner, this._chainId);
     return orders.map((order) => ({
       ...order,
-      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      adjustedMinReturn: isEthereumNetwork
+        ? order.minReturn
+        : this.getAdjustedMinReturn(order.minReturn),
     }));
   }
 
   public async getCancelledStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
+    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryStopLimitCancelledOrders(owner, this._chainId);
     return orders.map((order) => ({
       ...order,
-      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      adjustedMinReturn: isEthereumNetwork
+        ? order.minReturn
+        : this.getAdjustedMinReturn(order.minReturn),
     }));
   }
 

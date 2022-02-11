@@ -18,7 +18,7 @@ import {
   NETWORK_HANDLERS,
   STOP_LIMIT_SLIPPAGE_BPS,
   SUBGRAPH_URL,
-  TWO_BPS_GELATO_FEE,
+  BPS_GELATO_FEE,
 } from "../constants";
 import {
   ERC20OrderRouter,
@@ -66,7 +66,7 @@ export class GelatoBase {
   public _handler?: Handler;
 
   public static slippageBPS = STOP_LIMIT_SLIPPAGE_BPS;
-  public static gelatoFeeBPS = TWO_BPS_GELATO_FEE;
+  public static gelatoFeeBPS = BPS_GELATO_FEE;
 
   get chainId(): ChainId {
     return this._chainId;
@@ -308,8 +308,8 @@ export class GelatoBase {
     slippage: string;
     gelatoFee: string;
   } {
-    // if (isEthereumChain(this._chainId))
-    //   throw new Error("Method not available for current chain.");
+    if (isEthereumChain(this._chainId))
+      throw new Error("Method not available for current chain.");
 
     if (extraSlippageBPS) {
       if (!Number.isInteger(extraSlippageBPS))
@@ -342,8 +342,8 @@ export class GelatoBase {
     minReturn: BigNumberish,
     extraSlippageBPS?: number
   ): string {
-    // if (isEthereumChain(this._chainId))
-    //   throw new Error("Method not available for current chain.");
+    if (isEthereumChain(this._chainId))
+      throw new Error("Method not available for current chain.");
 
     const gelatoFee = BigNumber.from(GelatoBase.gelatoFeeBPS);
 

@@ -64,7 +64,7 @@ export interface Order {
   data: string;
   inputData: string;
   handler: string | null;
-  isExpired: string | any;
+  isExpired: boolean;
 }
 
 export interface StopLimitOrder extends Order {

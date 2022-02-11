@@ -21,7 +21,7 @@ import {
   NETWORK_HANDLERS,
   SLIPPAGE_BPS,
   SUBGRAPH_URL,
-  TWO_BPS_GELATO_FEE,
+  BPS_GELATO_FEE,
 } from "../constants";
 import {
   ERC20OrderRouter,
@@ -72,7 +72,7 @@ export class GelatoLimitOrders {
   private _isFlashbotsProtected: boolean;
 
   public static slippageBPS = SLIPPAGE_BPS;
-  public static gelatoFeeBPS = TWO_BPS_GELATO_FEE;
+  public static gelatoFeeBPS = BPS_GELATO_FEE;
 
   get chainId(): ChainId {
     return this._chainId;
