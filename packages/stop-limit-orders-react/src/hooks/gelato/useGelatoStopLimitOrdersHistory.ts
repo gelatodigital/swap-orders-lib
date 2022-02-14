@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Order, StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
 import { useWeb3 } from "../../web3";
-import { getLSOrders, saveStopOrder } from "../../utils/localStorageStopOrders";
+import {
+  getLSOrders,
+  saveStopOrder,
+  clearOrdersLocalStorage,
+} from "../../utils/localStorageStopOrders";
 import useInterval from "../useInterval";
 import { useSelector } from "react-redux";
 import { AppState } from "../../state";
@@ -12,6 +16,7 @@ export interface GelatoStopLimitOrdersHistory {
   cancelled: { pending: StopLimitOrder[]; confirmed: StopLimitOrder[] };
   executed: StopLimitOrder[];
   expired: StopLimitOrder[];
+  clearLocalStorageAndRefetchDataFromSubgraph: () => void;
 }
 function newOrdersFirst(a: StopLimitOrder, b: StopLimitOrder) {
   return Number(b.updatedAt) - Number(a.updatedAt);
@@ -219,6 +224,25 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
         });
   }, [gelatoStopLimitOrders, account, chainId]);
 
+  const clearLocalStorageAndRefetchDataFromSubgraph = useCallback(() => {
+    clearOrdersLocalStorage();
+
+    setExecutedOrders([]);
+    setCancelledOrders({
+      confirmed: [],
+      pending: [],
+    });
+
+    setOpenOrders({
+      confirmed: [],
+      pending: [],
+    });
+
+    fetchOpenOrders();
+    fetchCancelledOrders();
+    fetchExecutedOrders();
+  }, [fetchCancelledOrders, fetchExecutedOrders, fetchOpenOrders]);
+
   useEffect(() => {
     fetchOpenOrders();
     fetchCancelledOrders();
@@ -239,5 +263,6 @@ export default function useGelatoStopLimitOrdersHistory(): GelatoStopLimitOrders
     cancelled: cancelledOrders,
     executed: executedOrders,
     expired: expiredOrders,
+    clearLocalStorageAndRefetchDataFromSubgraph,
   };
 }

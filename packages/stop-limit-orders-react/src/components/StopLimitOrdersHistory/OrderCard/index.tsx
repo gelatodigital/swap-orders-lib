@@ -406,30 +406,13 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
               onClick={() => {
                 if (!chainId) return;
 
-                if (
-                  order.status === "open" &&
-                  !order.isExpired &&
-                  !isSubmissionPending
-                )
+                if (order.status === "open" && !isSubmissionPending)
                   setCancellationState({
                     attemptingTxn: false,
                     cancellationErrorMessage: undefined,
                     showConfirm: true,
                     txHash: undefined,
                   });
-                else if (
-                  order.status === "open" &&
-                  order.isExpired &&
-                  !isSubmissionPending
-                )
-                  window.open(
-                    getExplorerLink(
-                      chainId,
-                      order.createdTxHash,
-                      ExplorerDataType.TRANSACTION
-                    ),
-                    "_blank"
-                  );
                 else if (order.status === "open" && isSubmissionPending)
                   window.open(
                     getExplorerLink(
@@ -461,8 +444,6 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
               status={
                 isCancellationPending || isSubmissionPending
                   ? "pending"
-                  : order.status === "open" && order.isExpired
-                  ? "expired"
                   : order.status
               }
             >
@@ -470,8 +451,6 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
                 ? "pending"
                 : isCancellationPending
                 ? "cancelling"
-                : order.status === "open" && order.isExpired
-                ? "expired"
                 : order.status === "open"
                 ? "cancel"
                 : order.status}
