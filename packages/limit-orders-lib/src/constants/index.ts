@@ -39,6 +39,8 @@ export const HANDLERS_ADDRESSES = {
     ["spookyswap"]: "0x228ffd7122d202c0cd24330892881c47b0817c7a",
     ["bombswap"]: "0x87C4Fbd67f6DD8a1B5EFD9879956c728C97afeFe",
     ["defyswap"]: "0x3d401587320522a5e0bb973d10a852430a8edbbd",
+    ["spiritswap_stoplimit"]: "0x6b9da2978ebe1c60d2cdaf52ee6c498cd8bb3f16",
+    ["spookyswap_stoplimit"]: "0xfd96a67a41ee9f788318b38c5e8c724762c22f21"
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.BSC]: {
@@ -49,6 +51,8 @@ export const HANDLERS_ADDRESSES = {
   [CHAIN_ID.AVAX]: {
     ["traderjoe"]: "0x88f8CCC064bA2D39cF08D57B6e7504a7B6bE8E4e",
     ["pangolin"]: "0x8b206547cfe6f35a77ddab2d6d97260765a349ef",
+    ["pangolin_stoplimit"]: "0x6b9da2978ebe1c60d2cdaf52ee6c498cd8bb3f16",
+    ["traderjoe_stoplimit"]: "0xe912cd26c4a4cfffc175a297f1328ab23313a1a7"
   },
 };
 
@@ -66,15 +70,17 @@ export const NETWORK_HANDLERS = {
   [CHAIN_ID.MAINNET]: ["uniswap"],
   [CHAIN_ID.ROPSTEN]: ["uniswap", "quickswap_stoplimit"],
   [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoplimit"],
-  [CHAIN_ID.FANTOM]: ["spiritswap", "spookyswap", "bombswap", "defyswap"],
+  [CHAIN_ID.FANTOM]: ["spiritswap", "spookyswap", "bombswap", "defyswap", "spiritswap_stoplimit", "spookyswap_stoplimit",],
   [CHAIN_ID.BSC]: ["pancakeswap", "pancakeswap_stoplimit"],
-  [CHAIN_ID.AVAX]: ["traderjoe", "pangolin"],
+  [CHAIN_ID.AVAX]: ["traderjoe", "pangolin", "pangolin_stoplimit", "traderjoe_stoplimit"],
 };
 
 export const NETWORK_STOP_LIMIT_HANDLERS = {
   [CHAIN_ID.ROPSTEN]: ["quickswap_stoplimit"],
   [CHAIN_ID.MATIC]: ["quickswap_stoplimit"],
   [CHAIN_ID.BSC]: ["pancakeswap_stoplimit"],
+  [CHAIN_ID.FANTOM]: ["spookyswap_stoplimit", "spiritswap_stoplimit"],
+  [CHAIN_ID.AVAX]: ["traderjoe_stoplimit", "pangolin_stoplimit"],
 };
 
 export const OLD_SUBGRAPH_URL = {
@@ -182,4 +188,6 @@ export const GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS = {
   [CHAIN_ID.ROPSTEN]: "0xDC41072F4aFE7e4a7ea0f21d13a92662Fe733C55",
   [CHAIN_ID.MATIC]: "0x81967ac4ce8e2d94f7e4b4cf3d2e760605079604",
   [CHAIN_ID.BSC]: "0xe912cd26c4a4cfffc175a297f1328ab23313a1a7",
+  [CHAIN_ID.FANTOM]: "0xf437a1a98566872f734bd18addf4bb610d1f887b",
+  [CHAIN_ID.AVAX]: "0xf437a1a98566872f734bd18addf4bb610d1f887b"
 };
