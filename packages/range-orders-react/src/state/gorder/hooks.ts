@@ -201,6 +201,7 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     inputValue,
     range,
     zeroForOne,
+    currentTick,
   } = useOrderState();
   const nativeCurrency = useCurrency("NATIVE");
   const maxFeeAmount: CurrencyAmount<Currency> | undefined =
@@ -210,26 +211,22 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  // console.log('upperPrice: ', range.upperPrice);
-  // console.log('lowerPrice: ', range.lowerPrice);
   const upperRange = useMemo(
     () =>
       utils.formatUnits(
         range.upperPrice,
-        outputCurrency?.decimals ?? undefined
+        18
       ),
-    [outputCurrency?.decimals, range.upperPrice]
+    [range.upperPrice]
   );
   const lowerRange = useMemo(
     () =>
       utils.formatUnits(
         range.lowerPrice,
-        outputCurrency?.decimals ?? undefined
+        18
       ),
-    [outputCurrency?.decimals, range.lowerPrice]
+    [range.lowerPrice]
   );
-  // console.log('upperRange: ', upperRange);
-  // console.log('lowerRange: ', lowerRange);
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -239,7 +236,7 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   const isExactIn: boolean = independentField === Field.INPUT;
   const isDesiredRateUpdate = independentField === Field.PRICE;
   const desiredRateAppliedAsCurrencyAmount =
-    isDesiredRateUpdate && inputValue && inputCurrency && outputCurrency
+    isDesiredRateUpdate && inputValue && inputCurrency && outputCurrency && range.upperPrice
       ? applyExchangeRateTo(
           inputValue,
           typedValue,
@@ -295,20 +292,16 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   useMemo(() => {
     if (inputCurrency?.wrapped.address && outputCurrency?.wrapped.address) {
-      if (
-        parseInt(inputCurrency?.wrapped.address, 16) <
-        parseInt(outputCurrency?.wrapped.address, 16)
-      ) {
-        dispatch(setZeroForOne(true));
-      } else {
-        dispatch(setZeroForOne(false));
-      }
+        if (
+          parseInt(inputCurrency?.wrapped.address, 16) <
+          parseInt(outputCurrency?.wrapped.address, 16)
+        ) {
+          dispatch(setZeroForOne(true));
+        } else {
+          dispatch(setZeroForOne(false));
+        }
     }
-  }, [
-    dispatch,
-    inputCurrency?.wrapped.address,
-    outputCurrency?.wrapped.address,
-  ]);
+  }, [dispatch, inputCurrency?.wrapped.address, outputCurrency?.wrapped.address]);
 
   const currencyBalances = {
     input: relevantTokenBalances[0],
@@ -355,21 +348,21 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     inputError = inputError ?? "Select a token";
   }
 
-  if (
-    (parsedAmounts.input || parsedAmounts.output) &&
-    currencies.input &&
-    currencies.output &&
-    !trade
-  ) {
-    const extraMessage =
-      chainId === 1 ? ". Only Uniswap V2 pools supported" : "";
-    inputError =
-      inputError ?? "Insufficient liquidity for this trade" + extraMessage;
-  }
+  // if (
+  //   (parsedAmounts.input || parsedAmounts.output) &&
+  //   currencies.input &&
+  //   currencies.output &&
+  //   !trade
+  // ) {
+  //   const extraMessage =
+  //     chainId === 1 ? ". Only Uniswap V2 pools supported" : "";
+  //   inputError =
+  //     inputError ?? "Insufficient liquidity for this trade" + extraMessage;
+  // }
 
-  if (!parsedAmounts.input || !parsedAmounts.output) {
-    inputError = inputError ?? "Enter an amount";
-  }
+  // if (!parsedAmounts.input || !parsedAmounts.output) {
+  //   inputError = inputError ?? "Enter an amount";
+  // }
 
   const price = useMemo(() => {
     if (!parsedAmounts.input || !parsedAmounts.output) return undefined;
@@ -388,45 +381,74 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       inputError ?? "Insufficient " + amountIn.currency.symbol + " balance";
   }
 
-  if (price && trade) {
-    if (
-      rateType === Rate.MUL &&
-      (price.lessThan(trade.executionPrice.asFraction) ||
-        price.equalTo(trade.executionPrice.asFraction))
-    )
-      inputError =
-        inputError ?? "Only possible to place sell orders above market rate";
-
-    if (
-      rateType === Rate.DIV &&
-      (price.invert().greaterThan(trade.executionPrice.invert().asFraction) ||
-        price.invert().equalTo(trade.executionPrice.invert().asFraction))
-    )
-      inputError =
-        inputError ?? "Only possible to place buy orders below market rate";
-  }
+  // if (price) {
+  //   // If selling,
+  //   // Current Tick should be lesser than the upper & lower tick
+  //   if (rateType === Rate.MUL) {
+  //     if (zeroForOne) {
+  //       if (!(range.lower > currentTick && range.upper > currentTick)) {
+  //         inputError =
+  //           inputError ?? "Only possible to place sell orders above market rate";
+  //       }
+  //     } else {
+  //       if ((range.lower > currentTick && range.upper > currentTick)) {
+  //         inputError =
+  //           inputError ?? "Only possible to place sell orders below market rate";
+  //       }
+  //     }
+  //   }
+  //   // If buying,
+  //   // Current Tick should be greater than the higher tick
+  //   if (rateType === Rate.DIV) {
+  //     if (zeroForOne) {
+  //       if (!(range.lower < currentTick && range.upper < currentTick)) {
+  //         inputError =
+  //           inputError ?? "Only possible to place buy orders below market rate";
+  //       }
+  //     } else {
+  //       if ((range.lower < currentTick && range.upper < currentTick)) {
+  //         inputError =
+  //           inputError ?? "Only possible to place buy orders above market rate";
+  //       }
+  //     }
+  //   }
+  // }
   // Get Range Order Upper and Lower prices
 
   const lowerRangeNumber = useMemo(
     () =>
-      zeroForOne
-        ? Number(lowerRange)
-        : Number(lowerRange) > 0.0
-        ? 1 / Number(lowerRange)
-        : 0,
-    [lowerRange, zeroForOne]
+      rateType === Rate.MUL ?
+        zeroForOne
+          ? Number(lowerRange)
+          : Number(lowerRange) > 0
+          ? 1 / Number(lowerRange)
+          : 0
+        :
+        zeroForOne
+          ? Number(lowerRange) > 0
+          ? 1 / Number(lowerRange)
+          : 0
+          : Number(lowerRange),
+    [lowerRange, rateType, zeroForOne]
   );
-  // console.log('lowerRangeNumber', lowerRangeNumber);
+  // console.log('lowerRangeNumber ->>>>>>', lowerRangeNumber);
   const upperRangeNumber = useMemo(
     () =>
-      zeroForOne
-        ? Number(upperRange)
-        : Number(upperRange) > 0.0
-        ? 1 / Number(upperRange)
-        : 0,
-    [upperRange, zeroForOne]
+      rateType === Rate.MUL ?
+        zeroForOne
+          ? Number(upperRange)
+          : Number(upperRange) > 0
+          ? 1 / Number(upperRange)
+          : 0
+        :
+        zeroForOne
+          ? Number(upperRange) > 0
+          ? 1 / Number(upperRange)
+          : 0
+          : Number(upperRange),
+    [upperRange, rateType, zeroForOne]
   );
-  // console.log('upperRangeNumber', upperRangeNumber);
+  // console.log('upperRangeNumber ->>>>>>', upperRangeNumber);
 
   const formattedAmounts = {
     input:
@@ -441,8 +463,8 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       independentField === Field.PRICE
         ? typedValue
         : rateType === Rate.MUL
-        ? price?.toSignificant(6) ?? ""
-        : price?.invert().toSignificant(6) ?? "",
+        ? price?.toSignificant(inputCurrency?.decimals) ?? ""
+        : price?.invert().toSignificant(inputCurrency?.decimals) ?? "",
     rangePriceLower: lowerRangeNumber.toLocaleString("en-US", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 6,

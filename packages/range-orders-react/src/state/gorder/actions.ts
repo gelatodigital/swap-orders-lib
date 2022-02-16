@@ -39,3 +39,4 @@ export const setRangeUpperEnabled = createAction<boolean>(
 export const setRangeLowerEnabled = createAction<boolean>(
   "granger/rangeLowerEnabled"
 );
+export const setCurrentTick = createAction<number>("granger/currentTick");

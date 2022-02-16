@@ -13,6 +13,7 @@ import {
   setZeroForOne,
   setRangeLowerEnabled,
   setRangeUpperEnabled,
+  setCurrentTick,
 } from "./actions";
 
 export interface OrderState {
@@ -39,6 +40,7 @@ export interface OrderState {
   readonly zeroForOne: boolean;
   readonly rangeLowerEnabled: boolean;
   readonly rangeUpperEnabled: boolean;
+  readonly currentTick: number;
 }
 
 export const initialState: OrderState = {
@@ -60,9 +62,10 @@ export const initialState: OrderState = {
     lower: 0,
     lowerPrice: BigNumber.from(0),
   },
-  zeroForOne: false,
+  zeroForOne: true,
   rangeLowerEnabled: false,
   rangeUpperEnabled: false,
+  currentTick: 0,
 };
 
 export default createReducer<OrderState>(initialState, (builder) =>
@@ -147,5 +150,8 @@ export default createReducer<OrderState>(initialState, (builder) =>
     })
     .addCase(setRangeUpperEnabled, (state, { payload }) => {
       state.rangeUpperEnabled = payload;
+    })
+    .addCase(setCurrentTick, (state, { payload }) => {
+      state.currentTick = payload;
     })
 );

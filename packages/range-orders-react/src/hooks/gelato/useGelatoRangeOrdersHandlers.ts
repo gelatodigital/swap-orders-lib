@@ -16,7 +16,7 @@ import {
   FACTORY_ADDRESS,
   FeeAmount,
 } from "@uniswap/v3-sdk";
-import { parseUnits } from "ethers/lib/utils";
+import { utils } from "ethers";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
 import {
   RangeOrderData,
@@ -31,6 +31,7 @@ import { useDispatch } from "react-redux";
 import {
   setRangeUpperEnabled,
   setRangeLowerEnabled,
+  setCurrentTick,
 } from "../../state/gorder/actions";
 
 export interface GelatoRangeOrdersHandlers {
@@ -41,7 +42,7 @@ export interface GelatoRangeOrdersHandlers {
     order: RangeOrderData
   ) => Promise<TransactionResponse>;
   handleInput: (field: Field, value: string) => void;
-  updateRange: (field: Field, price: Price<Currency, Currency>) => void;
+  updateRange: () => void;
   handleCurrencySelection: (
     field: Field.INPUT | Field.OUTPUT,
     currency: Currency
@@ -74,6 +75,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
     zeroForOne,
     range,
+    rateType
   } = useOrderState();
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
@@ -88,41 +90,70 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   // If zeroForOne upper and lower ticks are enabled only when smaller
   // If not zeroForOne upper and lower ticks are enabled only when bigger
   const computeCurrentTick = useCallback(async () => {
+    console.log('>>>>>>>>>>> compute ticks >>>>>>>>>>>>>>')
     if (!poolContract) {
       dispatch(setRangeUpperEnabled(false));
       dispatch(setRangeLowerEnabled(false));
       return;
     }
     const { tick } = await poolContract.slot0();
+    dispatch(setCurrentTick(tick));
+    console.log(tick)
     const { upper, lower } = range;
-    // console.log(zeroForOne)
-    // console.log(tick)
-    // console.log(upper)
-    // console.log(lower)
-    if (zeroForOne) {
-      if (tick <= upper) {
-        dispatch(setRangeUpperEnabled(true));
-      } else {
-        dispatch(setRangeUpperEnabled(false));
-      }
-      if (tick <= lower) {
-        dispatch(setRangeLowerEnabled(true));
-      } else {
-        dispatch(setRangeLowerEnabled(false));
-      }
-    } else {
-      if (tick >= upper) {
-        dispatch(setRangeUpperEnabled(true));
-      } else {
-        dispatch(setRangeUpperEnabled(false));
-      }
-      if (tick >= lower) {
-        dispatch(setRangeLowerEnabled(true));
-      } else {
-        dispatch(setRangeLowerEnabled(false));
-      }
-    }
-  }, [dispatch, poolContract, range, zeroForOne]);
+    console.log(rateType)
+    dispatch(setRangeUpperEnabled(true));
+    dispatch(setRangeLowerEnabled(true));
+    // if (rateType === Rate.MUL) {
+    //   if (zeroForOne) {
+    //     if (tick < upper) {
+    //       dispatch(setRangeUpperEnabled(true));
+    //     } else {
+    //       dispatch(setRangeUpperEnabled(false));
+    //     }
+    //     if (tick < lower) {
+    //       dispatch(setRangeLowerEnabled(true));
+    //     } else {
+    //       dispatch(setRangeLowerEnabled(false));
+    //     }
+    //   } else {
+    //     if (upper < tick) {
+    //       dispatch(setRangeUpperEnabled(true));
+    //     } else {
+    //       dispatch(setRangeUpperEnabled(false));
+    //     }
+    //     if (lower < tick) {
+    //       dispatch(setRangeLowerEnabled(true));
+    //     } else {
+    //       dispatch(setRangeLowerEnabled(false));
+    //     }
+    //   }
+    // } else if (rateType === Rate.DIV) {
+    //   if (zeroForOne) {
+    //     if (upper < tick) {
+    //       dispatch(setRangeUpperEnabled(true));
+    //     } else {
+    //       dispatch(setRangeUpperEnabled(false));
+    //     }
+    //     if (lower < tick) {
+    //       dispatch(setRangeLowerEnabled(true));
+    //     } else {
+    //       dispatch(setRangeLowerEnabled(false));
+    //     }
+    //   } else {
+    //     if (tick < upper) {
+    //       dispatch(setRangeUpperEnabled(true));
+    //     } else {
+    //       dispatch(setRangeUpperEnabled(false));
+    //     }
+    //     if (tick < lower) {
+    //       dispatch(setRangeLowerEnabled(true));
+    //     } else {
+    //       dispatch(setRangeLowerEnabled(false));
+    //     }
+    //   }
+    // }
+  }, [dispatch, poolContract, range, rateType, zeroForOne]);
+  
   useEffect(() => {
     if (inputToken && outputToken) {
       const p = computePoolAddress({
@@ -144,9 +175,9 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   );
 
   const updateRange = useCallback(
-    (field: Field, price: Price<Currency, Currency>) => {
+    () => {
       const update = async () => {
-        // console.log("----------> Updating Range Prices <----------");
+        console.log("----------> Updating Range Prices <----------");
         if (!gelatoRangeOrders) {
           throw new Error("Could not reach Gelato Range Orders library");
         }
@@ -166,56 +197,61 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
           priceValue &&
           Number(priceValue) > 0
         ) {
-          const rate = zeroForOne
-            ? price.toSignificant(inputToken.decimals)
-            : price.invert().toSignificant(inputToken.decimals);
-          const parsedRate = parseUnits(rate, outputToken.decimals);
+          console.log("============ Try to parse rate ================")
+          console.log(priceValue)
+          const tokenA = parseInt(inputToken?.wrapped.address, 16) < parseInt(outputToken?.wrapped.address, 16) ? inputToken : outputToken;
+          console.log('tokenA.decimals =====>>>>', tokenA.decimals)
+          const tokenB = parseInt(inputToken?.wrapped.address, 16) < parseInt(outputToken?.wrapped.address, 16) ? outputToken : inputToken;
+          console.log('tokenB.decimals =====>>>>', tokenB.decimals)
+          console.log(`Pool tokens: ${tokenA.symbol} -> ${tokenB.symbol}`);
+          console.log(`Trade tokens: ${inputToken.symbol} -> ${outputToken.symbol}`);
+          console.log(zeroForOne)
+          const rate = rateType === Rate.MUL ?
+                  zeroForOne ? Number(priceValue).toFixed(outputToken.decimals) : (1/Number(priceValue)).toFixed(outputToken.decimals)
+                  :
+                  zeroForOne ? (1/Number(priceValue)).toFixed(outputToken.decimals) : Number(priceValue).toFixed(outputToken.decimals);
+          console.log('rate: ', rate);
+          const parsedRate = utils.parseUnits(rate, 18);
+          console.log('parsedRate >>>>>>>>>> ', utils.formatUnits(parsedRate, tokenB.decimals));
           const prices = await gelatoRangeOrders.getNearestPrice(
             pool,
             parsedRate
           );
+          console.log("prices", prices);
           const ticks = await gelatoRangeOrders.getNearTicks(pool, parsedRate);
-          // console.log("prices", prices);
-          // console.log("ticks", ticks);
+          console.log("ticks", ticks);
           if (prices && ticks) {
             const {
               upperPrice,
               lowerPrice,
             }: { upperPrice: BigNumber; lowerPrice: BigNumber } = prices;
-            // console.log("upperPrice", upperPrice.toString());
-            // console.log("lowerPrice", lowerPrice.toString());
             const { upper, lower }: { upper: number; lower: number } = ticks;
             if (upperPrice && lowerPrice && upper && lower)
               onRangeChange(upper, upperPrice, lower, lowerPrice);
           }
         }
       };
-      if (field === Field.PRICE && Number(priceValue) > 0) {
+      if (Number(priceValue) > 0) {
         update();
       }
     },
-    [
-      chainId,
-      gelatoRangeOrders,
-      inputToken,
-      onRangeChange,
-      outputToken,
-      pool,
-      priceValue,
-      zeroForOne,
-    ]
+    [chainId, gelatoRangeOrders, inputToken, onRangeChange, outputToken, pool, priceValue, rateType, zeroForOne]
   );
 
   const handleCurrencySelection = useCallback(
     (field: Field.INPUT | Field.OUTPUT, currency: Currency) => {
       onCurrencySelection(field, currency);
+      dispatch(setRangeUpperEnabled(false));
+      dispatch(setRangeLowerEnabled(false));
     },
-    [onCurrencySelection]
+    [dispatch, onCurrencySelection]
   );
 
   const handleSwitchTokens = useCallback(() => {
     onSwitchTokens();
-  }, [onSwitchTokens]);
+    dispatch(setRangeUpperEnabled(false));
+    dispatch(setRangeLowerEnabled(false));
+  }, [dispatch, onSwitchTokens]);
 
   const handleRateType = useCallback(
     async (rateType: Rate, price?: Price<Currency, Currency>) => {
@@ -233,7 +269,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   const handleRangeOrderSubmission = useCallback(
     async (orderToSubmit: { inputAmount: BigNumber }) => {
       if (!gelatoRangeOrders) {
-        throw new Error("Could not reach Gelato Limit Orders library");
+        throw new Error("Could not reach Gelato Range Orders library");
       }
 
       if (!chainId) {
@@ -323,7 +359,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     async (order: RangeOrderData) => {
       console.log("Will cancel order...");
       if (!gelatoRangeOrders) {
-        throw new Error("Could not reach Gelato Limit Orders library");
+        throw new Error("Could not reach Gelato Range Orders library");
       }
 
       if (!chainId) {
