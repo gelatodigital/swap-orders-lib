@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { GelatoLimitOrders, utils } from "@gelatonetwork/limit-orders-lib";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isRangeOrderSupportedChain } from "@gelatonetwork/range-orders-lib/dist/utils";
 import { CurrencyAmount, BigintIsh } from "@uniswap/sdk-core";
 import { formatUnits } from "@ethersproject/units";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useGelatoRangeOrders } from "../../hooks/gelato";
 import useGelatoRangeOrdersLib from "../../hooks/gelato/useGelatoRangeOrdersLib";
 import useGasOverhead from "../../hooks/useGasOverhead";
@@ -15,17 +14,34 @@ import { AutoColumn } from "../Column";
 import { RowBetween, RowFixed } from "../Row";
 import { MouseoverTooltip } from "../Tooltip";
 import { BigNumber } from "ethers";
+import { useToken } from "../../hooks/Tokens";
+import {
+  computePoolAddress,
+  FACTORY_ADDRESS,
+  FeeAmount,
+} from "@uniswap/v3-sdk";
+import {
+  useOrderState,
+} from "../../state/gorder/hooks";
+import { MAX_FEE_AMOUNTS } from "../../constants/misc";
+import { utils } from "ethers";
 
 export function AdvancedSwapDetails() {
   const theme = useTheme();
-  const { chainId } = useWeb3();
+  const { chainId, account } = useWeb3();
+  const [pool, setPool] = useState<string>();
   const {
-    derivedOrderInfo: { parsedAmounts, rawAmounts },
+    derivedOrderInfo: { parsedAmounts, rawAmounts, currencies },
     orderState: { rateType },
   } = useGelatoRangeOrders();
+  const {
+    zeroForOne,
+  } = useOrderState();
 
   const library = useGelatoRangeOrdersLib();
   const [minReturnRaw, setMinReturn] = useState<BigintIsh>(0);
+  const inputToken = useToken(currencies.input?.wrapped.address);
+  const outputToken = useToken(currencies.output?.wrapped.address);
 
   const { gasPrice, realExecutionPriceAsString } = useGasOverhead(
     parsedAmounts.input,
@@ -57,52 +73,63 @@ export function AdvancedSwapDetails() {
 
   const outputAmount = parsedAmounts.output;
 
-  const rawOutputAmount = rawAmounts.output ?? "0";
-
   const { minReturn, slippagePercentage, gelatoFeePercentage } = useMemo(() => {
-    if (!outputAmount || !library || !chainId)
+    if (!outputAmount || !library || !chainId || !pool || !account)
       return {
         minReturn: undefined,
         slippagePercentage: undefined,
         gelatoFeePercentage: undefined,
       };
 
-    if (utils.isEthereumChain(chainId))
+    if (isRangeOrderSupportedChain(chainId))
       return {
         minReturn: outputAmount,
         slippagePercentage: undefined,
         gelatoFeePercentage: undefined,
       };
-    // async () => {
-    //   const mr = await library.getMinReturn({
-    //     pool: "0x0000000000000000000000000000000000000000",
-    //     zeroForOne: true,
-    //     tickThreshold: 0,
-    //     amountIn: BigNumber.from(0),
-    //     receiver: "0x0000000000000000000000000000000000000000",
-    //     maxFeeAmount: BigNumber.from(0),
-    //   });
-    //   setMinReturn(mr.toString());
-    // };
+    async () => {
+      const mr = await library.getMinReturn({
+        pool,
+        zeroForOne,
+        tickThreshold: 0,
+        amountIn: BigNumber.from(rawAmounts.input),
+        receiver: account,
+        maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+      });
+      setMinReturn(utils.formatUnits(mr, 18));
+    };
 
-    const slippagePercentage = GelatoLimitOrders.slippageBPS / 100;
-    const gelatoFeePercentage = GelatoLimitOrders.gelatoFeeBPS / 100;
+    const slippagePercentage = 0;
+    const gelatoFeePercentage = 0;
 
     const minReturnParsed = CurrencyAmount.fromRawAmount(
       outputAmount.currency,
       minReturnRaw
     );
+    console.log('minReturnParsed ===============>', minReturnParsed.toSignificant(6));
 
     return {
       minReturn: minReturnParsed,
       slippagePercentage,
       gelatoFeePercentage,
     };
-  }, [outputAmount, library, chainId, minReturnRaw]);
+  }, [outputAmount, library, chainId, pool, account, minReturnRaw, zeroForOne, rawAmounts.input]);
+
+  useEffect(() => {
+    if (inputToken && outputToken) {
+      const p = computePoolAddress({
+        factoryAddress: FACTORY_ADDRESS,
+        tokenA: inputToken,
+        tokenB: outputToken,
+        fee: FeeAmount.LOW,
+      });
+      setPool(p);
+    }
+  }, [inputToken, outputToken]);
 
   return !chainId ? null : (
     <AutoColumn gap="8px">
-      {!isEthereumChain(chainId) ? (
+      {!isRangeOrderSupportedChain(chainId) ? (
         <>
           <RowBetween>
             <RowFixed>

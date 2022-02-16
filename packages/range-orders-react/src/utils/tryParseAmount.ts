@@ -1,5 +1,5 @@
 import JSBI from "jsbi";
-import { parseUnits } from "ethers/lib/utils";
+import { utils } from "ethers/";
 import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
 
 // try to parse a user entered amount for a given token
@@ -11,7 +11,7 @@ export function tryParseAmount<T extends Currency>(
     return undefined;
   }
   try {
-    const typedValueParsed = parseUnits(value, currency.decimals).toString();
+    const typedValueParsed = utils.parseUnits(value, currency.decimals).toString();
 
     if (typedValueParsed !== "0") {
       return CurrencyAmount.fromRawAmount(

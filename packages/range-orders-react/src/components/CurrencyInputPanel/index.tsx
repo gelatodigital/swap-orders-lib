@@ -237,14 +237,13 @@ interface CurrencyInputPanelProps {
   rangePriceUpper?: string;
   rangeUpperEnabled?: boolean;
   upperTick?: number;
-  rangeError0?: boolean;
-  rangeError1?: boolean;
   isInvertedRate?: boolean;
   realExecutionPrice?: Price<Currency, Currency> | undefined;
   realExecutionPriceAsString?: string | undefined;
   gasPrice?: number;
   rateType?: Rate;
   onPriceSelect?: (price: any) => void;
+  inputError?: string;
 }
 
 export default function CurrencyInputPanel({
@@ -273,8 +272,7 @@ export default function CurrencyInputPanel({
   rangePriceUpper,
   rangeUpperEnabled,
   upperTick,
-  rangeError0,
-  rangeError1,
+  inputError,
   isInvertedRate = false,
   realExecutionPriceAsString,
   rateType,
@@ -508,7 +506,7 @@ export default function CurrencyInputPanel({
                   onClick={() => {
                     setSelectPriceA(true);
                     setSelectPriceB(false);
-                    onPriceSelect(lowerTick);
+                    onPriceSelect({ tick: lowerTick, price: rangePriceLower });
                   }}
                   disabled={!rangeLowerEnabled}
                 >
@@ -521,7 +519,7 @@ export default function CurrencyInputPanel({
                   onClick={() => {
                     setSelectPriceA(false);
                     setSelectPriceB(true);
-                    onPriceSelect(upperTick);
+                    onPriceSelect({ tick: upperTick, price: rangePriceUpper });
                   }}
                   disabled={!rangeUpperEnabled}
                 >
@@ -530,16 +528,12 @@ export default function CurrencyInputPanel({
               </PriceRow>
               <ErrorRow>
                 <RowFixed>
-                  {rangeError0 && (
+                  {
+                    inputError &&
                     <TYPE.body fontSize={12} color={theme.red1}>
-                      Can not place range order over current tick.
+                      {inputError}
                     </TYPE.body>
-                  )}
-                  {rangeError1 && (
-                    <TYPE.body fontSize={12} color={theme.red1}>
-                      Can not place range order below current tick.
-                    </TYPE.body>
-                  )}
+                  }
                 </RowFixed>
               </ErrorRow>
             </Fragment>

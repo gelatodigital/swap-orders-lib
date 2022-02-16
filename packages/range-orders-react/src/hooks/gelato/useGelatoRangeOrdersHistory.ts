@@ -18,7 +18,6 @@ function newOrdersFirst(a: Order, b: Order) {
 }
 
 function parseOrderMap(order: any) {
-  // console.log(order);
   return {
     ...order,
     id:

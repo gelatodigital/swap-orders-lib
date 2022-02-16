@@ -90,6 +90,8 @@ export default function GelatoRangeOrder({
       trade,
       rawAmounts,
       maxFeeAmount,
+      zeroForOne,
+      inputError,
     },
     orderState: {
       independentField,
@@ -172,7 +174,10 @@ export default function GelatoRangeOrder({
     [handleCurrencySelection]
   );
   const handleRangeSelect = useCallback(
-    (rangePrice) => handleRangeSelection(rangePrice),
+    (rangePrice) => {
+      const { tick }: { tick: string; price: string } = rangePrice;
+      handleRangeSelection(tick);
+    },
     [handleRangeSelection]
   );
 
@@ -215,7 +220,7 @@ export default function GelatoRangeOrder({
     approveCallback,
   ] = useApproveCallbackFromInputCurrencyAmount(parsedAmounts.input);
 
-  const inputError = false;
+  // const inputError = false;
   const isValid = !inputError;
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
@@ -229,34 +234,8 @@ export default function GelatoRangeOrder({
   }, [approvalState, approvalSubmitted]);
 
   useEffect(() => {
-    if (price) updateRange(Field.PRICE, price);
-  }, [price, updateRange]);
-
-  // set order error text based on order state
-  const [rangeError0, setRangeError0] = useState<boolean>(false);
-  const [rangeError1, setRangeError1] = useState<boolean>(false);
-  useEffect(() => {
-    if (price && currentMarketRate) {
-      if (
-        price?.greaterThan(currentMarketRate) &&
-        !rangeUpperEnabled &&
-        !rangeLowerEnabled
-      ) {
-        setRangeError0(true);
-      } else {
-        setRangeError0(false);
-      }
-      if (
-        currentMarketRate?.greaterThan(price) &&
-        !rangeUpperEnabled &&
-        !rangeLowerEnabled
-      ) {
-        setRangeError1(true);
-      } else {
-        setRangeError1(false);
-      }
-    }
-  }, [currentMarketRate, price, rangeLowerEnabled, rangeUpperEnabled]);
+    updateRange();
+  }, [updateRange]);
 
   const showApproveFlow =
     !inputError &&
@@ -421,19 +400,18 @@ export default function GelatoRangeOrder({
                 showCurrencySelector={false}
                 hideBalance={true}
                 showRange={true}
-                rangePriceLower={formattedAmounts.rangePriceLower}
-                rangeLowerEnabled={rangeLowerEnabled}
-                lowerTick={formattedAmounts.lowerTick}
-                rangePriceUpper={formattedAmounts.rangePriceUpper}
-                rangeUpperEnabled={rangeUpperEnabled}
-                upperTick={formattedAmounts.upperTick}
-                rangeError0={rangeError0}
-                rangeError1={rangeError1}
+                rangePriceLower={zeroForOne ? formattedAmounts.rangePriceLower : formattedAmounts.rangePriceUpper}
+                rangeLowerEnabled={zeroForOne ? rangeLowerEnabled : rangeUpperEnabled}
+                lowerTick={zeroForOne ? formattedAmounts.lowerTick : formattedAmounts.upperTick}
+                rangePriceUpper={zeroForOne ? formattedAmounts.rangePriceUpper : formattedAmounts.rangePriceLower}
+                rangeUpperEnabled={zeroForOne ? rangeUpperEnabled : rangeLowerEnabled}
+                upperTick={zeroForOne ? formattedAmounts.upperTick : formattedAmounts.lowerTick}
                 isInvertedRate={rateType === Rate.MUL ? false : true}
                 gasPrice={gasPrice}
                 realExecutionPrice={realExecutionPrice ?? undefined}
                 realExecutionPriceAsString={realExecutionPriceAsString}
                 onPriceSelect={handleRangeSelect}
+                inputError={inputError}
               />
               <ArrowWrapper clickable={false}>
                 <Minus

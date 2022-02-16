@@ -29,14 +29,13 @@
     "dist"
   ],
   "scripts": {
-    "build": "yarn compile-v3-contract-types && npx rollup -c",
+    "build": "npx rollup -c",
     "copy-contracts-types": "cp ./src/contracts/types/*.d.ts ./dist/src/contracts/types",
     "copy-assets": "cp ./src/react/assets/**/*.png ./dist/src/react/assets",
     "format": "prettier --write .",
-    "generate-contracts-typings": "typechain --target=ethers-v5 --outDir src/contracts/types './src/**/abis/*.json'",
     "compile-v3-contract-types": "typechain --target=ethers-v5 --outDir src/types/v3 \"./node_modules/@uniswap/**/artifacts/contracts/**/*.json\"",
     "lint": "eslint --cache .",
-    "prepare": "yarn build && yarn format && yarn lint",
+    "prepare": "yarn compile-v3-contract-types && yarn build && yarn format && yarn lint",
     "pre-commit": "yarn prepare"
   },
   "lint-staged": {

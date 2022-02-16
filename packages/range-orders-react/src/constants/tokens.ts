@@ -108,7 +108,7 @@ export const UNI: { [chainId: number]: Token } = {
   [3]: new Token(3, UNI_ADDRESS[3], 18, "UNI", "Uniswap"),
   [5]: new Token(5, UNI_ADDRESS[5], 18, "UNI", "Uniswap"),
   [56]: new Token(56, UNI_ADDRESS[56], 18, "UNI", "Uniswap"),
-  [137]: new Token(42, UNI_ADDRESS[137], 18, "UNI", "Uniswap"),
+  [137]: new Token(137, UNI_ADDRESS[137], 18, "UNI", "Uniswap"),
   [43114]: new Token(56, UNI_ADDRESS[43114], 18, "UNI.e", "Uniswap"),
 };
 
