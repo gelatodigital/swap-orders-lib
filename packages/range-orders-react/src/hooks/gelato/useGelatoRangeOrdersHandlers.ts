@@ -437,7 +437,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
 
   const handleRangeSelection = useCallback(async (tick) => {
     if (tick) {
-      dispatch(setSelectedTick(tick))
+      dispatch(setSelectedTick(tick));
     }
   }, []);
 

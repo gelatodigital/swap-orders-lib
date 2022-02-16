@@ -84,7 +84,7 @@ export function AdvancedSwapDetails() {
         slippagePercentage: undefined,
         gelatoFeePercentage: undefined,
       };
-    const getMinReturn = async() => {
+    const getMinReturn = async () => {
       const mr = await library.getMinReturn({
         pool,
         zeroForOne,
@@ -93,7 +93,7 @@ export function AdvancedSwapDetails() {
         receiver: account,
         maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       });
-      console.log('mr ------->', mr.toHexString());
+      console.log("mr ------->", mr.toHexString());
       console.log(utils.formatUnits(mr, 6));
       setMinReturn(Number(utils.formatUnits(mr, 6)));
     };
@@ -102,16 +102,26 @@ export function AdvancedSwapDetails() {
     const slippagePercentage = 0;
     const gelatoFeePercentage = 0;
 
-    console.log('minReturnParsed **************', minReturnRaw);
+    console.log("minReturnParsed **************", minReturnRaw);
 
     return {
       minReturn: minReturnRaw,
       slippagePercentage,
       gelatoFeePercentage,
     };
-  }, [outputAmount, library, chainId, pool, account, minReturnRaw, zeroForOne, selectedTick, rawAmounts.input]);
-  console.log('............ minReturn ...........')
-  console.log(minReturn, slippagePercentage, gelatoFeePercentage)
+  }, [
+    outputAmount,
+    library,
+    chainId,
+    pool,
+    account,
+    minReturnRaw,
+    zeroForOne,
+    selectedTick,
+    rawAmounts.input,
+  ]);
+  console.log("............ minReturn ...........");
+  console.log(minReturn, slippagePercentage, gelatoFeePercentage);
 
   useEffect(() => {
     if (inputToken && outputToken) {
@@ -161,9 +171,10 @@ export function AdvancedSwapDetails() {
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
           {minReturn
-            ? `${minReturn.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 6 })} ${
-                outputAmount ? outputAmount.currency.symbol : "-"
-              }`
+            ? `${minReturn.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 6,
+              })} ${outputAmount ? outputAmount.currency.symbol : "-"}`
             : "-"}
         </TYPE.black>
       </RowBetween>
