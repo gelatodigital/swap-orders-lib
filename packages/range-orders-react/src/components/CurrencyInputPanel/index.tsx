@@ -528,12 +528,11 @@ export default function CurrencyInputPanel({
               </PriceRow>
               <ErrorRow>
                 <RowFixed>
-                  {
-                    inputError &&
+                  {inputError && (
                     <TYPE.body fontSize={12} color={theme.red1}>
                       {inputError}
                     </TYPE.body>
-                  }
+                  )}
                 </RowFixed>
               </ErrorRow>
             </Fragment>

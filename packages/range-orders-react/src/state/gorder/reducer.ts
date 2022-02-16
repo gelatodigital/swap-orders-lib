@@ -14,6 +14,7 @@ import {
   setRangeLowerEnabled,
   setRangeUpperEnabled,
   setCurrentTick,
+  setSelectedTick,
 } from "./actions";
 
 export interface OrderState {
@@ -41,6 +42,7 @@ export interface OrderState {
   readonly rangeLowerEnabled: boolean;
   readonly rangeUpperEnabled: boolean;
   readonly currentTick: number;
+  readonly selectedTick: number;
 }
 
 export const initialState: OrderState = {
@@ -66,6 +68,7 @@ export const initialState: OrderState = {
   rangeLowerEnabled: false,
   rangeUpperEnabled: false,
   currentTick: 0,
+  selectedTick: 0,
 };
 
 export default createReducer<OrderState>(initialState, (builder) =>
@@ -153,5 +156,8 @@ export default createReducer<OrderState>(initialState, (builder) =>
     })
     .addCase(setCurrentTick, (state, { payload }) => {
       state.currentTick = payload;
+    })
+    .addCase(setSelectedTick, (state, { payload }) => {
+      state.selectedTick = payload;
     })
 );
