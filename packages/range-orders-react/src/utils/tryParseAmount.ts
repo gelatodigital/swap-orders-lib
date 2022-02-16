@@ -11,7 +11,9 @@ export function tryParseAmount<T extends Currency>(
     return undefined;
   }
   try {
-    const typedValueParsed = utils.parseUnits(value, currency.decimals).toString();
+    const typedValueParsed = utils
+      .parseUnits(value, currency.decimals)
+      .toString();
 
     if (typedValueParsed !== "0") {
       return CurrencyAmount.fromRawAmount(

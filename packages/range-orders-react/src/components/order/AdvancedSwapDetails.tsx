@@ -20,26 +20,23 @@ import {
   FACTORY_ADDRESS,
   FeeAmount,
 } from "@uniswap/v3-sdk";
-import {
-  useOrderState,
-} from "../../state/gorder/hooks";
+import { useOrderState } from "../../state/gorder/hooks";
 import { MAX_FEE_AMOUNTS } from "../../constants/misc";
 import { utils } from "ethers";
+import JSBI from "jsbi";
 
 export function AdvancedSwapDetails() {
   const theme = useTheme();
   const { chainId, account } = useWeb3();
   const [pool, setPool] = useState<string>();
   const {
-    derivedOrderInfo: { parsedAmounts, rawAmounts, currencies },
+    derivedOrderInfo: { parsedAmounts, rawAmounts, currencies, selectedTick },
     orderState: { rateType },
   } = useGelatoRangeOrders();
-  const {
-    zeroForOne,
-  } = useOrderState();
+  const { zeroForOne } = useOrderState();
 
   const library = useGelatoRangeOrdersLib();
-  const [minReturnRaw, setMinReturn] = useState<BigintIsh>(0);
+  const [minReturnRaw, setMinReturn] = useState<number>(0);
   const inputToken = useToken(currencies.input?.wrapped.address);
   const outputToken = useToken(currencies.output?.wrapped.address);
 
@@ -81,39 +78,40 @@ export function AdvancedSwapDetails() {
         gelatoFeePercentage: undefined,
       };
 
-    if (isRangeOrderSupportedChain(chainId))
+    if (!isRangeOrderSupportedChain(chainId))
       return {
         minReturn: outputAmount,
         slippagePercentage: undefined,
         gelatoFeePercentage: undefined,
       };
-    async () => {
+    const getMinReturn = async() => {
       const mr = await library.getMinReturn({
         pool,
         zeroForOne,
-        tickThreshold: 0,
+        tickThreshold: selectedTick,
         amountIn: BigNumber.from(rawAmounts.input),
         receiver: account,
         maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       });
-      setMinReturn(utils.formatUnits(mr, 18));
+      console.log('mr ------->', mr.toHexString());
+      console.log(utils.formatUnits(mr, 6));
+      setMinReturn(Number(utils.formatUnits(mr, 6)));
     };
+    getMinReturn();
 
     const slippagePercentage = 0;
     const gelatoFeePercentage = 0;
 
-    const minReturnParsed = CurrencyAmount.fromRawAmount(
-      outputAmount.currency,
-      minReturnRaw
-    );
-    console.log('minReturnParsed ===============>', minReturnParsed.toSignificant(6));
+    console.log('minReturnParsed **************', minReturnRaw);
 
     return {
-      minReturn: minReturnParsed,
+      minReturn: minReturnRaw,
       slippagePercentage,
       gelatoFeePercentage,
     };
-  }, [outputAmount, library, chainId, pool, account, minReturnRaw, zeroForOne, rawAmounts.input]);
+  }, [outputAmount, library, chainId, pool, account, minReturnRaw, zeroForOne, selectedTick, rawAmounts.input]);
+  console.log('............ minReturn ...........')
+  console.log(minReturn, slippagePercentage, gelatoFeePercentage)
 
   useEffect(() => {
     if (inputToken && outputToken) {
@@ -129,68 +127,27 @@ export function AdvancedSwapDetails() {
 
   return !chainId ? null : (
     <AutoColumn gap="8px">
-      {!isRangeOrderSupportedChain(chainId) ? (
-        <>
-          <RowBetween>
-            <RowFixed>
-              <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-                Gelato Fee
-              </TYPE.black>
-            </RowFixed>
-            <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-              {gelatoFeePercentage ? `${gelatoFeePercentage}` : "-"}%
-            </TYPE.black>
-          </RowBetween>
+      <RowBetween>
+        <RowFixed>
+          <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+            Gelato Fee
+          </TYPE.black>
+        </RowFixed>
+        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+          {`${gelatoFeePercentage}`}%
+        </TYPE.black>
+      </RowBetween>
 
-          <RowBetween>
-            <RowFixed>
-              <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-                Slippage
-              </TYPE.black>
-            </RowFixed>
-            <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-              {slippagePercentage ? `${slippagePercentage}` : "-"}%
-            </TYPE.black>
-          </RowBetween>
-        </>
-      ) : (
-        <>
-          <RowBetween>
-            <RowFixed>
-              <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-                Gas Price
-              </TYPE.black>
-            </RowFixed>
-            <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-              {gasPrice
-                ? `${parseFloat(formatUnits(gasPrice, "gwei")).toFixed(0)} GWEI`
-                : "-"}
-            </TYPE.black>
-          </RowBetween>
-          <RowBetween>
-            <RowFixed>
-              <MouseoverTooltip
-                text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
-                  realExecutionRateWithSymbols
-                    ? `Assuming current gas price it should execute when ` +
-                      realExecutionRateWithSymbols +
-                      "."
-                    : ""
-                }`}
-              >
-                <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-                  Real Execution Price (?)
-                </TYPE.black>{" "}
-              </MouseoverTooltip>
-            </RowFixed>
-            <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-              {realExecutionRateWithSymbols
-                ? `${realExecutionRateWithSymbols}`
-                : "-"}
-            </TYPE.black>
-          </RowBetween>
-        </>
-      )}
+      <RowBetween>
+        <RowFixed>
+          <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+            Slippage
+          </TYPE.black>
+        </RowFixed>
+        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+          {`${slippagePercentage}`}%
+        </TYPE.black>
+      </RowBetween>
 
       <RowBetween>
         <RowFixed>
@@ -204,7 +161,7 @@ export function AdvancedSwapDetails() {
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
           {minReturn
-            ? `${minReturn.toSignificant(4)} ${
+            ? `${minReturn.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 6 })} ${
                 outputAmount ? outputAmount.currency.symbol : "-"
               }`
             : "-"}
