@@ -69,10 +69,7 @@ export default function FeeInputPanel({
               }}
             />
           )}
-          <TYPE.main
-            style={{ paddingLeft: 2, paddingRight: 2 }}
-            fontSize={14}
-          >
+          <TYPE.main style={{ paddingLeft: 2, paddingRight: 2 }} fontSize={14}>
             {nativeCurrency?.symbol}
           </TYPE.main>
         </InputRow>

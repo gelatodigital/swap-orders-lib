@@ -187,6 +187,7 @@ export interface DerivedOrderInfo {
   price: Price<Currency, Currency> | undefined;
   maxFeeAmount: CurrencyAmount<Currency> | undefined;
   zeroForOne: boolean;
+  selectedTick: number;
 }
 
 // from the current swap inputs, compute the best trade and return it.
@@ -202,6 +203,7 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     range,
     zeroForOne,
     currentTick,
+    selectedTick,
   } = useOrderState();
   const nativeCurrency = useCurrency("NATIVE");
   const maxFeeAmount: CurrencyAmount<Currency> | undefined =
@@ -211,22 +213,12 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
-  const upperRange = useMemo(
-    () =>
-      utils.formatUnits(
-        range.upperPrice,
-        18
-      ),
-    [range.upperPrice]
-  );
-  const lowerRange = useMemo(
-    () =>
-      utils.formatUnits(
-        range.lowerPrice,
-        18
-      ),
-    [range.lowerPrice]
-  );
+  const upperRange = useMemo(() => utils.formatUnits(range.upperPrice, 18), [
+    range.upperPrice,
+  ]);
+  const lowerRange = useMemo(() => utils.formatUnits(range.lowerPrice, 18), [
+    range.lowerPrice,
+  ]);
 
   const relevantTokenBalances = useCurrencyBalances(account ?? undefined, [
     inputCurrency ?? undefined,
@@ -236,7 +228,11 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   const isExactIn: boolean = independentField === Field.INPUT;
   const isDesiredRateUpdate = independentField === Field.PRICE;
   const desiredRateAppliedAsCurrencyAmount =
-    isDesiredRateUpdate && inputValue && inputCurrency && outputCurrency && range.upperPrice
+    isDesiredRateUpdate &&
+    inputValue &&
+    inputCurrency &&
+    outputCurrency &&
+    range.upperPrice
       ? applyExchangeRateTo(
           inputValue,
           typedValue,
@@ -292,16 +288,20 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   useMemo(() => {
     if (inputCurrency?.wrapped.address && outputCurrency?.wrapped.address) {
-        if (
-          parseInt(inputCurrency?.wrapped.address, 16) <
-          parseInt(outputCurrency?.wrapped.address, 16)
-        ) {
-          dispatch(setZeroForOne(true));
-        } else {
-          dispatch(setZeroForOne(false));
-        }
+      if (
+        parseInt(inputCurrency?.wrapped.address, 16) <
+        parseInt(outputCurrency?.wrapped.address, 16)
+      ) {
+        dispatch(setZeroForOne(true));
+      } else {
+        dispatch(setZeroForOne(false));
+      }
     }
-  }, [dispatch, inputCurrency?.wrapped.address, outputCurrency?.wrapped.address]);
+  }, [
+    dispatch,
+    inputCurrency?.wrapped.address,
+    outputCurrency?.wrapped.address,
+  ]);
 
   const currencyBalances = {
     input: relevantTokenBalances[0],
@@ -417,35 +417,33 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   const lowerRangeNumber = useMemo(
     () =>
-      rateType === Rate.MUL ?
-        zeroForOne
+      rateType === Rate.MUL
+        ? zeroForOne
           ? Number(lowerRange)
           : Number(lowerRange) > 0
           ? 1 / Number(lowerRange)
           : 0
-        :
-        zeroForOne
-          ? Number(lowerRange) > 0
+        : zeroForOne
+        ? Number(lowerRange) > 0
           ? 1 / Number(lowerRange)
           : 0
-          : Number(lowerRange),
+        : Number(lowerRange),
     [lowerRange, rateType, zeroForOne]
   );
   // console.log('lowerRangeNumber ->>>>>>', lowerRangeNumber);
   const upperRangeNumber = useMemo(
     () =>
-      rateType === Rate.MUL ?
-        zeroForOne
+      rateType === Rate.MUL
+        ? zeroForOne
           ? Number(upperRange)
           : Number(upperRange) > 0
           ? 1 / Number(upperRange)
           : 0
-        :
-        zeroForOne
-          ? Number(upperRange) > 0
+        : zeroForOne
+        ? Number(upperRange) > 0
           ? 1 / Number(upperRange)
           : 0
-          : Number(upperRange),
+        : Number(upperRange),
     [upperRange, rateType, zeroForOne]
   );
   // console.log('upperRangeNumber ->>>>>>', upperRangeNumber);
@@ -515,5 +513,6 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     rawAmounts,
     maxFeeAmount,
     zeroForOne,
+    selectedTick,
   };
 }

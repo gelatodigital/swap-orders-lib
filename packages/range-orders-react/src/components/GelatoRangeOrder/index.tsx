@@ -400,12 +400,32 @@ export default function GelatoRangeOrder({
                 showCurrencySelector={false}
                 hideBalance={true}
                 showRange={true}
-                rangePriceLower={zeroForOne ? formattedAmounts.rangePriceLower : formattedAmounts.rangePriceUpper}
-                rangeLowerEnabled={zeroForOne ? rangeLowerEnabled : rangeUpperEnabled}
-                lowerTick={zeroForOne ? formattedAmounts.lowerTick : formattedAmounts.upperTick}
-                rangePriceUpper={zeroForOne ? formattedAmounts.rangePriceUpper : formattedAmounts.rangePriceLower}
-                rangeUpperEnabled={zeroForOne ? rangeUpperEnabled : rangeLowerEnabled}
-                upperTick={zeroForOne ? formattedAmounts.upperTick : formattedAmounts.lowerTick}
+                rangePriceLower={
+                  zeroForOne
+                    ? formattedAmounts.rangePriceLower
+                    : formattedAmounts.rangePriceUpper
+                }
+                rangeLowerEnabled={
+                  zeroForOne ? rangeLowerEnabled : rangeUpperEnabled
+                }
+                lowerTick={
+                  zeroForOne
+                    ? formattedAmounts.lowerTick
+                    : formattedAmounts.upperTick
+                }
+                rangePriceUpper={
+                  zeroForOne
+                    ? formattedAmounts.rangePriceUpper
+                    : formattedAmounts.rangePriceLower
+                }
+                rangeUpperEnabled={
+                  zeroForOne ? rangeUpperEnabled : rangeLowerEnabled
+                }
+                upperTick={
+                  zeroForOne
+                    ? formattedAmounts.upperTick
+                    : formattedAmounts.lowerTick
+                }
                 isInvertedRate={rateType === Rate.MUL ? false : true}
                 gasPrice={gasPrice}
                 realExecutionPrice={realExecutionPrice ?? undefined}
