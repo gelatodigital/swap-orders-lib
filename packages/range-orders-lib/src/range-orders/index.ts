@@ -265,22 +265,26 @@ export class GelatoRangeOrder {
       this._signer ? this._signer : this.provider
     );
     // sqrtPriceX96 = sqrt(price) * 2 ** 96
-    const sqrtPriceX96 = 
-      JSBI.multiply(
-        sqrt(JSBI.divide(JSBI.BigInt(price.toString()), JSBI.divide(
-          JSBI.multiply(
-            JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18)),
+    const sqrtPriceX96 = JSBI.multiply(
+      sqrt(
+        JSBI.divide(
+          JSBI.BigInt(price.toString()),
+          JSBI.divide(
+            JSBI.multiply(
+              JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18)),
+              JSBI.exponentiate(
+                JSBI.BigInt(10),
+                JSBI.BigInt(await token0.decimals())
+              )
+            ),
             JSBI.exponentiate(
               JSBI.BigInt(10),
-              JSBI.BigInt(await token0.decimals())
+              JSBI.BigInt(await token1.decimals())
             )
-          ),
-          JSBI.exponentiate(
-            JSBI.BigInt(10),
-            JSBI.BigInt(await token1.decimals())
           )
-        ))),
-        JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(96))
+        )
+      ),
+      JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(96))
     );
 
     const tick = TickMath.getTickAtSqrtRatio(sqrtPriceX96);
