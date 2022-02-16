@@ -225,10 +225,10 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
             ? (1 / Number(priceValue)).toFixed(tokenA.decimals)
             : Number(priceValue).toFixed(tokenA.decimals);
         console.log("rate: ", rate);
-        const parsedRate = utils.parseUnits(rate, tokenA.decimals);
+        const parsedRate = utils.parseUnits(rate, 18);
         console.log(
           "parsedRate >>>>>>>>>> ",
-          utils.formatUnits(parsedRate, tokenA.decimals)
+          utils.formatUnits(parsedRate, 18)
         );
         const prices = await gelatoRangeOrders.getNearestPrice(
           pool,

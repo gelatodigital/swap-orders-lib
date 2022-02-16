@@ -15,7 +15,7 @@ describe("Library Test", () => {
   let gelatoRangeOrder: GelatoRangeOrder;
 
   beforeEach(async () => {
-    const goerliChainId = 5;
+    const goerliChainId = 137;
     const provider: Provider = new providers.JsonRpcProvider(URL);
     gelatoRangeOrder = new GelatoRangeOrder(goerliChainId, provider);
   });
@@ -100,18 +100,20 @@ describe("Library Test", () => {
       )) as RangeOrderData[];
     else fail("user address not valid");
 
-    const expectedPrice = BigNumber.from("51223156983233948619");
+    const expectedPrice = BigNumber.from("0");
 
     if (results.length == 0) fail("No range order to check.");
     else if (results[0])
-      expect(expectedPrice.toString()).to.be.eq(
-        (
-          await gelatoRangeOrder.getExchangeRate(results[0].pool as string)
-        ).toString()
+      expect(Number(expectedPrice.toString())).to.be.lt(
+        Number(
+          (
+            await gelatoRangeOrder.getExchangeRate(results[0].pool as string)
+          ).toString()
+        )
       );
   });
 
-  it("#6: Get Pool price", async () => {
+  it("#7: Get Min Return", async () => {
     let results: RangeOrderData[] = [];
     if (ADDR)
       results = (await gelatoRangeOrder.getExecutedRangeOrders(
@@ -120,18 +122,14 @@ describe("Library Test", () => {
     else fail("user address not valid");
 
     if (results.length == 0) fail("No range order to check.");
-    else if (results[0])
+    else if (results[0].amountIn && results[0].receiver)
       console.log(
         (
-          await gelatoRangeOrder.getFeeAdjustedMinReturn({
+          await gelatoRangeOrder.getMinReturn({
             pool: results[0].pool as string,
             zeroForOne: results[0].zeroForOne as boolean,
-            ejectDust: results[0].ejectDust,
             tickThreshold: results[0].tickThreshold as unknown as number,
             amountIn: results[0].amountIn,
-            minAmountOut: (results[0].zeroForOne
-              ? results[0].amount1Min
-              : results[0].amount0Min) as BigNumber,
             receiver: results[0].receiver,
             maxFeeAmount: ethers.constants.Zero,
           })
@@ -139,7 +137,7 @@ describe("Library Test", () => {
       );
   });
 
-  it("#7: Get Tick from price", async () => {
+  it("#8: Get Tick from price", async () => {
     let results: RangeOrderData[] = [];
     if (ADDR)
       results = (await gelatoRangeOrder.getExecutedRangeOrders(
@@ -159,7 +157,7 @@ describe("Library Test", () => {
     }
   });
 
-  it("#8: Get Tick from price", async () => {
+  it("#9: Get Tick from price", async () => {
     let results: RangeOrderData[] = [];
     if (ADDR)
       results = (await gelatoRangeOrder.getExecutedRangeOrders(
