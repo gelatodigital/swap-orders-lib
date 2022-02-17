@@ -222,18 +222,27 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         console.log(
           utils
             .parseUnits(
-              zeroForOne
-                ? priceValue
-                : (1 / Number(priceValue)).toPrecision(10),
+              rateType === Rate.MUL
+                ? zeroForOne
+                  ? priceValue
+                  : (1 / Number(priceValue)).toPrecision(10)
+                : zeroForOne
+                ? (1 / Number(priceValue)).toPrecision(10)
+                : priceValue,
               18
             )
             .toString()
         );
         const prices = await gelatoRangeOrders.getNearestPrice(
           pool,
-          // utils.parseUnits("60", 18)
           utils.parseUnits(
-            zeroForOne ? priceValue : (1 / Number(priceValue)).toPrecision(10),
+            rateType === Rate.MUL
+              ? zeroForOne
+                ? priceValue
+                : (1 / Number(priceValue)).toPrecision(10)
+              : zeroForOne
+              ? (1 / Number(priceValue)).toPrecision(10)
+              : priceValue,
             18
           )
         );
@@ -241,7 +250,13 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         const ticks = await gelatoRangeOrders.getNearTicks(
           pool,
           utils.parseUnits(
-            zeroForOne ? priceValue : (1 / Number(priceValue)).toPrecision(10),
+            rateType === Rate.MUL
+              ? zeroForOne
+                ? priceValue
+                : (1 / Number(priceValue)).toPrecision(10)
+              : zeroForOne
+              ? (1 / Number(priceValue)).toPrecision(10)
+              : priceValue,
             18
           )
         );
