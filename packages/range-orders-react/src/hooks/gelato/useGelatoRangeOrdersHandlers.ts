@@ -34,7 +34,6 @@ import {
   setCurrentTick,
   setSelectedTick,
 } from "../../state/gorder/actions";
-import JSBI from "jsbi";
 
 export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
@@ -93,7 +92,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   // If zeroForOne upper and lower ticks are enabled only when smaller
   // If not zeroForOne upper and lower ticks are enabled only when bigger
   const computeCurrentTick = useCallback(async () => {
-    console.log(">>>>>>>>>>> compute ticks >>>>>>>>>>>>>>");
     if (!poolContract) {
       dispatch(setRangeUpperEnabled(false));
       dispatch(setRangeLowerEnabled(false));
@@ -101,61 +99,31 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     }
     const { tick } = await poolContract.slot0();
     dispatch(setCurrentTick(tick));
-    console.log(tick);
     const { upper, lower } = range;
-    console.log(rateType);
-    dispatch(setRangeUpperEnabled(true));
-    dispatch(setRangeLowerEnabled(true));
-    // if (rateType === Rate.MUL) {
-    //   if (zeroForOne) {
-    //     if (tick < upper) {
-    //       dispatch(setRangeUpperEnabled(true));
-    //     } else {
-    //       dispatch(setRangeUpperEnabled(false));
-    //     }
-    //     if (tick < lower) {
-    //       dispatch(setRangeLowerEnabled(true));
-    //     } else {
-    //       dispatch(setRangeLowerEnabled(false));
-    //     }
-    //   } else {
-    //     if (upper < tick) {
-    //       dispatch(setRangeUpperEnabled(true));
-    //     } else {
-    //       dispatch(setRangeUpperEnabled(false));
-    //     }
-    //     if (lower < tick) {
-    //       dispatch(setRangeLowerEnabled(true));
-    //     } else {
-    //       dispatch(setRangeLowerEnabled(false));
-    //     }
-    //   }
-    // } else if (rateType === Rate.DIV) {
-    //   if (zeroForOne) {
-    //     if (upper < tick) {
-    //       dispatch(setRangeUpperEnabled(true));
-    //     } else {
-    //       dispatch(setRangeUpperEnabled(false));
-    //     }
-    //     if (lower < tick) {
-    //       dispatch(setRangeLowerEnabled(true));
-    //     } else {
-    //       dispatch(setRangeLowerEnabled(false));
-    //     }
-    //   } else {
-    //     if (tick < upper) {
-    //       dispatch(setRangeUpperEnabled(true));
-    //     } else {
-    //       dispatch(setRangeUpperEnabled(false));
-    //     }
-    //     if (tick < lower) {
-    //       dispatch(setRangeLowerEnabled(true));
-    //     } else {
-    //       dispatch(setRangeLowerEnabled(false));
-    //     }
-    //   }
-    // }
-  }, [dispatch, poolContract, range, rateType]);
+    if (zeroForOne) {
+      if (upper > tick) {
+        dispatch(setRangeUpperEnabled(true));
+      } else {
+        dispatch(setRangeUpperEnabled(false));
+      }
+      if (lower > tick) {
+        dispatch(setRangeLowerEnabled(true));
+      } else {
+        dispatch(setRangeLowerEnabled(false));
+      }
+    } else {
+      if (upper < tick) {
+        dispatch(setRangeUpperEnabled(true));
+      } else {
+        dispatch(setRangeUpperEnabled(false));
+      }
+      if (lower < tick) {
+        dispatch(setRangeLowerEnabled(true));
+      } else {
+        dispatch(setRangeLowerEnabled(false));
+      }
+    }
+  }, [dispatch, poolContract, range, zeroForOne]);
 
   useEffect(() => {
     if (inputToken && outputToken) {
@@ -179,7 +147,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
 
   const updateRange = useCallback(() => {
     const update = async () => {
-      console.log("----------> Updating Range Prices <----------");
       if (!gelatoRangeOrders) {
         throw new Error("Could not reach Gelato Range Orders library");
       }
@@ -195,44 +162,8 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       if (
         gelatoRangeOrders &&
         priceValue &&
-        inputToken &&
-        outputToken &&
         Number(priceValue) > 0
       ) {
-        console.log("============ Try to parse rate ================");
-        console.log(priceValue);
-        console.log(pool);
-        const tokenA =
-          parseInt(inputToken?.wrapped.address, 16) <
-          parseInt(outputToken?.wrapped.address, 16)
-            ? inputToken
-            : outputToken;
-        console.log("tokenA.decimals =====>>>>", tokenA.decimals);
-        const tokenB =
-          parseInt(inputToken?.wrapped.address, 16) <
-          parseInt(outputToken?.wrapped.address, 16)
-            ? outputToken
-            : inputToken;
-        console.log("tokenB.decimals =====>>>>", tokenB.decimals);
-        console.log(`Pool tokens: ${tokenA.symbol} -> ${tokenB.symbol}`);
-        // console.log(
-        //   `Trade tokens: ${inputToken.symbol} -> ${outputToken.symbol}`
-        // );
-        console.log(zeroForOne);
-        console.log(
-          utils
-            .parseUnits(
-              rateType === Rate.MUL
-                ? zeroForOne
-                  ? priceValue
-                  : (1 / Number(priceValue)).toPrecision(10)
-                : zeroForOne
-                ? (1 / Number(priceValue)).toPrecision(10)
-                : priceValue,
-              18
-            )
-            .toString()
-        );
         const prices = await gelatoRangeOrders.getNearestPrice(
           pool,
           utils.parseUnits(
@@ -246,7 +177,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
             18
           )
         );
-        console.log("prices", prices);
         const ticks = await gelatoRangeOrders.getNearTicks(
           pool,
           utils.parseUnits(
@@ -260,7 +190,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
             18
           )
         );
-        console.log("ticks", ticks);
         if (prices && ticks) {
           const {
             upperPrice,
@@ -275,7 +204,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     if (Number(priceValue) > 0) {
       update();
     }
-  }, [chainId, gelatoRangeOrders, onRangeChange, pool, priceValue]);
+  }, [chainId, gelatoRangeOrders, onRangeChange, pool, priceValue, rateType, zeroForOne]);
 
   const handleCurrencySelection = useCallback(
     (field: Field.INPUT | Field.OUTPUT, currency: Currency) => {
@@ -335,6 +264,8 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         account,
         BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
       );
+      console.log('Encoded order ======>')
+      console.log(order)
 
       const orderPayload: RangeOrderPayload = {
         pool,
@@ -366,6 +297,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         order: ({
           ...order,
           id: order.id.toString(),
+          pool,
           submittedTxHash: tx?.hash.toLowerCase(),
           status: RangeOrderStatus.Submitted,
           updatedAt: now.toString(),
@@ -396,7 +328,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
 
   const handleRangeOrderCancellation = useCallback(
     async (order: RangeOrderData) => {
-      console.log("Will cancel order...");
       if (!gelatoRangeOrders) {
         throw new Error("Could not reach Gelato Range Orders library");
       }
@@ -433,9 +364,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
         tickThreshold: Number(order.tickThreshold.toString()),
       };
-      console.log(orderPayload);
-      console.log(order.id);
-      console.log(order.startTime?.toNumber() ?? 0);
       const tx = await gelatoRangeOrders.cancelRangeOrder(
         order.id,
         orderPayload,
@@ -453,7 +381,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     if (tick) {
       dispatch(setSelectedTick(tick));
     }
-  }, []);
+  }, [dispatch]);
 
   return {
     handleInput,

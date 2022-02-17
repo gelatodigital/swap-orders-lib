@@ -266,26 +266,26 @@ export class GelatoRangeOrder {
     );
     // // sqrtPriceX96 = sqrt(price) * 2 ** 96
     // // https://docs.uniswap.org/sdk/guides/fetching-prices#understanding-sqrtprice
-    const sqrtPriceX96 = JSBI.multiply(
+    const sqrtPriceX96 = JSBI.divide(
+      JSBI.multiply(
+        sqrt(JSBI.BigInt(price.toString())),
+        JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(96))
+      ),
       sqrt(
         JSBI.divide(
-          JSBI.BigInt(price.toString()),
-          JSBI.divide(
-            JSBI.multiply(
-              JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18)),
-              JSBI.exponentiate(
-                JSBI.BigInt(10),
-                JSBI.BigInt(await token0.decimals())
-              )
-            ),
+          JSBI.multiply(
+            JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(18)),
             JSBI.exponentiate(
               JSBI.BigInt(10),
-              JSBI.BigInt(await token1.decimals())
+              JSBI.BigInt(await token0.decimals())
             )
+          ),
+          JSBI.exponentiate(
+            JSBI.BigInt(10),
+            JSBI.BigInt(await token1.decimals())
           )
         )
-      ),
-      JSBI.exponentiate(JSBI.BigInt(2), JSBI.BigInt(96))
+      )
     );
 
     const tick = TickMath.getTickAtSqrtRatio(sqrtPriceX96);

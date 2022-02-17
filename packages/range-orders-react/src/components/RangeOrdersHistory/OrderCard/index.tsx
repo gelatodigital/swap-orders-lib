@@ -208,9 +208,6 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const inputToken = useCurrency(token0);
   const outputToken = useCurrency(token1);
-  // console.log('price: ', price)
-  // console.log(outputToken)
-  // console.log(order.amountIn)
 
   const inputAmount = useMemo(
     () =>
