@@ -78,7 +78,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     zeroForOne,
     range,
     rateType,
-    selectedTick
+    selectedTick,
   } = useOrderState();
 
   const inputCurrency = useCurrency(inputCurrencyId);
@@ -201,7 +201,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       ) {
         console.log("============ Try to parse rate ================");
         console.log(priceValue);
-        console.log(pool)
+        console.log(pool);
         const tokenA =
           parseInt(inputToken?.wrapped.address, 16) <
           parseInt(outputToken?.wrapped.address, 16)
@@ -219,14 +219,32 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         //   `Trade tokens: ${inputToken.symbol} -> ${outputToken.symbol}`
         // );
         console.log(zeroForOne);
-        console.log(utils.parseUnits(zeroForOne ? priceValue : (1/Number(priceValue)).toPrecision(10), 18).toString())
+        console.log(
+          utils
+            .parseUnits(
+              zeroForOne
+                ? priceValue
+                : (1 / Number(priceValue)).toPrecision(10),
+              18
+            )
+            .toString()
+        );
         const prices = await gelatoRangeOrders.getNearestPrice(
           pool,
           // utils.parseUnits("60", 18)
-          utils.parseUnits(zeroForOne ? priceValue : (1/Number(priceValue)).toPrecision(10), 18)
+          utils.parseUnits(
+            zeroForOne ? priceValue : (1 / Number(priceValue)).toPrecision(10),
+            18
+          )
         );
         console.log("prices", prices);
-        const ticks = await gelatoRangeOrders.getNearTicks(pool, utils.parseUnits(zeroForOne ? priceValue : (1/Number(priceValue)).toPrecision(10), 18));
+        const ticks = await gelatoRangeOrders.getNearTicks(
+          pool,
+          utils.parseUnits(
+            zeroForOne ? priceValue : (1 / Number(priceValue)).toPrecision(10),
+            18
+          )
+        );
         console.log("ticks", ticks);
         if (prices && ticks) {
           const {
