@@ -1,5 +1,5 @@
 import { Provider } from "@ethersproject/abstract-provider";
-import { BigNumber, ethers, providers } from "ethers";
+import { BigNumber, ethers, providers, utils } from "ethers";
 import { GelatoRangeOrder } from "../src/range-orders";
 import { expect } from "chai";
 import dotenv from "dotenv";
@@ -137,7 +137,7 @@ describe("Library Test", () => {
       );
   });
 
-  it("#8: Get Tick from price", async () => {
+  it("#8: Get NearTicks from price", async () => {
     let results: RangeOrderData[] = [];
     if (ADDR)
       results = (await gelatoRangeOrder.getExecutedRangeOrders(
@@ -147,8 +147,9 @@ describe("Library Test", () => {
 
     if (results.length == 0) fail("No range order to check.");
     else if (results[0]) {
-      console.log(results[0].tickThreshold);
+      console.log("tickThreshold -------->", results[0].tickThreshold);
       console.log(
+        "getTicks -------->",
         await gelatoRangeOrder.getNearTicks(
           results[0].pool as string,
           ethers.utils.parseUnits("60", 18)
@@ -177,5 +178,88 @@ describe("Library Test", () => {
         ).lowerPrice.toString()
       );
     }
+  });
+
+  it("#10: Get Nearest Prices", async () => {
+    let results: RangeOrderData[] = [];
+    if (ADDR)
+      results = (await gelatoRangeOrder.getExecutedRangeOrders(
+        ADDR.toLowerCase()
+      )) as RangeOrderData[];
+    else fail("user address not valid");
+
+    if (results.length == 0) fail("No range order to check.");
+    else if (results[0]) {
+      console.log(results[0].pool);
+      console.log(
+        await gelatoRangeOrder.getNearestPrice(
+          results[0].pool as string,
+          utils.parseUnits("60", 18)
+        )
+      );
+    }
+  });
+
+  // Get price for MATIC/USDC pool
+  it("#10: Get Nearest Prices for MATIC/USDC pool", async () => {
+    let results: RangeOrderData[] = [];
+    if (ADDR)
+      results = (await gelatoRangeOrder.getExecutedRangeOrders(
+        ADDR.toLowerCase()
+      )) as RangeOrderData[];
+    else fail("user address not valid");
+
+    if (results.length == 0) fail("No range order to check.");
+    else if (results[0]) {
+      console.log(results[0].pool);
+      console.log(
+        await gelatoRangeOrder.getNearestPrice(
+          "0xA374094527e1673A86dE625aa59517c5dE346d32",
+          utils.parseUnits("18700000000000000", 18)
+        )
+      );
+    }
+  });
+
+  it("#11: Get NearTicks from price for MATIC/USDC pool", async () => {
+    console.log(
+      "getTicks -------->",
+      await gelatoRangeOrder.getNearTicks(
+        "0xA374094527e1673A86dE625aa59517c5dE346d32",
+        ethers.utils.parseUnits("18700000000000000", 18)
+      )
+    );
+  });
+
+  const wethusdc = "0x45dDa9cb7c25131DF268515131f647d726f50608";
+  // Get price for WETH/USDC pool
+  it("#10: Get Nearest Prices for MATIC/USDC pool", async () => {
+    let results: RangeOrderData[] = [];
+    if (ADDR)
+      results = (await gelatoRangeOrder.getExecutedRangeOrders(
+        ADDR.toLowerCase()
+      )) as RangeOrderData[];
+    else fail("user address not valid");
+
+    if (results.length == 0) fail("No range order to check.");
+    else if (results[0]) {
+      console.log(results[0].pool);
+      console.log(
+        await gelatoRangeOrder.getNearestPrice(
+          wethusdc,
+          utils.parseUnits("0.000318559", 18)
+        )
+      );
+    }
+  });
+
+  it("#11: Get NearTicks from price for MATIC/USDC pool", async () => {
+    console.log(
+      "getTicks -------->",
+      await gelatoRangeOrder.getNearTicks(
+        wethusdc,
+        ethers.utils.parseUnits("0.000318559", 18)
+      )
+    );
   });
 });
