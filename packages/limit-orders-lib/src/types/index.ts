@@ -6,18 +6,23 @@ export type ChainId = 1 | 3 | 5 | 56 | 137 | 250 | 43114;
 
 export type Handler =
   | "spookyswap"
+  | "spookyswap_stoplimit"
   | "uniswap"
   | "quickswap"
+  | "quickswap_stoplimit"
   | "spiritswap"
+  | "spiritswap_stoplimit"
   | "bombswap"
   | "polydex"
   | "cafeswap"
   | "pancakeswap"
   | "pancakeswap_stoplimit"
   | "traderjoe"
+  | "traderjoe_stoplimit"
   | "defyswap"
   | "pangolin"
-  | "quickswap_stoplimit";
+  | "pangolin_stoplimit";
+  
 
 export interface TransactionData {
   to: string;
