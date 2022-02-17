@@ -348,22 +348,6 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     inputError = inputError ?? "Select a token";
   }
 
-  // if (
-  //   (parsedAmounts.input || parsedAmounts.output) &&
-  //   currencies.input &&
-  //   currencies.output &&
-  //   !trade
-  // ) {
-  //   const extraMessage =
-  //     chainId === 1 ? ". Only Uniswap V2 pools supported" : "";
-  //   inputError =
-  //     inputError ?? "Insufficient liquidity for this trade" + extraMessage;
-  // }
-
-  // if (!parsedAmounts.input || !parsedAmounts.output) {
-  //   inputError = inputError ?? "Enter an amount";
-  // }
-
   const price = useMemo(() => {
     if (!parsedAmounts.input || !parsedAmounts.output) return undefined;
 
@@ -381,38 +365,25 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       inputError ?? "Insufficient " + amountIn.currency.symbol + " balance";
   }
 
-  // if (price) {
-  //   // If selling,
-  //   // Current Tick should be lesser than the upper & lower tick
-  //   if (rateType === Rate.MUL) {
-  //     if (zeroForOne) {
-  //       if (!(range.lower > currentTick && range.upper > currentTick)) {
-  //         inputError =
-  //           inputError ?? "Only possible to place sell orders above market rate";
-  //       }
-  //     } else {
-  //       if ((range.lower > currentTick && range.upper > currentTick)) {
-  //         inputError =
-  //           inputError ?? "Only possible to place sell orders below market rate";
-  //       }
-  //     }
-  //   }
-  //   // If buying,
-  //   // Current Tick should be greater than the higher tick
-  //   if (rateType === Rate.DIV) {
-  //     if (zeroForOne) {
-  //       if (!(range.lower < currentTick && range.upper < currentTick)) {
-  //         inputError =
-  //           inputError ?? "Only possible to place buy orders below market rate";
-  //       }
-  //     } else {
-  //       if ((range.lower < currentTick && range.upper < currentTick)) {
-  //         inputError =
-  //           inputError ?? "Only possible to place buy orders above market rate";
-  //       }
-  //     }
-  //   }
-  // }
+  if (currentTick && range.lower && range.upper) {
+    if(rateType === Rate.MUL) {
+      if(zeroForOne) {
+        if(!(range.lower > currentTick))
+          inputError = inputError ?? "Only possible to place sell orders above market rate";
+      } else {
+        if(!(range.upper < currentTick))
+          inputError = inputError ?? "Only possible to place sell orders above market rate";
+      }
+    } else {
+      if(zeroForOne) {
+        if(!(range.lower > currentTick))
+          inputError = inputError ?? "Only possible to place buy orders below market rate";
+      } else {
+        if(!(range.upper < currentTick))
+          inputError = inputError ?? "Only possible to place buy orders below market rate";
+      }
+    }
+  }
   // Get Range Order Upper and Lower prices
 
   const lowerRangeNumber = useMemo(
@@ -430,7 +401,6 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
         : Number(lowerRange),
     [lowerRange, rateType, zeroForOne]
   );
-  // console.log('lowerRangeNumber ->>>>>>', lowerRangeNumber);
   const upperRangeNumber = useMemo(
     () =>
       rateType === Rate.MUL
@@ -446,7 +416,6 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
         : Number(upperRange),
     [upperRange, rateType, zeroForOne]
   );
-  // console.log('upperRangeNumber ->>>>>>', upperRangeNumber);
 
   const formattedAmounts = {
     input:
