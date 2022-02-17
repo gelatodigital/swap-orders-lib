@@ -307,7 +307,9 @@ export default function GelatoRangeOrder({
             attemptingTxn: false,
             tradeToConfirm,
             showConfirm,
-            swapErrorMessage: error.data ? error.data.message ?? error.message : error.message,
+            swapErrorMessage: error.data
+              ? error.data.message ?? error.message
+              : error.message,
             txHash: undefined,
           });
         });

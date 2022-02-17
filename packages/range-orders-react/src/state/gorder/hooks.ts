@@ -366,21 +366,27 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   }
 
   if (currentTick && range.lower && range.upper) {
-    if(rateType === Rate.MUL) {
-      if(zeroForOne) {
-        if(!(range.lower > currentTick))
-          inputError = inputError ?? "Only possible to place sell orders above market rate";
+    if (rateType === Rate.MUL) {
+      if (zeroForOne) {
+        if (!(range.lower > currentTick))
+          inputError =
+            inputError ??
+            "Only possible to place sell orders above market rate";
       } else {
-        if(!(range.upper < currentTick))
-          inputError = inputError ?? "Only possible to place sell orders above market rate";
+        if (!(range.upper < currentTick))
+          inputError =
+            inputError ??
+            "Only possible to place sell orders above market rate";
       }
     } else {
-      if(zeroForOne) {
-        if(!(range.lower > currentTick))
-          inputError = inputError ?? "Only possible to place buy orders below market rate";
+      if (zeroForOne) {
+        if (!(range.lower > currentTick))
+          inputError =
+            inputError ?? "Only possible to place buy orders below market rate";
       } else {
-        if(!(range.upper < currentTick))
-          inputError = inputError ?? "Only possible to place buy orders below market rate";
+        if (!(range.upper < currentTick))
+          inputError =
+            inputError ?? "Only possible to place buy orders below market rate";
       }
     }
   }

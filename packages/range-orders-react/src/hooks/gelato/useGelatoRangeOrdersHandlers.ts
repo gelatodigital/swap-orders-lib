@@ -159,11 +159,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       if (!pool) {
         throw new Error("No pool");
       }
-      if (
-        gelatoRangeOrders &&
-        priceValue &&
-        Number(priceValue) > 0
-      ) {
+      if (gelatoRangeOrders && priceValue && Number(priceValue) > 0) {
         const prices = await gelatoRangeOrders.getNearestPrice(
           pool,
           utils.parseUnits(
@@ -204,7 +200,15 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     if (Number(priceValue) > 0) {
       update();
     }
-  }, [chainId, gelatoRangeOrders, onRangeChange, pool, priceValue, rateType, zeroForOne]);
+  }, [
+    chainId,
+    gelatoRangeOrders,
+    onRangeChange,
+    pool,
+    priceValue,
+    rateType,
+    zeroForOne,
+  ]);
 
   const handleCurrencySelection = useCallback(
     (field: Field.INPUT | Field.OUTPUT, currency: Currency) => {
@@ -264,8 +268,8 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         account,
         BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
       );
-      console.log('Encoded order ======>')
-      console.log(order)
+      console.log("Encoded order ======>");
+      console.log(order);
 
       const orderPayload: RangeOrderPayload = {
         pool,
@@ -377,11 +381,14 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     [account, chainId, gelatoRangeOrders, zeroForOne]
   );
 
-  const handleRangeSelection = useCallback(async (tick) => {
-    if (tick) {
-      dispatch(setSelectedTick(tick));
-    }
-  }, [dispatch]);
+  const handleRangeSelection = useCallback(
+    async (tick) => {
+      if (tick) {
+        dispatch(setSelectedTick(tick));
+      }
+    },
+    [dispatch]
+  );
 
   return {
     handleInput,
