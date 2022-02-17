@@ -34,6 +34,7 @@ import {
   setCurrentTick,
   setSelectedTick,
 } from "../../state/gorder/actions";
+import JSBI from "jsbi";
 
 export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
@@ -77,13 +78,14 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     zeroForOne,
     range,
     rateType,
+    selectedTick
   } = useOrderState();
+
   const inputCurrency = useCurrency(inputCurrencyId);
   const outputCurrency = useCurrency(outputCurrencyId);
   const inputToken = useToken(inputCurrency?.wrapped.address);
   const outputToken = useToken(outputCurrency?.wrapped.address);
   const [pool, setPool] = useState<string>();
-  const [tickThreshold, setTickThreshold] = useState<number>(0);
   const poolContract = usePoolContract(pool);
   const dispatch = useDispatch();
 
@@ -153,7 +155,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     //     }
     //   }
     // }
-  }, [dispatch, poolContract, range, rateType, zeroForOne]);
+  }, [dispatch, poolContract, range, rateType]);
 
   useEffect(() => {
     if (inputToken && outputToken) {
@@ -192,13 +194,14 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       }
       if (
         gelatoRangeOrders &&
+        priceValue &&
         inputToken &&
         outputToken &&
-        priceValue &&
         Number(priceValue) > 0
       ) {
         console.log("============ Try to parse rate ================");
         console.log(priceValue);
+        console.log(pool)
         const tokenA =
           parseInt(inputToken?.wrapped.address, 16) <
           parseInt(outputToken?.wrapped.address, 16)
@@ -212,30 +215,18 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
             : inputToken;
         console.log("tokenB.decimals =====>>>>", tokenB.decimals);
         console.log(`Pool tokens: ${tokenA.symbol} -> ${tokenB.symbol}`);
-        console.log(
-          `Trade tokens: ${inputToken.symbol} -> ${outputToken.symbol}`
-        );
+        // console.log(
+        //   `Trade tokens: ${inputToken.symbol} -> ${outputToken.symbol}`
+        // );
         console.log(zeroForOne);
-        const rate =
-          rateType === Rate.MUL
-            ? zeroForOne
-              ? Number(priceValue).toFixed(tokenA.decimals)
-              : (1 / Number(priceValue)).toFixed(tokenA.decimals)
-            : zeroForOne
-            ? (1 / Number(priceValue)).toFixed(tokenA.decimals)
-            : Number(priceValue).toFixed(tokenA.decimals);
-        console.log("rate: ", rate);
-        const parsedRate = utils.parseUnits(rate, 18);
-        console.log(
-          "parsedRate >>>>>>>>>> ",
-          utils.formatUnits(parsedRate, 18)
-        );
+        console.log(utils.parseUnits(zeroForOne ? priceValue : (1/Number(priceValue)).toPrecision(10), 18).toString())
         const prices = await gelatoRangeOrders.getNearestPrice(
           pool,
-          parsedRate
+          // utils.parseUnits("60", 18)
+          utils.parseUnits(zeroForOne ? priceValue : (1/Number(priceValue)).toPrecision(10), 18)
         );
         console.log("prices", prices);
-        const ticks = await gelatoRangeOrders.getNearTicks(pool, parsedRate);
+        const ticks = await gelatoRangeOrders.getNearTicks(pool, utils.parseUnits(zeroForOne ? priceValue : (1/Number(priceValue)).toPrecision(10), 18));
         console.log("ticks", ticks);
         if (prices && ticks) {
           const {
@@ -251,17 +242,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     if (Number(priceValue) > 0) {
       update();
     }
-  }, [
-    chainId,
-    gelatoRangeOrders,
-    inputToken,
-    onRangeChange,
-    outputToken,
-    pool,
-    priceValue,
-    rateType,
-    zeroForOne,
-  ]);
+  }, [chainId, gelatoRangeOrders, onRangeChange, pool, priceValue]);
 
   const handleCurrencySelection = useCallback(
     (field: Field.INPUT | Field.OUTPUT, currency: Currency) => {
@@ -316,7 +297,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       const { order } = await gelatoRangeOrders.encodeRangeOrderSubmission(
         pool,
         zeroForOne,
-        tickThreshold,
+        selectedTick,
         orderToSubmit.inputAmount,
         account,
         BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
@@ -325,7 +306,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       const orderPayload: RangeOrderPayload = {
         pool,
         zeroForOne,
-        tickThreshold,
+        tickThreshold: selectedTick,
         amountIn: orderToSubmit.inputAmount,
         receiver: account,
         maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
@@ -375,7 +356,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       inputCurrency?.wrapped.address,
       nativeCurrency?.wrapped.address,
       pool,
-      tickThreshold,
+      selectedTick,
       zeroForOne,
     ]
   );

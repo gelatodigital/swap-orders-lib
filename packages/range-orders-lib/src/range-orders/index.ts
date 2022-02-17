@@ -264,7 +264,8 @@ export class GelatoRangeOrder {
       await pool.token1(),
       this._signer ? this._signer : this.provider
     );
-    // sqrtPriceX96 = sqrt(price) * 2 ** 96
+    // // sqrtPriceX96 = sqrt(price) * 2 ** 96
+    // // https://docs.uniswap.org/sdk/guides/fetching-prices#understanding-sqrtprice
     const sqrtPriceX96 = JSBI.multiply(
       sqrt(
         JSBI.divide(
