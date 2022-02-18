@@ -64,9 +64,8 @@ export class GelatoBase {
   public _abiEncoder: utils.AbiCoder;
   public _handlerAddress?: string;
   public _handler?: Handler;
-
-  public static slippageBPS = STOP_LIMIT_SLIPPAGE_BPS;
-  public static gelatoFeeBPS = BPS_GELATO_FEE;
+  public _gelatoFeeBPS: number;
+  public _slippageBPS: number;
 
   get chainId(): ChainId {
     return this._chainId;
@@ -120,6 +119,8 @@ export class GelatoBase {
     }
 
     this._chainId = chainId;
+    this._gelatoFeeBPS = BPS_GELATO_FEE[chainId];
+    this._slippageBPS = STOP_LIMIT_SLIPPAGE_BPS[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
       ? signerOrProvider
@@ -317,15 +318,13 @@ export class GelatoBase {
     }
 
     const gelatoFee = BigNumber.from(outputAmount)
-      .mul(GelatoBase.gelatoFeeBPS)
+      .mul(this._gelatoFeeBPS)
       .div(10000)
       .gte(1)
-      ? BigNumber.from(outputAmount).mul(GelatoBase.gelatoFeeBPS).div(10000)
+      ? BigNumber.from(outputAmount).mul(this._gelatoFeeBPS).div(10000)
       : BigNumber.from(1);
 
-    const slippageBPS = extraSlippageBPS
-      ? extraSlippageBPS
-      : GelatoBase.slippageBPS;
+    const slippageBPS = extraSlippageBPS ? extraSlippageBPS : this._slippageBPS;
 
     const slippage = BigNumber.from(outputAmount).mul(slippageBPS).div(10000);
 
@@ -345,11 +344,11 @@ export class GelatoBase {
     if (isEthereumChain(this._chainId))
       throw new Error("Method not available for current chain.");
 
-    const gelatoFee = BigNumber.from(GelatoBase.gelatoFeeBPS);
+    const gelatoFee = BigNumber.from(this._gelatoFeeBPS);
 
     const slippage = extraSlippageBPS
       ? BigNumber.from(extraSlippageBPS)
-      : BigNumber.from(GelatoBase.slippageBPS);
+      : BigNumber.from(this._slippageBPS);
 
     const fees = gelatoFee.add(slippage);
 

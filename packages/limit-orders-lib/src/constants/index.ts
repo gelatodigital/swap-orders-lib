@@ -1,8 +1,6 @@
 export const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 export const SLIPPAGE_BPS = 40; // 0.4%
-export const STOP_LIMIT_SLIPPAGE_BPS = 500; // 5%
-export const BPS_GELATO_FEE = 10; // 0.1%
 
 export const MAX_LIFETIME_IN_SECONDS = 7889238; // 3 months in seconds
 
@@ -14,6 +12,24 @@ export const CHAIN_ID = {
   MATIC: 137,
   FANTOM: 250,
   AVAX: 43114,
+};
+
+export const BPS_GELATO_FEE = {
+  [CHAIN_ID.MAINNET]: 10,
+  [CHAIN_ID.ROPSTEN]: 10,
+  [CHAIN_ID.MATIC]: 10,
+  [CHAIN_ID.FANTOM]: 5,
+  [CHAIN_ID.BSC]: 15,
+  [CHAIN_ID.AVAX]: 5,
+};
+
+export const STOP_LIMIT_SLIPPAGE_BPS = {
+  [CHAIN_ID.MAINNET]: 200,
+  [CHAIN_ID.ROPSTEN]: 500,
+  [CHAIN_ID.MATIC]: 500,
+  [CHAIN_ID.FANTOM]: 500,
+  [CHAIN_ID.BSC]: 500,
+  [CHAIN_ID.AVAX]: 500,
 };
 
 export const HANDLERS_ADDRESSES = {

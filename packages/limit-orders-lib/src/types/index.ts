@@ -22,7 +22,6 @@ export type Handler =
   | "defyswap"
   | "pangolin"
   | "pangolin_stoplimit";
-  
 
 export interface TransactionData {
   to: string;
