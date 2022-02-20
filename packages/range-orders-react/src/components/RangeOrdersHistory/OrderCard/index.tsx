@@ -13,8 +13,6 @@ import { CurrencyAmount, Price } from "@uniswap/sdk-core";
 import ConfirmCancellationModal from "../ConfirmCancellationModal";
 import { useTradeExactIn } from "../../../hooks/useTrade";
 import { Dots } from "../../order/styleds";
-import { Rate } from "../../../state/gorder/actions";
-import { isRangeOrderSupportedChain } from "@gelatonetwork/range-orders-lib/dist/utils";
 import { useWeb3 } from "../../../web3";
 import { ButtonGray } from "../../Button";
 import { useIsTransactionPending } from "../../../state/gtransactions/hooks";
@@ -24,13 +22,9 @@ import {
 } from "../../../utils/getExplorerLink";
 import TradePrice from "../../order/TradePrice";
 import useGelatoRangeOrdersLib from "../../../hooks/gelato/useGelatoRangeOrdersLib";
-import useGasOverhead from "../../../hooks/useGasOverhead";
-import { MouseoverTooltip } from "../../Tooltip";
-import { TYPE } from "../../../theme";
-import HoverInlineText from "../../HoverInlineText";
-import { formatUnits } from "@ethersproject/units";
 import { usePoolContract } from "../../../hooks/useContract";
 import { BigNumber } from "ethers";
+import { MAX_FEE_AMOUNTS } from "../../../constants/misc";
 
 const handleColorType = (status: string, theme: DefaultTheme) => {
   switch (status) {
@@ -187,10 +181,7 @@ export default function OrderCard({ order }: { order: Order }) {
     showExecutionPriceInverted,
     setShowExecutionPriceInverted,
   ] = useState<boolean>(false);
-  const [
-    showEthereumExecutionPriceInverted,
-    setShowEthereumExecutionPriceInverted,
-  ] = useState<boolean>(true);
+
   const [
     showCurrentPriceInverted,
     setShowCurrentPriceInverted,
@@ -204,10 +195,10 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const [token0, setToken0] = useState<string | undefined>();
   const [token1, setToken1] = useState<string | undefined>();
-  const [price, setPrice] = useState<BigNumber | undefined>();
+  const [minReturn, setMinReturn] = useState<BigNumber | undefined>();
 
-  const inputToken = useCurrency(token0);
-  const outputToken = useCurrency(token1);
+  const inputToken = useCurrency(order.zeroForOne ? token0 : token1);
+  const outputToken = useCurrency(order.zeroForOne ? token1 : token0);
 
   const inputAmount = useMemo(
     () =>
@@ -217,7 +208,16 @@ export default function OrderCard({ order }: { order: Order }) {
     [inputToken, order.amountIn]
   );
 
-  const isEthereum = isRangeOrderSupportedChain(chainId ?? 1);
+  const outputAmount = useMemo(
+    () =>
+      outputToken && minReturn
+        ? CurrencyAmount.fromRawAmount(
+            outputToken,
+            minReturn.toString()
+          )
+        : undefined,
+    [outputToken, minReturn]
+  );
 
   useEffect(() => {
     async function getTokenList() {
@@ -232,54 +232,22 @@ export default function OrderCard({ order }: { order: Order }) {
   }, [poolContract]);
 
   useEffect(() => {
-    async function getPrice() {
-      if (gelatoLibrary && order.pool && order.tickThreshold) {
-        const { upperPrice } = await gelatoLibrary.getPriceFromTick(
-          order.pool,
-          Number(order.tickThreshold.toString())
-        );
-        setPrice(upperPrice);
+    async function getMinReturn() {
+      if(gelatoLibrary && chainId && order.pool && typeof order.zeroForOne !== 'undefined' && order.tickThreshold && order.amountIn && order.receiver) {
+        const mr = await gelatoLibrary.getMinReturn({
+          pool: order.pool,
+          zeroForOne: order.zeroForOne,
+          tickThreshold: order.tickThreshold.toNumber(),
+          amountIn: order.amountIn,
+          receiver: order.receiver,
+          maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+        });
+        setMinReturn(mr);
       }
     }
-    getPrice();
-  }, [gelatoLibrary, order.pool, order.tickThreshold]);
+    getMinReturn();
+  }, [chainId, gelatoLibrary, order]);
 
-  // const rawMinReturn = useMemo(
-  //   () =>
-  //     order.adjustedMinReturn
-  //       ? order.adjustedMinReturn
-  //       : gelatoLibrary && chainId && order.minReturn
-  //       ? isEthereum
-  //         ? order.minReturn
-  //         : gelatoLibrary.getMinReturn(order.minReturn)
-  //       : undefined,
-  //   [
-  //     chainId,
-  //     gelatoLibrary,
-  //     order.adjustedMinReturn,
-  //     order.minReturn,
-  //     isEthereum,
-  //   ]
-  // );
-
-  const outputAmount = useMemo(
-    () =>
-      inputToken && outputToken && order.amountIn && price
-        ? CurrencyAmount.fromRawAmount(
-            outputToken,
-            CurrencyAmount.fromRawAmount(
-              inputToken,
-              order.amountIn.mul(price).toString()
-            ).toSignificant(inputToken.decimals)
-          )
-        : undefined,
-    [inputToken, outputToken, order.amountIn, price]
-  );
-
-  const {
-    gasPrice,
-    realExecutionPrice: ethereumExecutionPrice,
-  } = useGasOverhead(inputAmount, outputAmount, Rate.MUL);
 
   const executionPrice = useMemo(
     () =>
@@ -521,45 +489,13 @@ export default function OrderCard({ order }: { order: Order }) {
                   Execution price:
                 </Text>
                 {executionPrice ? (
-                  isEthereum ? (
-                    <>
-                      <MouseoverTooltip
-                        text={`The execution price takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled, so that the minimum you receive is ${
-                          outputAmount ? outputAmount.toSignificant(4) : "-"
-                        } ${
-                          outputAmount?.currency.symbol ?? ""
-                        }. It fluctuates according to gas prices. Current gas price: ${parseFloat(
-                          gasPrice ? formatUnits(gasPrice, "gwei") : "-"
-                        ).toFixed(0)} GWEI.`}
-                      >
-                        {ethereumExecutionPrice ? (
-                          <TradePrice
-                            price={ethereumExecutionPrice}
-                            showInverted={showEthereumExecutionPriceInverted}
-                            setShowInverted={
-                              setShowEthereumExecutionPriceInverted
-                            }
-                            fontWeight={500}
-                            fontSize={12}
-                          />
-                        ) : ethereumExecutionPrice === undefined ? (
-                          <TYPE.body fontSize={14} color={theme.text2}>
-                            <HoverInlineText text={"never executes"} />
-                          </TYPE.body>
-                        ) : (
-                          <Dots />
-                        )}
-                      </MouseoverTooltip>
-                    </>
-                  ) : (
-                    <TradePrice
-                      price={executionPrice}
-                      showInverted={showExecutionPriceInverted}
-                      setShowInverted={setShowExecutionPriceInverted}
-                      fontWeight={500}
-                      fontSize={12}
-                    />
-                  )
+                  <TradePrice
+                    price={executionPrice}
+                    showInverted={showExecutionPriceInverted}
+                    setShowInverted={setShowExecutionPriceInverted}
+                    fontWeight={500}
+                    fontSize={12}
+                  />
                 ) : (
                   <Dots />
                 )}
