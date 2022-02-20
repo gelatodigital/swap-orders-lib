@@ -46,7 +46,7 @@ export function AdvancedSwapDetails() {
 
   useEffect(() => {
     const getMinReturn = async () => {
-      if(library && pool && chainId && account) {
+      if (library && pool && chainId && account) {
         const mr = await library.getMinReturn({
           pool,
           zeroForOne,
@@ -59,7 +59,15 @@ export function AdvancedSwapDetails() {
       }
     };
     getMinReturn();
-  }, [account, chainId, library, pool, rawAmounts.input, selectedTick, zeroForOne]);
+  }, [
+    account,
+    chainId,
+    library,
+    pool,
+    rawAmounts.input,
+    selectedTick,
+    zeroForOne,
+  ]);
 
   useEffect(() => {
     if (inputToken && outputToken) {
@@ -87,9 +95,10 @@ export function AdvancedSwapDetails() {
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
           {minReturn
-            ? `${Number.parseFloat(minReturn).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 6 })} ${
-                outputAmount ? outputAmount.currency.symbol : "-"
-              }`
+            ? `${Number.parseFloat(minReturn).toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 6,
+              })} ${outputAmount ? outputAmount.currency.symbol : "-"}`
             : "-"}
         </TYPE.black>
       </RowBetween>
