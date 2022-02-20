@@ -211,10 +211,7 @@ export default function OrderCard({ order }: { order: Order }) {
   const outputAmount = useMemo(
     () =>
       outputToken && minReturn
-        ? CurrencyAmount.fromRawAmount(
-            outputToken,
-            minReturn.toString()
-          )
+        ? CurrencyAmount.fromRawAmount(outputToken, minReturn.toString())
         : undefined,
     [outputToken, minReturn]
   );
@@ -233,7 +230,15 @@ export default function OrderCard({ order }: { order: Order }) {
 
   useEffect(() => {
     async function getMinReturn() {
-      if(gelatoLibrary && chainId && order.pool && typeof order.zeroForOne !== 'undefined' && order.tickThreshold && order.amountIn && order.receiver) {
+      if (
+        gelatoLibrary &&
+        chainId &&
+        order.pool &&
+        typeof order.zeroForOne !== "undefined" &&
+        order.tickThreshold &&
+        order.amountIn &&
+        order.receiver
+      ) {
         const mr = await gelatoLibrary.getMinReturn({
           pool: order.pool,
           zeroForOne: order.zeroForOne,
@@ -247,7 +252,6 @@ export default function OrderCard({ order }: { order: Order }) {
     }
     getMinReturn();
   }, [chainId, gelatoLibrary, order]);
-
 
   const executionPrice = useMemo(
     () =>
