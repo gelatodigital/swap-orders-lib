@@ -459,7 +459,7 @@ export class GelatoRangeOrder {
   public async encodeRangeOrderSubmission(
     pool: string,
     zeroForOne: boolean,
-    tickThreshold: BigNumberish,
+    tickThreshold: number,
     amountIn: BigNumberish,
     receiver: string,
     maxFeeAmount: BigNumberish
