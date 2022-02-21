@@ -7,7 +7,7 @@ import rtransactions from "./gtransactions/reducer";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const GELATO_RANGE_PERSISTED_KEYS: string[] = [
-  "gtransactions",
+  "rtransactions",
   "glists",
   "ruser",
 ];

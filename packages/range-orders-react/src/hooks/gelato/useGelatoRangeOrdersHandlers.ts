@@ -241,7 +241,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
 
   const handleRangeOrderSubmission = useCallback(
     async (orderToSubmit: { inputAmount: BigNumber }) => {
-      console.log("<====== Range order submission ======>");
       if (!gelatoRangeOrders) {
         throw new Error("Could not reach Gelato Range Orders library");
       }
@@ -270,7 +269,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         account,
         BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
       );
-      console.log(order);
 
       const orderPayload: RangeOrderPayload = {
         pool,
@@ -288,17 +286,13 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
               )
             : BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       };
-      console.log(orderPayload);
-      console.log(overrides);
 
       const tx = await gelatoRangeOrders.setRangeOrder(orderPayload, overrides);
       if (!tx) {
         throw new Error("No transaction");
       }
       const now = Math.round(Date.now() / 1000);
-      console.log(tx);
       const orderId = getPendingLSOrdersID(chainId, account);
-      console.log("orderId =>>", orderId);
       addTransaction(tx, {
         summary: `Order submission`,
         type: "submission",

@@ -25,7 +25,7 @@ export function getLSOrders(chainId: number, account: string, pending = false) {
 export function getPendingLSOrdersID(chainId: number, account: string): number {
   const key = lsKey(LS_ORDERS + "pending_", account, chainId);
   const orders = get<Order[]>(key);
-  const ordersLength = orders.length;
+  const ordersLength = orders ? orders.length : 0;
   return ordersLength;
 }
 
@@ -59,8 +59,6 @@ export function removeOrder(
   order: Order,
   pending = false
 ) {
-  console.log(">>>>>>>>> removeOrder <<<<<<<<<<");
-  console.log(order);
   const key = pending
     ? lsKey(LS_ORDERS + "pending_", account, chainId)
     : lsKey(LS_ORDERS, account, chainId);
