@@ -71,6 +71,14 @@ export class GelatoBase {
     return this._chainId;
   }
 
+  get gelatoFeeBPS(): number {
+    return this._gelatoFeeBPS;
+  }
+
+  get slippageBPS(): number {
+    return this._slippageBPS;
+  }
+
   get signer(): Signer | undefined {
     return this._signer;
   }

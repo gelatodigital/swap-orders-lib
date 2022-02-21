@@ -78,6 +78,10 @@ export class GelatoLimitOrders {
     return this._chainId;
   }
 
+  get gelatoFeeBPS(): number {
+    return this._gelatoFeeBPS;
+  }
+
   get signer(): Signer | undefined {
     return this._signer;
   }
