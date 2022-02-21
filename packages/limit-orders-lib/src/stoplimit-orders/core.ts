@@ -18,7 +18,7 @@ import {
   NETWORK_HANDLERS,
   STOP_LIMIT_SLIPPAGE_BPS,
   SUBGRAPH_URL,
-  BPS_GELATO_FEE,
+  L2_BPS_GELATO_FEE,
 } from "../constants";
 import {
   ERC20OrderRouter,
@@ -119,7 +119,7 @@ export class GelatoBase {
     }
 
     this._chainId = chainId;
-    this._gelatoFeeBPS = BPS_GELATO_FEE[chainId];
+    this._gelatoFeeBPS = L2_BPS_GELATO_FEE[chainId];
     this._slippageBPS = STOP_LIMIT_SLIPPAGE_BPS[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
