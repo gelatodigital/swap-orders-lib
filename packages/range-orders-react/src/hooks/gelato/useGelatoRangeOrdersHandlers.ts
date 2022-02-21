@@ -34,6 +34,7 @@ import {
   setCurrentTick,
   setSelectedTick,
 } from "../../state/gorder/actions";
+import { getPendingLSOrdersID } from "../../utils/localStorageOrders";
 
 export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
@@ -240,6 +241,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
 
   const handleRangeOrderSubmission = useCallback(
     async (orderToSubmit: { inputAmount: BigNumber }) => {
+      console.log("<====== Range order submission ======>");
       if (!gelatoRangeOrders) {
         throw new Error("Could not reach Gelato Range Orders library");
       }
@@ -268,7 +270,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         account,
         BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
       );
-      console.log("Encoded order ======>");
       console.log(order);
 
       const orderPayload: RangeOrderPayload = {
@@ -295,12 +296,15 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         throw new Error("No transaction");
       }
       const now = Math.round(Date.now() / 1000);
+      console.log(tx);
+      const orderId = getPendingLSOrdersID(chainId, account);
+      console.log("orderId =>>", orderId);
       addTransaction(tx, {
         summary: `Order submission`,
         type: "submission",
         order: ({
           ...order,
-          id: order.id.toString(),
+          id: BigNumber.from(orderId).add(BigNumber.from("1")),
           pool,
           submittedTxHash: tx?.hash.toLowerCase(),
           status: RangeOrderStatus.Submitted,

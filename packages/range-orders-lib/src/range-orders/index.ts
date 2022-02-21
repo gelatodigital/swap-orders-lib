@@ -477,12 +477,29 @@ export class GelatoRangeOrder {
         to,
       },
       order: {
-        id: BigNumber.from(0),
+        id: BigNumber.from(
+          this._getKey({
+            pool,
+            receiver,
+          })
+        ),
         creator: receiver.toLowerCase(),
         receiver: receiver.toLowerCase(),
         tickThreshold: BigNumber.from(tickThreshold),
         zeroForOne,
       },
     };
+  }
+
+  private _getKey({
+    pool,
+    receiver,
+  }: {
+    pool: string;
+    receiver: string;
+  }): string {
+    return utils.keccak256(
+      this._abiEncoder.encode(["address", "address"], [pool, receiver])
+    );
   }
 }
