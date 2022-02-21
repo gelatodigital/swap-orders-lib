@@ -36,6 +36,10 @@ export function useTransactionAdder(): (
         approval?: { tokenAddress: string; spender: string };
       } = { type: "submission" }
     ) => {
+      console.log(
+        "====================== Transaction Adder ========================="
+      );
+      console.log(order ?? undefined);
       if (!account) return;
       if (!chainId) return;
 
