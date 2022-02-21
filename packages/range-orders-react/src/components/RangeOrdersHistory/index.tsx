@@ -95,9 +95,6 @@ export default function GelatoRangeOrderHistory() {
   const { account } = useWeb3();
   const theme = useTheme();
   const { open, cancelled, executed } = useGelatoRangeOrdersHistory();
-  // console.log("open", open);
-  // console.log("cancelled", cancelled);
-  // console.log("executed", executed);
 
   const fixedListRef = useRef<FixedSizeList>();
 
