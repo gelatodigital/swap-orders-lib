@@ -2,6 +2,7 @@ import React, { useCallback, useContext } from 'react'
 import { useDispatch } from 'react-redux'
 import styled, { ThemeContext } from 'styled-components'
 import { SUPPORTED_WALLETS } from '../../constants/wallet'
+import { SupportedChainId } from '../../constants/chains'
 import { useActiveWeb3React } from '../../hooks/web3'
 import { AppDispatch } from '../../state'
 import { clearAllTransactions } from '../../state/transactions/actions'
@@ -18,6 +19,7 @@ import { ButtonSecondary } from '../Button'
 import { ExternalLink as LinkIcon } from 'react-feather'
 import { ExternalLink, LinkStyledButton, TYPE } from '../../theme'
 import { clearAllTransactions as clearAllTransactionsLib } from '@gelatonetwork/limit-orders-react'
+import { clearAllTransactions as clearAllTransactionsRangeOrderLib } from '@gelatonetwork/range-orders-react'
 
 const HeaderRow = styled.div`
   ${({ theme }) => theme.flexRowNoWrap};
@@ -251,6 +253,7 @@ export default function AccountDetails({
   const clearAllTransactionsCallback = useCallback(() => {
     if (chainId) {
       dispatch(clearAllTransactions({ chainId }))
+      dispatch(clearAllTransactionsRangeOrderLib({ chainId }))
       dispatch(clearAllTransactionsLib({ chainId }))
     }
   }, [dispatch, chainId])
