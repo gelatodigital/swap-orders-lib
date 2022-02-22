@@ -310,7 +310,17 @@ export default function OrderCard({ order }: { order: Order }) {
       txHash: undefined,
     });
 
-    handleRangeOrderCancellation(order)
+    const orderDetails =
+      inputToken?.symbol && outputToken?.symbol && inputAmount && outputAmount
+        ? {
+            inputTokenSymbol: inputToken.symbol,
+            outputTokenSymbol: outputToken.symbol,
+            inputAmount: inputAmount.toSignificant(4),
+            outputAmount: outputAmount.toSignificant(4),
+          }
+        : undefined;
+
+    handleRangeOrderCancellation(order, orderDetails)
       .then(({ hash }) => {
         setCancellationState({
           attemptingTxn: false,

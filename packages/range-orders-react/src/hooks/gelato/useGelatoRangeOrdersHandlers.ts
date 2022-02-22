@@ -41,7 +41,13 @@ export interface GelatoRangeOrdersHandlers {
     inputAmount: BigNumber;
   }) => Promise<TransactionResponse>;
   handleRangeOrderCancellation: (
-    order: RangeOrderData
+    order: RangeOrderData,
+    orderDetails?: {
+      inputTokenSymbol: string;
+      outputTokenSymbol: string;
+      inputAmount: string;
+      outputAmount: string;
+    }
   ) => Promise<TransactionResponse>;
   handleInput: (field: Field, value: string) => void;
   updateRange: () => void;
@@ -329,7 +335,15 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   );
 
   const handleRangeOrderCancellation = useCallback(
-    async (order: RangeOrderData) => {
+    async (
+      order: RangeOrderData,
+      orderDetails?: {
+        inputTokenSymbol: string;
+        outputTokenSymbol: string;
+        inputAmount: string;
+        outputAmount: string;
+      }
+    ) => {
       if (!gelatoRangeOrders) {
         throw new Error("Could not reach Gelato Range Orders library");
       }
@@ -374,9 +388,25 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       if (!tx) {
         throw new Error("No transaction");
       }
+      const now = Math.round(Date.now() / 1000);
+
+      const summary = orderDetails
+        ? `Order cancellation: Swap ${orderDetails.inputAmount} ${orderDetails.inputTokenSymbol} for ${orderDetails.outputAmount} ${orderDetails.outputTokenSymbol}`
+        : "Order cancellation";
+
+      addTransaction(tx, {
+        summary,
+        type: "cancellation",
+        order: {
+          ...order,
+          updatedAt: BigNumber.from(now.toString()),
+          status: RangeOrderStatus.Cancelled,
+          cancelledTxHash: tx?.hash.toLowerCase(),
+        },
+      });
       return tx;
     },
-    [account, chainId, gelatoRangeOrders, zeroForOne]
+    [account, addTransaction, chainId, gelatoRangeOrders, zeroForOne]
   );
 
   const handleRangeSelection = useCallback(
