@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { GelatoStopLimitOrders } from "@gelatonetwork/limit-orders-lib";
+import {
+  GelatoStopLimitOrders,
+  constants,
+} from "@gelatonetwork/limit-orders-lib";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { formatUnits } from "@ethersproject/units";
@@ -70,7 +73,7 @@ export function AdvancedSwapDetails() {
     );
 
     const slippagePercentage = 500 / 100;
-    const gelatoFeePercentage = GelatoStopLimitOrders.gelatoFeeBPS / 100;
+    const gelatoFeePercentage = constants.L2_BPS_GELATO_FEE[chainId] / 100;
 
     const minReturnParsed = CurrencyAmount.fromRawAmount(
       outputAmount.currency,
