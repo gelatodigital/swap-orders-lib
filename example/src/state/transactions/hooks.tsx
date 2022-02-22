@@ -42,8 +42,9 @@ export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
   const { chainId } = useActiveWeb3React()
 
   const state = useSelector<AppState, AppState['gtransactions']>((state) => state.gtransactions)
+  const sw = Object.assign({}, state)
   const rangeOrders = useSelector<AppState, AppState['rtransactions']>((state) => state.rtransactions)
-  const allState = Object.assign(state, rangeOrders);
+  const allState = Object.assign(sw, rangeOrders)
 
   return chainId ? allState[chainId] ?? {} : {}
 }
