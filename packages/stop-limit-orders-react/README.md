@@ -185,11 +185,13 @@ export default function StopLimitOrder() {
     orderState: { independentField, rateType, typedValue },
   } = useGelatoStopLimitOrders();
 
-  const { open, cancelled, executed } = useGelatoStopLimitOrdersHistory();
+  const { open, cancelled, executed, expired } = useGelatoStopLimitOrdersHistory();
 
   ...
 }
 ```
+
+Important: Open orders will expire three months `7889238 seconds` after creation. Expired orders will be filtered out of `open` and pushed into the `expired` in `useGelatoLimitOrdersHistory()`.
 
 See complete integration example [here](https://github.com/gelatodigital/limit-orders-lib/tree/master/packages/limit-orders-react/src/components/GelatoLimitOrder/index.tsx#L81).
 
