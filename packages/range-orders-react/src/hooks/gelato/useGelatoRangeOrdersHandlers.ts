@@ -26,7 +26,7 @@ import {
 import { PayableOverrides } from "@ethersproject/contracts";
 import { NATIVE } from "../../constants/addresses";
 import { MAX_FEE_AMOUNTS } from "../../constants/misc";
-import { usePool } from "../../hooks/usePools"
+import { usePool } from "../../hooks/usePools";
 import { useDispatch } from "react-redux";
 import {
   setRangeUpperEnabled,
@@ -92,7 +92,11 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   const inputToken = useToken(inputCurrency?.wrapped.address);
   const outputToken = useToken(outputCurrency?.wrapped.address);
   const [poolAddress, setPoolAddress] = useState<string>();
-  const [, pool] = usePool(inputCurrency ?? undefined, outputCurrency ?? undefined, FeeAmount.MEDIUM);
+  const [, pool] = usePool(
+    inputCurrency ?? undefined,
+    outputCurrency ?? undefined,
+    FeeAmount.MEDIUM
+  );
   const dispatch = useDispatch();
 
   // Current tick is fetched from Uniswap Pool Contract
@@ -208,7 +212,15 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
     if (Number(priceValue) > 0) {
       update();
     }
-  }, [chainId, gelatoRangeOrders, onRangeChange, poolAddress, priceValue, rateType, zeroForOne]);
+  }, [
+    chainId,
+    gelatoRangeOrders,
+    onRangeChange,
+    poolAddress,
+    priceValue,
+    rateType,
+    zeroForOne,
+  ]);
 
   const handleCurrencySelection = useCallback(
     (field: Field.INPUT | Field.OUTPUT, currency: Currency) => {
@@ -314,7 +326,18 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
 
       return tx;
     },
-    [account, addTransaction, chainId, gelatoRangeOrders, inputCurrency?.wrapped.address, nativeCurrency?.wrapped.address, pool, poolAddress, selectedTick, zeroForOne]
+    [
+      account,
+      addTransaction,
+      chainId,
+      gelatoRangeOrders,
+      inputCurrency?.wrapped.address,
+      nativeCurrency?.wrapped.address,
+      pool,
+      poolAddress,
+      selectedTick,
+      zeroForOne,
+    ]
   );
 
   const handleRangeOrderCancellation = useCallback(
