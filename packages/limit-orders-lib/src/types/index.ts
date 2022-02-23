@@ -8,6 +8,7 @@ export type Handler =
   | "spookyswap"
   | "spookyswap_stoplimit"
   | "uniswap"
+  | "uniswap_stoplimit"
   | "quickswap"
   | "quickswap_stoplimit"
   | "spiritswap"

@@ -34,6 +34,7 @@ export const HANDLERS_ADDRESSES = {
   // UniswapV2Router02Handler
   [CHAIN_ID.MAINNET]: {
     ["uniswap"]: "0x837c03414fb86861f28ca7e91e5fd770fda0f52d",
+    ["uniswap_stoplimit"]: "0xf437a1a98566872f734bd18addf4bb610d1f887b",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.ROPSTEN]: {
@@ -81,7 +82,7 @@ export const NETWORK_NAME = {
 };
 
 export const NETWORK_HANDLERS = {
-  [CHAIN_ID.MAINNET]: ["uniswap"],
+  [CHAIN_ID.MAINNET]: ["uniswap", "uniswap_stoplimit"],
   [CHAIN_ID.ROPSTEN]: ["uniswap", "quickswap_stoplimit"],
   [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoplimit"],
   [CHAIN_ID.FANTOM]: [
@@ -102,6 +103,7 @@ export const NETWORK_HANDLERS = {
 };
 
 export const NETWORK_STOP_LIMIT_HANDLERS = {
+  [CHAIN_ID.MAINNET]: ["uniswap_stoplimit"],
   [CHAIN_ID.ROPSTEN]: ["quickswap_stoplimit"],
   [CHAIN_ID.MATIC]: ["quickswap_stoplimit"],
   [CHAIN_ID.BSC]: ["pancakeswap_stoplimit"],
@@ -211,6 +213,7 @@ export const NATIVE_WRAPPED_TOKEN_ADDRESS = {
 export const GENERIC_GAS_LIMIT_ORDER_EXECUTION = "400000";
 
 export const GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS = {
+  [CHAIN_ID.MAINNET]: "0x260aB0aCb931D7Da784fC35c7E96c3B13213Abf1",
   [CHAIN_ID.ROPSTEN]: "0xDC41072F4aFE7e4a7ea0f21d13a92662Fe733C55",
   [CHAIN_ID.MATIC]: "0x81967ac4ce8e2d94f7e4b4cf3d2e760605079604",
   [CHAIN_ID.BSC]: "0xe912cd26c4a4cfffc175a297f1328ab23313a1a7",

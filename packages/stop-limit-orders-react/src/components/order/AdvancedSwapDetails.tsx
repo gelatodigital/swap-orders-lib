@@ -2,6 +2,7 @@
 import {
   GelatoStopLimitOrders,
   constants,
+  utils,
 } from "@gelatonetwork/limit-orders-lib";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
@@ -83,7 +84,9 @@ export function AdvancedSwapDetails() {
     return {
       minReturn: minReturnParsed,
       slippagePercentage,
-      gelatoFeePercentage,
+      gelatoFeePercentage: utils.isEthereumChain(chainId)
+        ? undefined
+        : gelatoFeePercentage,
     };
   }, [outputAmount, chainId, library, rawOutputAmount]);
 
