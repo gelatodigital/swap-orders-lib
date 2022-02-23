@@ -110,6 +110,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
           witness,
           status: "open",
           updatedAt: now.toString(),
+          createdAt: now.toString(),
         } as StopLimitOrder,
       });
 

@@ -66,7 +66,7 @@ export const HANDLERS_ADDRESSES = {
     ["traderjoe"]: "0x88f8CCC064bA2D39cF08D57B6e7504a7B6bE8E4e",
     ["pangolin"]: "0x8b206547cfe6f35a77ddab2d6d97260765a349ef",
     ["pangolin_stoplimit"]: "0xb4c53e2e32caf977d61a8a776bdc44837a5d0d91",
-    ["traderjoe_stoplimit"]: "0x6ea82c72732389c5149326e048a46be9f8bec8e8",
+    ["traderjoe_stoplimit"]: "0xcf497830e43836738bdd0c3d7e09b599ddf081b2",
   },
 };
 

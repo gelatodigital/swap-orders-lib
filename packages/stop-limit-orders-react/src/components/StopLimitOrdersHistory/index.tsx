@@ -217,7 +217,7 @@ export default function StopLimitOrdersHistory() {
                 width="100%"
                 itemData={allOpenOrders}
                 itemCount={allOpenOrders.length}
-                itemSize={itemSize}
+                itemSize={190}
                 itemKey={itemKey}
               >
                 {Row}
@@ -298,7 +298,7 @@ export default function StopLimitOrdersHistory() {
                 width="100%"
                 itemData={expired}
                 itemCount={expired.length}
-                itemSize={itemSize}
+                itemSize={190}
                 itemKey={itemKey}
               >
                 {Row}

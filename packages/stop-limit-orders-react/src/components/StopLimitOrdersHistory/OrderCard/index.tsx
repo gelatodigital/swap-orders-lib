@@ -4,7 +4,7 @@ import { darken } from "polished";
 import { ArrowRight } from "react-feather";
 import { Text } from "rebass";
 import { RowBetween } from "../../Row";
-import { StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
+import { StopLimitOrder, constants } from "@gelatonetwork/limit-orders-lib";
 import useTheme from "../../../hooks/useTheme";
 import { useCurrency } from "../../../hooks/Tokens";
 import CurrencyLogo from "../../CurrencyLogo";
@@ -358,6 +358,14 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
     order,
   ]);
 
+  const expireDate = order.createdAt ? (
+    new Date(
+      (parseInt(order.createdAt) + constants.MAX_LIFETIME_IN_SECONDS) * 1000
+    ).toLocaleString()
+  ) : (
+    <Dots />
+  );
+
   const OrderCard = ({
     showStatusButton = true,
   }: {
@@ -584,6 +592,20 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
                   ) : (
                     <Dots />
                   )}
+                </RowBetween>
+              </OrderRow>
+            </Aligner>
+            <Aligner style={{ marginTop: "-10px" }}>
+              <OrderRow>
+                <RowBetween>
+                  <Text
+                    fontWeight={400}
+                    fontSize={12}
+                    color={theme.text1}
+                    style={{ marginRight: "4px", marginTop: "2px" }}
+                  >
+                    Expiry Date: {expireDate}
+                  </Text>
                 </RowBetween>
               </OrderRow>
             </Aligner>

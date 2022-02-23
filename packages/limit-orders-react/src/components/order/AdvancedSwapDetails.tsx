@@ -95,6 +95,10 @@ export function AdvancedSwapDetails() {
     };
   }, [outputAmount, chainId, library, rawOutputAmount]);
 
+  const expiryDate = new Date(
+    new Date().getTime() + constants.MAX_LIFETIME_IN_SECONDS * 1000
+  ).toLocaleString();
+
   return !chainId ? null : (
     <AutoColumn gap="8px">
       {!isEthereumChain(chainId) ? (
@@ -176,6 +180,20 @@ export function AdvancedSwapDetails() {
                 outputAmount ? outputAmount.currency.symbol : "-"
               }`
             : "-"}
+        </TYPE.black>
+      </RowBetween>
+      <RowBetween>
+        <RowFixed>
+          <MouseoverTooltip
+            text={`After your order is expired it might never be executed. Please cancel your order once expired`}
+          >
+            <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+              Expiration date (?)
+            </TYPE.black>
+          </MouseoverTooltip>
+        </RowFixed>
+        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+          {expiryDate}
         </TYPE.black>
       </RowBetween>
     </AutoColumn>
