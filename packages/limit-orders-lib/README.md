@@ -244,18 +244,6 @@ export class GelatoLimitOrders {
 }
 
 export declare class GelatoBase {
-  _chainId: ChainId;
-  _provider: Provider | undefined;
-  _signer: Signer | undefined;
-  _gelatoCore: GelatoBaseContract;
-  _erc20OrderRouter: ERC20OrderRouter;
-  _moduleAddress: string;
-  _subgraphUrl: string;
-  _abiEncoder: utils.AbiCoder;
-  _handlerAddress?: string;
-  _handler?: Handler;
-  _gelatoFeeBPS: number;
-  _slippageBPS: number;
   get chainId(): ChainId;
   get slippageBPS(): number;
   get gelatoFeeBPS(): number;
