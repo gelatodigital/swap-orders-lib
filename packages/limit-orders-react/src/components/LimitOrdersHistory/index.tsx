@@ -108,7 +108,7 @@ const LimitOrdersHistoryHeader = ({
   </StyledLimitOrderHistoryHeader>
 );
 
-type Tab = "open" | "cancelled" | "executed";
+type Tab = "open" | "cancelled" | "executed" | "expired";
 
 export default function LimitOrdersHistory() {
   const [orderTab, setOrderTab] = useState<Tab>("open");
@@ -121,6 +121,7 @@ export default function LimitOrdersHistory() {
     open,
     cancelled,
     executed,
+    expired,
     clearLocalStorageAndRefetchDataFromSubgraph,
   } = useGelatoLimitOrdersHistory();
 
@@ -174,6 +175,11 @@ export default function LimitOrdersHistory() {
                 active={orderTab === "executed"}
                 onClick={() => handleActiveHeader("executed")}
               />
+              <LimitOrdersHistoryHeader
+                title={"Expired"}
+                active={orderTab === "expired"}
+                onClick={() => handleActiveHeader("expired")}
+              />
             </HeaderTitles>
           </RowFixed>
 
@@ -212,7 +218,7 @@ export default function LimitOrdersHistory() {
                 width="100%"
                 itemData={allOpenOrders}
                 itemCount={allOpenOrders.length}
-                itemSize={itemSize}
+                itemSize={185}
                 itemKey={itemKey}
               >
                 {Row}
@@ -267,6 +273,32 @@ export default function LimitOrdersHistory() {
                 itemData={allCancelledOrders}
                 itemCount={allCancelledOrders.length}
                 itemSize={itemSize}
+                itemKey={itemKey}
+              >
+                {Row}
+              </FixedSizeList>
+            ) : null}
+            {orderTab === "expired" && !expired.length ? (
+              <TYPE.body
+                color={theme.text3}
+                style={{
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                  textAlign: "center",
+                }}
+                fontWeight={400}
+                fontSize={16}
+              >
+                {"No expired orders"}
+              </TYPE.body>
+            ) : orderTab === "expired" ? (
+              <FixedSizeList
+                height={438}
+                ref={fixedListRef as any}
+                width="100%"
+                itemData={expired}
+                itemCount={expired.length}
+                itemSize={185}
                 itemKey={itemKey}
               >
                 {Row}

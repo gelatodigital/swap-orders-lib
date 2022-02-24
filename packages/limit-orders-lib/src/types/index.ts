@@ -6,17 +6,23 @@ export type ChainId = 1 | 3 | 5 | 56 | 137 | 250 | 43114;
 
 export type Handler =
   | "spookyswap"
+  | "spookyswap_stoplimit"
   | "uniswap"
+  | "uniswap_stoplimit"
   | "quickswap"
+  | "quickswap_stoplimit"
   | "spiritswap"
+  | "spiritswap_stoplimit"
   | "bombswap"
   | "polydex"
   | "cafeswap"
   | "pancakeswap"
+  | "pancakeswap_stoplimit"
   | "traderjoe"
+  | "traderjoe_stoplimit"
   | "defyswap"
   | "pangolin"
-  | "quickswap_stoploss";
+  | "pangolin_stoplimit";
 
 export interface TransactionData {
   to: string;
@@ -42,6 +48,7 @@ export interface Order {
   inputToken: string;
   outputToken: string;
   minReturn: string;
+  maxReturn?: string;
   adjustedMinReturn: string;
   module: string;
   witness: string;
@@ -62,12 +69,12 @@ export interface Order {
   data: string;
   inputData: string;
   handler: string | null;
+  isExpired: boolean;
 }
 
 export interface StopLimitOrder extends Order {
   maxReturn: string;
 }
-
 export interface PartialOrder {
   id: string;
   owner: string;

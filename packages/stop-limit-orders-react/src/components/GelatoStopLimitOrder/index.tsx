@@ -108,7 +108,6 @@ export default function GelatoStopLimitOrder({
       handleCurrencySelection,
       handleSwitchTokens,
       handleStopLimitOrderSubmission,
-      handleSlippage,
     },
     derivedOrderInfo: {
       parsedAmounts,
@@ -119,7 +118,6 @@ export default function GelatoStopLimitOrder({
       inputError,
       rawAmounts,
       price,
-      slippage,
     },
     orderState: { independentField, rateType },
   } = useGelatoStopLimitOrders();
@@ -198,7 +196,7 @@ export default function GelatoStopLimitOrder({
     }
   }, [approvalState, approvalSubmitted]);
 
-  const allowedSlippage = new Percent(slippage, 10_000);
+  const allowedSlippage = new Percent(500, 10_000);
   const userHasSpecifiedInputOutput = Boolean(
     (independentField === Field.INPUT || independentField === Field.OUTPUT) &&
       currencies.input &&
@@ -262,7 +260,6 @@ export default function GelatoStopLimitOrder({
           : currencies.output?.wrapped.address,
         inputAmount: rawAmounts.input,
         outputAmount: rawAmounts.output,
-        slippage,
         owner: account,
       })
         .then(({ hash }) => {
@@ -368,19 +365,6 @@ export default function GelatoStopLimitOrder({
   const handleApprove = useCallback(async () => {
     await approveCallback();
   }, [approveCallback]);
-
-  const [activeTab, setActiveTab] = useState(1);
-  const [slippageValue, setSlippage] = useState("2");
-
-  const handleSlippageInput = (value: string) => {
-    handleSlippage(value);
-    setSlippage(value);
-  };
-
-  useEffect(() => {
-    setActiveTab(1);
-    handleSlippageInput("2");
-  }, []);
 
   return (
     <Fragment>
@@ -490,12 +474,7 @@ export default function GelatoStopLimitOrder({
                 id="limit-order-currency-output"
               />
               <Row>
-                <Slippage
-                  handleActiveTab={setActiveTab}
-                  activeTab={activeTab}
-                  value={slippageValue}
-                  handleInput={handleSlippageInput}
-                />
+                <Slippage />
               </Row>
             </div>
 

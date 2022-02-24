@@ -16,9 +16,9 @@ import {
   GELATO_LIMIT_ORDERS_ADDRESS,
   GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER,
   NETWORK_HANDLERS,
-  SLIPPAGE_BPS,
+  STOP_LIMIT_SLIPPAGE_BPS,
   SUBGRAPH_URL,
-  TWO_BPS_GELATO_FEE,
+  L2_BPS_GELATO_FEE,
 } from "../constants";
 import {
   ERC20OrderRouter,
@@ -64,12 +64,19 @@ export class GelatoBase {
   public _abiEncoder: utils.AbiCoder;
   public _handlerAddress?: string;
   public _handler?: Handler;
-
-  public static slippageBPS = SLIPPAGE_BPS;
-  public static gelatoFeeBPS = TWO_BPS_GELATO_FEE;
+  public _gelatoFeeBPS: number;
+  public _slippageBPS: number;
 
   get chainId(): ChainId {
     return this._chainId;
+  }
+
+  public get slippageBPS(): number {
+    return this._slippageBPS;
+  }
+
+  public get gelatoFeeBPS(): number {
+    return this._gelatoFeeBPS;
   }
 
   get signer(): Signer | undefined {
@@ -120,6 +127,10 @@ export class GelatoBase {
     }
 
     this._chainId = chainId;
+    this._gelatoFeeBPS = isEthereumChain(chainId)
+      ? 0
+      : L2_BPS_GELATO_FEE[chainId];
+    this._slippageBPS = STOP_LIMIT_SLIPPAGE_BPS[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
       ? signerOrProvider
@@ -199,7 +210,7 @@ export class GelatoBase {
     };
   }
 
-  public async cancelLimitOrder(
+  public async cancelStopLimitOrder(
     order: StopLimitOrder,
     checkIsActiveOrder?: boolean,
     overrides?: Overrides
@@ -308,24 +319,18 @@ export class GelatoBase {
     slippage: string;
     gelatoFee: string;
   } {
-    if (isEthereumChain(this._chainId))
-      throw new Error("Method not available for current chain.");
-
     if (extraSlippageBPS) {
       if (!Number.isInteger(extraSlippageBPS))
         throw new Error("Extra Slippage BPS must an unsigned integer");
     }
 
-    const gelatoFee = BigNumber.from(outputAmount)
-      .mul(GelatoBase.gelatoFeeBPS)
-      .div(10000)
-      .gte(1)
-      ? BigNumber.from(outputAmount).mul(GelatoBase.gelatoFeeBPS).div(10000)
+    const gelatoFee = isEthereumChain(this._chainId)
+      ? 0
+      : BigNumber.from(outputAmount).mul(this._gelatoFeeBPS).div(10000).gte(1)
+      ? BigNumber.from(outputAmount).mul(this._gelatoFeeBPS).div(10000)
       : BigNumber.from(1);
 
-    const slippageBPS = extraSlippageBPS
-      ? extraSlippageBPS
-      : GelatoBase.slippageBPS;
+    const slippageBPS = extraSlippageBPS ? extraSlippageBPS : this._slippageBPS;
 
     const slippage = BigNumber.from(outputAmount).mul(slippageBPS).div(10000);
 
@@ -345,11 +350,11 @@ export class GelatoBase {
     if (isEthereumChain(this._chainId))
       throw new Error("Method not available for current chain.");
 
-    const gelatoFee = BigNumber.from(GelatoBase.gelatoFeeBPS);
+    const gelatoFee = BigNumber.from(this._gelatoFeeBPS);
 
     const slippage = extraSlippageBPS
       ? BigNumber.from(extraSlippageBPS)
-      : BigNumber.from(GelatoBase.slippageBPS);
+      : BigNumber.from(this._slippageBPS);
 
     const fees = gelatoFee.add(slippage);
 
@@ -384,26 +389,11 @@ export class GelatoBase {
     }
   }
 
-  public async getPastOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
+  public async getPastStopLimitOrders(
+    owner: string
   ): Promise<StopLimitOrder[]> {
-    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryPastOrders(owner, this._chainId);
-    return orders
-      .map((order) => ({
-        ...order,
-        adjustedMinReturn: isEthereumNetwork
-          ? order.minReturn
-          : this.getAdjustedMinReturn(order.minReturn),
-      }))
-      .filter((order) => {
-        if (this._handler && !order.handler) {
-          return includeOrdersWithNullHandler ? true : false;
-        } else {
-          return this._handler ? order.handler === this._handlerAddress : true;
-        }
-      });
+    return orders;
   }
 
   public _getKey(order: StopLimitOrder): string {

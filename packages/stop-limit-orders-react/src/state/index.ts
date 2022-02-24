@@ -3,11 +3,11 @@ import guser from "./guser/reducer";
 import gstoplimit from "./gstoplimit/reducer";
 import glists from "./glists/reducer";
 import gmulticall from "./gmulticall/reducer";
-import gtransactions from "./gtransactions/reducer";
+import gstoplimittransactions from "./gstoplimittransactions/reducer";
 import { configureStore } from "@reduxjs/toolkit";
 
 export const GELATO_PERSISTED_KEYS: string[] = [
-  "gtransactions",
+  "gstoplimittransactions",
   // "glists",
   "guser",
 ];
@@ -18,7 +18,7 @@ export const gelatoReducers = {
   gstoplimit,
   gmulticall,
   glists,
-  gtransactions,
+  gstoplimittransactions,
 };
 
 const store = configureStore({

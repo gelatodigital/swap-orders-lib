@@ -1,6 +1,6 @@
-import { Currency, TradeType } from "@uniswap/sdk-core";
+import { Currency, TradeType, Price, CurrencyAmount } from "@uniswap/sdk-core";
 import { Trade } from "@uniswap/v2-sdk";
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 import { ArrowDown, AlertTriangle } from "react-feather";
 import { Text } from "rebass";
 import styled from "styled-components";
@@ -19,7 +19,10 @@ import { LightCard } from "../Card";
 import { DarkGreyCard } from "../Card";
 import TradePrice from "../order/TradePrice";
 import useTheme from "../../hooks/useTheme";
-import { useGelatoStopLimitOrders } from "../../hooks/gelato";
+import {
+  useGelatoStopLimitOrders,
+  useGelatoStopLimitOrdersLib,
+} from "../../hooks/gelato";
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -50,11 +53,13 @@ export default function SwapModalHeader({
 }) {
   const theme = useTheme();
 
-  const [showInverted, setShowInverted] = useState<boolean>(false);
+  const [showInverted, setShowInverted] = useState<boolean>(true);
 
   const {
-    derivedOrderInfo: { price, parsedAmounts },
+    derivedOrderInfo: { price, parsedAmounts, rawAmounts },
   } = useGelatoStopLimitOrders();
+
+  const library = useGelatoStopLimitOrdersLib();
 
   const inputAmount = parsedAmounts.input;
   const outputAmount = parsedAmounts.output;
@@ -62,7 +67,40 @@ export default function SwapModalHeader({
   const fiatValueInput = useUSDCValue(inputAmount);
   const fiatValueOutput = useUSDCValue(outputAmount);
 
-  if (!inputAmount || !outputAmount) return null;
+  const rawOutputAmount = rawAmounts.output ?? "0";
+
+  const { minReturn } = useMemo(() => {
+    if (!outputAmount || !library)
+      return {
+        minReturn: undefined,
+      };
+
+    const { minReturn } = library.getFeeAndSlippageAdjustedMinReturn(
+      rawOutputAmount
+    );
+
+    const minReturnParsed = CurrencyAmount.fromRawAmount(
+      outputAmount.currency,
+      minReturn
+    );
+
+    return {
+      minReturn: minReturnParsed,
+    };
+  }, [outputAmount, library, rawOutputAmount]);
+
+  const limitPrice = useMemo(
+    () =>
+      minReturn && minReturn.greaterThan(0) && inputAmount
+        ? new Price({
+            quoteAmount: minReturn,
+            baseAmount: inputAmount,
+          })
+        : undefined,
+    [inputAmount, minReturn]
+  );
+
+  if (!inputAmount || !outputAmount || !outputAmount || !library) return null;
 
   return (
     <AutoColumn gap={"4px"} style={{ marginTop: "1rem" }}>
@@ -142,7 +180,7 @@ export default function SwapModalHeader({
       </DarkGreyCard>
       <RowBetween style={{ marginTop: "0.25rem", padding: "0 1rem" }}>
         <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
-          {"Limit Price:"}
+          {"Stop Price:"}
         </TYPE.body>
         <TradePrice
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -151,7 +189,17 @@ export default function SwapModalHeader({
           setShowInverted={setShowInverted}
         />
       </RowBetween>
-
+      <RowBetween style={{ marginTop: "0.15rem", padding: "0 1rem" }}>
+        <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
+          {"Limit Price:"}
+        </TYPE.body>
+        <TradePrice
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          price={limitPrice!}
+          showInverted={showInverted}
+          setShowInverted={setShowInverted}
+        />
+      </RowBetween>
       <LightCard style={{ padding: ".75rem", marginTop: "0.5rem" }}>
         <AdvancedSwapDetails />
       </LightCard>
@@ -180,40 +228,6 @@ export default function SwapModalHeader({
           </RowBetween>
         </SwapShowAcceptChanges>
       ) : null}
-
-      {/* <AutoColumn
-        justify="flex-start"
-        gap="sm"
-        style={{ padding: ".75rem 1rem" }}
-      >
-        {trade.tradeType === TradeType.EXACT_INPUT ? (
-          <TYPE.italic
-            fontWeight={400}
-            textAlign="left"
-            style={{ width: "100%" }}
-          >
-            {`Output is estimated. You will receive at least `}
-            <b>
-              {trade.minimumAmountOut(allowedSlippage).toSignificant(6)}{" "}
-              {outputAmount.currency.symbol}
-            </b>
-            {" or the transaction will revert."}
-          </TYPE.italic>
-        ) : (
-          <TYPE.italic
-            fontWeight={400}
-            textAlign="left"
-            style={{ width: "100%" }}
-          >
-            {`Input is estimated. You will sell at most `}
-            <b>
-              {trade.maximumAmountIn(allowedSlippage).toSignificant(6)}{" "}
-              {inputAmount.currency.symbol}
-            </b>
-            {" or the transaction will revert."}
-          </TYPE.italic>
-        )}
-      </AutoColumn> */}
       {recipient !== null ? (
         <AutoColumn
           justify="center"

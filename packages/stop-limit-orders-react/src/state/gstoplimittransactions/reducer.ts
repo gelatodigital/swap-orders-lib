@@ -3,10 +3,10 @@ import { createReducer } from "@reduxjs/toolkit";
 import {
   confirmOrderCancellation,
   confirmOrderSubmission,
-  saveOrder,
-} from "../../utils/localStorageOrders";
+  saveStopOrder,
+} from "../../utils/localStorageStopOrders";
 import {
-  addTransaction,
+  addStopLimitTransaction,
   checkedTransaction,
   clearAllTransactions,
   finalizeTransaction,
@@ -40,7 +40,7 @@ export const initialState: TransactionState = {};
 export default createReducer(initialState, (builder) =>
   builder
     .addCase(
-      addTransaction,
+      addStopLimitTransaction,
       (
         transactions,
         { payload: { chainId, from, hash, summary, approval, type, order } }
@@ -48,6 +48,7 @@ export default createReducer(initialState, (builder) =>
         if (transactions[chainId]?.[hash]) {
           throw Error("Attempted to add existing transaction.");
         }
+
         const txs = transactions[chainId] ?? {};
         txs[hash] = {
           hash,
@@ -60,7 +61,7 @@ export default createReducer(initialState, (builder) =>
         };
 
         transactions[chainId] = txs;
-        if (order) saveOrder(chainId, from, order, true);
+        if (order) saveStopOrder(chainId, from, order, true);
       }
     )
     .addCase(clearAllTransactions, (transactions, { payload: { chainId } }) => {

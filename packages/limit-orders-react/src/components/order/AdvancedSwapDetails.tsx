@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { GelatoLimitOrders, utils } from "@gelatonetwork/limit-orders-lib";
+import {
+  GelatoLimitOrders,
+  utils,
+  constants,
+} from "@gelatonetwork/limit-orders-lib";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { formatUnits } from "@ethersproject/units";
@@ -77,7 +81,7 @@ export function AdvancedSwapDetails() {
     );
 
     const slippagePercentage = GelatoLimitOrders.slippageBPS / 100;
-    const gelatoFeePercentage = GelatoLimitOrders.gelatoFeeBPS / 100;
+    const gelatoFeePercentage = constants.L2_BPS_GELATO_FEE[chainId];
 
     const minReturnParsed = CurrencyAmount.fromRawAmount(
       outputAmount.currency,
@@ -90,6 +94,10 @@ export function AdvancedSwapDetails() {
       gelatoFeePercentage,
     };
   }, [outputAmount, chainId, library, rawOutputAmount]);
+
+  const expiryDate = new Date(
+    new Date().getTime() + constants.MAX_LIFETIME_IN_SECONDS * 1000
+  ).toLocaleString();
 
   return !chainId ? null : (
     <AutoColumn gap="8px">
@@ -172,6 +180,20 @@ export function AdvancedSwapDetails() {
                 outputAmount ? outputAmount.currency.symbol : "-"
               }`
             : "-"}
+        </TYPE.black>
+      </RowBetween>
+      <RowBetween>
+        <RowFixed>
+          <MouseoverTooltip
+            text={`After your order is expired it might never be executed. Please cancel your order once expired`}
+          >
+            <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+              Expiration date (?)
+            </TYPE.black>
+          </MouseoverTooltip>
+        </RowFixed>
+        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+          {expiryDate}
         </TYPE.black>
       </RowBetween>
     </AutoColumn>

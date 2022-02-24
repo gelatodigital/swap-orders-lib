@@ -4,12 +4,12 @@ import { darken } from "polished";
 import { ArrowRight } from "react-feather";
 import { Text } from "rebass";
 import { RowBetween } from "../../Row";
-import { StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
+import { StopLimitOrder, constants } from "@gelatonetwork/limit-orders-lib";
 import useTheme from "../../../hooks/useTheme";
 import { useCurrency } from "../../../hooks/Tokens";
 import CurrencyLogo from "../../CurrencyLogo";
 import { useGelatoStopLimitOrdersHandlers } from "../../../hooks/gelato";
-import { CurrencyAmount, Price } from "@uniswap/sdk-core";
+import { CurrencyAmount, Price, Percent } from "@uniswap/sdk-core";
 import ConfirmCancellationModal from "../ConfirmCancellationModal";
 import { useTradeExactIn } from "../../../hooks/useTrade";
 import { Dots } from "../../order/styleds";
@@ -17,7 +17,7 @@ import { Rate } from "../../../state/gstoplimit/actions";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { useWeb3 } from "../../../web3";
 import { ButtonGray } from "../../Button";
-import { useIsTransactionPending } from "../../../state/gtransactions/hooks";
+import { useIsTransactionPending } from "../../../state/gstoplimittransactions/hooks";
 import {
   ExplorerDataType,
   getExplorerLink,
@@ -176,6 +176,11 @@ const Spacer = styled.div`
   flex: 1 1 auto;
 `;
 
+const ExpiredText = styled.span`
+  color: ${({ theme }) => theme.text4};
+  margin-right: 5px;
+`;
+
 export default function OrderCard({ order }: { order: StopLimitOrder }) {
   const theme = useTheme();
 
@@ -213,30 +218,9 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
 
   const isEthereum = isEthereumChain(chainId ?? 1);
 
-  const rawMinReturn = useMemo(() => order.minReturn, [
-    chainId,
-    gelatoLibrary,
-    order.minReturn,
-    isEthereum,
-  ]);
+  const rawMinReturn = useMemo(() => order.minReturn, [order.minReturn]);
 
-  const rawMaxReturn = useMemo(
-    () =>
-      order.adjustedMinReturn
-        ? order.adjustedMinReturn
-        : gelatoLibrary && chainId && order.maxReturn
-        ? isEthereum
-          ? order.maxReturn
-          : gelatoLibrary.getAdjustedMinReturn(order.maxReturn)
-        : undefined,
-    [
-      chainId,
-      gelatoLibrary,
-      order.maxReturn,
-      order.adjustedMinReturn,
-      isEthereum,
-    ]
-  );
+  const rawMaxReturn = useMemo(() => order.maxReturn, [order.maxReturn]);
 
   const maxOutputAmount = useMemo(
     () =>
@@ -282,6 +266,17 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
   );
 
   const trade = useTradeExactIn(inputAmount, outputToken ?? undefined, handler);
+
+  const currentMarketRate = trade?.executionPrice ?? undefined;
+
+  const pct =
+    currentMarketRate && maxPrice
+      ? maxPrice.subtract(currentMarketRate).divide(currentMarketRate)
+      : undefined;
+
+  // const percentageRateDifference = pct
+  //   ? new Percent(pct.numerator, pct.denominator)
+  //   : undefined;
 
   const isSubmissionPending = useIsTransactionPending(order.createdTxHash);
   const isCancellationPending = useIsTransactionPending(
@@ -362,6 +357,14 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
     outputAmount,
     order,
   ]);
+
+  const expireDate = order.createdAt ? (
+    new Date(
+      (parseInt(order.createdAt) + constants.MAX_LIFETIME_IN_SECONDS) * 1000
+    ).toLocaleString()
+  ) : (
+    <Dots />
+  );
 
   const OrderCard = ({
     showStatusButton = true,
@@ -519,7 +522,7 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
                     color={theme.text1}
                     style={{ marginRight: "4px", marginTop: "2px" }}
                   >
-                    Maximum Execution price:
+                    Stop price:
                   </Text>
                   {maxPrice ? (
                     <TradePrice
@@ -544,7 +547,7 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
                     color={theme.text1}
                     style={{ marginRight: "4px", marginTop: "2px" }}
                   >
-                    Minimum Execution price:
+                    Limit price:
                   </Text>
                   {executionPrice ? (
                     isEthereum ? (
@@ -589,6 +592,20 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
                   ) : (
                     <Dots />
                   )}
+                </RowBetween>
+              </OrderRow>
+            </Aligner>
+            <Aligner style={{ marginTop: "-10px" }}>
+              <OrderRow>
+                <RowBetween>
+                  <Text
+                    fontWeight={400}
+                    fontSize={12}
+                    color={theme.text1}
+                    style={{ marginRight: "4px", marginTop: "2px" }}
+                  >
+                    Expiry Date: {expireDate}
+                  </Text>
                 </RowBetween>
               </OrderRow>
             </Aligner>

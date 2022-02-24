@@ -7,11 +7,11 @@ import { useCallback, useMemo } from "react";
 import {
   useTransactionAdder,
   useHasPendingApproval,
-} from "../state/gtransactions/hooks";
+} from "../state/gstoplimittransactions/hooks";
 import { useTokenContract } from "./useContract";
 import { useWeb3 } from "../web3";
 import { useTokenAllowance } from "./useTokenAllowance";
-import useGelatoLimitOrdersLib from "./gelato/useGelatoStopLimitOrdersLib";
+import useGelatoStopLimitOrdersLib from "./gelato/useGelatoStopLimitOrdersLib";
 
 export enum ApprovalState {
   UNKNOWN = "UNKNOWN",
@@ -57,7 +57,7 @@ export function useApproveCallback(
   }, [amountToApprove, currentAllowance, pendingApproval, spender]);
 
   const tokenContract = useTokenContract(token?.address);
-  const addTransaction = useTransactionAdder();
+  const addStopLimitTransaction = useTransactionAdder();
 
   const approve = useCallback(async (): Promise<void> => {
     if (approvalState !== ApprovalState.NOT_APPROVED) {
@@ -105,7 +105,7 @@ export function useApproveCallback(
         }
       )
       .then((response: TransactionResponse) => {
-        addTransaction(response, {
+        addStopLimitTransaction(response, {
           summary: "Approve " + amountToApprove.currency.symbol,
           type: "approval",
           approval: { tokenAddress: token.address, spender: spender },
@@ -121,7 +121,7 @@ export function useApproveCallback(
     tokenContract,
     amountToApprove,
     spender,
-    addTransaction,
+    addStopLimitTransaction,
   ]);
 
   return [approvalState, approve];
@@ -131,7 +131,7 @@ export function useApproveCallback(
 export function useApproveCallbackFromInputCurrencyAmount(
   currencyAmountIn: CurrencyAmount<Currency> | undefined
 ) {
-  const gelatoLibrary = useGelatoLimitOrdersLib();
+  const gelatoLibrary = useGelatoStopLimitOrdersLib();
 
   return useApproveCallback(
     currencyAmountIn,

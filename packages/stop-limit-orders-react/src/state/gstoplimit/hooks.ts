@@ -21,7 +21,6 @@ import {
   setRecipient,
   switchCurrencies,
   typeInput,
-  setSlippage,
 } from "./actions";
 import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "..";
@@ -80,7 +79,6 @@ export function useOrderActionHandlers(): {
   onUserInput: (field: Field, typedValue: string) => void;
   onChangeRecipient: (recipient: string | null) => void;
   onChangeRateType: (rateType: Rate) => void;
-  onSlippageInput: (value: string) => void;
 } {
   const dispatch = useDispatch();
   const onCurrencySelection = useCallback(
@@ -124,20 +122,12 @@ export function useOrderActionHandlers(): {
     [dispatch]
   );
 
-  const onSlippageInput = useCallback(
-    (slippage: string) => {
-      dispatch(setSlippage({ slippage }));
-    },
-    [dispatch]
-  );
-
   return {
     onSwitchTokens,
     onCurrencySelection,
     onUserInput,
     onChangeRecipient,
     onChangeRateType,
-    onSlippageInput,
   };
 }
 
@@ -188,7 +178,6 @@ export interface DerivedOrderInfo {
     output: string | undefined;
   };
   price: Price<Currency, Currency> | undefined;
-  slippage: number;
 }
 
 // from the current swap inputs, compute the best trade and return it.
@@ -202,7 +191,6 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     [Field.OUTPUT]: { currencyId: outputCurrencyId },
     rateType,
     inputValue,
-    slippage,
   } = useOrderState();
 
   const inputCurrency = useCurrency(inputCurrencyId);
@@ -298,6 +286,8 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       input: independentField === Field.INPUT ? parsedAmount : inputAmount,
       output:
         independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
+      minOutput:
+        independentField === Field.OUTPUT ? parsedAmount : trade?.outputAmount,
     }),
     [independentField, parsedAmount, inputAmount, trade]
   );
@@ -324,21 +314,13 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   }, [parsedAmounts.input, parsedAmounts.output]);
 
   if (price && trade) {
-    // if (
-    //   rateType === Rate.MUL &&
-    //   (price.lessThan(trade.executionPrice.asFraction) ||
-    //     price.equalTo(trade.executionPrice.asFraction))
-    // )
-    //   inputError =
-    //     inputError ?? "Only possible to place sell orders above market rate";
-
     if (
-      rateType === Rate.DIV &&
-      (price.invert().greaterThan(trade.executionPrice.invert().asFraction) ||
-        price.invert().equalTo(trade.executionPrice.invert().asFraction))
+      price.greaterThan(trade.executionPrice.asFraction) ||
+      price.equalTo(trade.executionPrice.asFraction)
     )
       inputError =
-        inputError ?? "Only possible to place buy orders below market rate";
+        inputError ??
+        "Only possible to place stop limit order below market rate";
   }
 
   // compare input to balance
@@ -399,6 +381,5 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
     parsedAmounts,
     price,
     rawAmounts,
-    slippage,
   };
 }

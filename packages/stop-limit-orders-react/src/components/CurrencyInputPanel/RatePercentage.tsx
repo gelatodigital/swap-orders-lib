@@ -8,12 +8,10 @@ export function RatePercentage({
   priceImpact,
   rateType,
   inputCurrency,
-  outputCurrency,
 }: {
   priceImpact?: Percent;
   rateType?: Rate;
   inputCurrency?: Currency | null;
-  outputCurrency?: Currency | null;
 }) {
   const theme = useTheme();
   const priceImpactColor = useMemo(() => {
@@ -30,15 +28,10 @@ export function RatePercentage({
     <TYPE.body fontSize={12} color={theme.text4}>
       {priceImpact ? (
         <span style={{ color: priceImpactColor }}>
-          {rateType === Rate.MUL
-            ? `Sell ${inputCurrency?.symbol ?? "-"} ${priceImpact.toSignificant(
-                3
-              )}% ${priceImpact.lessThan("0") ? "below" : "above"} market`
-            : `Buy ${outputCurrency?.symbol ?? "-"} ${priceImpact
-                .multiply(-1)
-                .toSignificant(3)}% ${
-                priceImpact.lessThan("0") ? "above" : "below"
-              } market`}
+          {priceImpact.lessThan("0") &&
+            ` Sell ${
+              inputCurrency?.symbol ?? "-"
+            } when price drops ${priceImpact.toSignificant(3)}%`}
         </span>
       ) : (
         "-"

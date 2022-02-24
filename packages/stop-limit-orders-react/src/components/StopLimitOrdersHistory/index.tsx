@@ -5,12 +5,32 @@ import { TYPE } from "../../theme";
 import { AutoColumn } from "../Column";
 import { Wrapper } from "../order/styleds";
 import AppBody from "../GelatoStopLimitOrder/AppBody";
-import Row from "../Row";
+import Row, { RowFixed, RowBetween } from "../Row";
 import { useGelatoStopLimitOrdersHistory } from "../../hooks/gelato";
 import useTheme from "../../hooks/useTheme";
 import OrderCard from "./OrderCard/index";
 import { FixedSizeList } from "react-window";
 import { useWeb3 } from "../../web3";
+import { MouseoverTooltip } from "../Tooltip";
+import { RefreshCcw } from "react-feather";
+
+const RefreshIconWrapper = styled.a`
+  text-decoration: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  justify-self: flex-end;
+  padding-right: 1.3rem;
+  padding-top: 0.6rem;
+  color: ${({ theme }) => theme.text3};
+
+  :hover {
+    color: ${({ theme }) => theme.text1};
+    opacity: 0.7;
+    text-decoration: none;
+  }
+`;
 
 const TopSection = styled(AutoColumn)`
   max-width: 640px;
@@ -88,7 +108,7 @@ const LimitOrdersHistoryHeader = ({
   </StyledLimitOrderHistoryHeader>
 );
 
-type Tab = "open" | "cancelled" | "executed";
+type Tab = "open" | "cancelled" | "executed" | "expired";
 
 export default function StopLimitOrdersHistory() {
   const [orderTab, setOrderTab] = useState<Tab>("open");
@@ -97,7 +117,13 @@ export default function StopLimitOrdersHistory() {
 
   const theme = useTheme();
 
-  const { open, cancelled, executed } = useGelatoStopLimitOrdersHistory();
+  const {
+    open,
+    cancelled,
+    executed,
+    expired,
+    clearLocalStorageAndRefetchDataFromSubgraph,
+  } = useGelatoStopLimitOrdersHistory();
 
   const fixedListRef = useRef<FixedSizeList>();
 
@@ -131,23 +157,43 @@ export default function StopLimitOrdersHistory() {
   return account ? (
     <>
       <AppBody>
-        <HeaderTitles>
-          <LimitOrdersHistoryHeader
-            title={"Open"}
-            active={orderTab === "open"}
-            onClick={() => handleActiveHeader("open")}
-          />
-          <LimitOrdersHistoryHeader
-            title={"Cancelled"}
-            active={orderTab === "cancelled"}
-            onClick={() => handleActiveHeader("cancelled")}
-          />
-          <LimitOrdersHistoryHeader
-            title={"Executed"}
-            active={orderTab === "executed"}
-            onClick={() => handleActiveHeader("executed")}
-          />
-        </HeaderTitles>
+        <RowBetween>
+          <RowFixed>
+            <HeaderTitles>
+              <LimitOrdersHistoryHeader
+                title={"Open"}
+                active={orderTab === "open"}
+                onClick={() => handleActiveHeader("open")}
+              />
+              <LimitOrdersHistoryHeader
+                title={"Cancelled"}
+                active={orderTab === "cancelled"}
+                onClick={() => handleActiveHeader("cancelled")}
+              />
+              <LimitOrdersHistoryHeader
+                title={"Executed"}
+                active={orderTab === "executed"}
+                onClick={() => handleActiveHeader("executed")}
+              />
+              <LimitOrdersHistoryHeader
+                title={"Expired"}
+                active={orderTab === "expired"}
+                onClick={() => handleActiveHeader("expired")}
+              />
+            </HeaderTitles>
+          </RowFixed>
+          <RowFixed>
+            <RefreshIconWrapper
+              onClick={() => {
+                clearLocalStorageAndRefetchDataFromSubgraph();
+              }}
+            >
+              <MouseoverTooltip text={`Refresh your limit orders.`}>
+                <RefreshCcw size="18" />
+              </MouseoverTooltip>
+            </RefreshIconWrapper>
+          </RowFixed>
+        </RowBetween>
 
         <Wrapper id="limit-order-history">
           <TopSection gap="sm">
@@ -171,7 +217,7 @@ export default function StopLimitOrdersHistory() {
                 width="100%"
                 itemData={allOpenOrders}
                 itemCount={allOpenOrders.length}
-                itemSize={itemSize}
+                itemSize={190}
                 itemKey={itemKey}
               >
                 {Row}
@@ -226,6 +272,33 @@ export default function StopLimitOrdersHistory() {
                 itemData={allCancelledOrders}
                 itemCount={allCancelledOrders.length}
                 itemSize={itemSize}
+                itemKey={itemKey}
+              >
+                {Row}
+              </FixedSizeList>
+            ) : null}
+
+            {orderTab === "expired" && !expired.length ? (
+              <TYPE.body
+                color={theme.text3}
+                style={{
+                  paddingTop: "20px",
+                  paddingBottom: "20px",
+                  textAlign: "center",
+                }}
+                fontWeight={400}
+                fontSize={16}
+              >
+                {"No expired orders"}
+              </TYPE.body>
+            ) : orderTab === "expired" ? (
+              <FixedSizeList
+                height={438}
+                ref={fixedListRef as any}
+                width="100%"
+                itemData={expired}
+                itemCount={expired.length}
+                itemSize={190}
                 itemKey={itemKey}
               >
                 {Row}

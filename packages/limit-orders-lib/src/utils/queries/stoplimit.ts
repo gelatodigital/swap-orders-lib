@@ -1,7 +1,8 @@
 import { request } from "graphql-request";
 import {
-  STOP_LIMIT_ORDER_SUBGRAPH_URL,
-  GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS,
+  SUBGRAPH_URL,
+  GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS,
+  MAX_LIFETIME_IN_SECONDS,
 } from "../../constants";
 import { StopLimitOrder } from "../../types";
 import { GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER } from "./constants";
@@ -11,21 +12,21 @@ export const queryStopLimitOrders = async (
   chainId: number
 ): Promise<StopLimitOrder[]> => {
   try {
-    const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
+    const dataStopLimitSubgraph = SUBGRAPH_URL[chainId]
       ? await request(
-          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          SUBGRAPH_URL[chainId],
           GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
           {
             owner: owner.toLowerCase(),
             module:
-              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+              GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
           }
         )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders);
+    return _getUniqueOrdersWithExpiry(orders);
   } catch (error) {
     console.error(error);
     throw new Error("Could not query subgraph for all orders");
@@ -37,21 +38,21 @@ export const queryOpenStopLimitOrders = async (
   chainId: number
 ): Promise<StopLimitOrder[]> => {
   try {
-    const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
+    const dataStopLimitSubgraph = SUBGRAPH_URL[chainId]
       ? await request(
-          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          SUBGRAPH_URL[chainId],
           GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
           {
             owner: owner.toLowerCase(),
             module:
-              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+              GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
           }
         )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders).filter(
+    return _getUniqueOrdersWithExpiry(orders).filter(
       (order) => order.status === "open"
     );
   } catch (error) {
@@ -64,21 +65,21 @@ export const queryStopLimitExecutedOrders = async (
   chainId: number
 ): Promise<StopLimitOrder[]> => {
   try {
-    const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
+    const dataStopLimitSubgraph = SUBGRAPH_URL[chainId]
       ? await request(
-          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          SUBGRAPH_URL[chainId],
           GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
           {
             owner: owner.toLowerCase(),
             module:
-              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+              GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
           }
         )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders).filter(
+    return _getUniqueOrdersWithExpiry(orders).filter(
       (order) => order.status === "executed"
     );
   } catch (error) {
@@ -91,21 +92,21 @@ export const queryStopLimitCancelledOrders = async (
   chainId: number
 ): Promise<StopLimitOrder[]> => {
   try {
-    const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
+    const dataStopLimitSubgraph = SUBGRAPH_URL[chainId]
       ? await request(
-          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          SUBGRAPH_URL[chainId],
           GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
           {
             owner: owner.toLowerCase(),
             module:
-              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+              GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
           }
         )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders).filter(
+    return _getUniqueOrdersWithExpiry(orders).filter(
       (order) => order.status === "cancelled"
     );
   } catch (error) {
@@ -118,21 +119,21 @@ export const queryPastOrders = async (
   chainId: number
 ): Promise<StopLimitOrder[]> => {
   try {
-    const dataStopLimitSubgraph = STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId]
+    const dataStopLimitSubgraph = SUBGRAPH_URL[chainId]
       ? await request(
-          STOP_LIMIT_ORDER_SUBGRAPH_URL[chainId],
+          SUBGRAPH_URL[chainId],
           GET_ALL_STOP_LIMIT_ORDERS_BY_OWNER,
           {
             owner: owner.toLowerCase(),
             module:
-              GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
+              GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS[chainId].toLowerCase(),
           }
         )
       : { orders: [] };
 
     const orders = dataStopLimitSubgraph.orders;
 
-    return _getUniqueOrdersWithHandler(orders).filter(
+    return _getUniqueOrdersWithExpiry(orders).filter(
       (order) => order.status !== "open"
     );
   } catch (error) {
@@ -140,20 +141,19 @@ export const queryPastOrders = async (
   }
 };
 
-export const _getUniqueOrdersWithHandler = (
+export const _getUniqueOrdersWithExpiry = (
   allOrders: StopLimitOrder[]
 ): StopLimitOrder[] =>
   [...new Map(allOrders.map((order) => [order.id, order])).values()]
     // sort by `updatedAt` asc so that the most recent one will be used
     .sort((a, b) => parseFloat(a.updatedAt) - parseFloat(b.updatedAt))
+    // add expiry to order obj
     .map((order) => {
-      let handler;
-      try {
-        const hasHandler = order.data.length === 194;
-        handler = hasHandler ? "0x" + order.data.substr(154, 194) : null;
-      } catch (e) {
-        handler = null;
-      }
-
-      return { ...order, handler };
+      const isExpired: boolean =
+        Date.now() >
+        (parseInt(order.createdAt) + MAX_LIFETIME_IN_SECONDS) * 1000;
+      return {
+        ...order,
+        isExpired,
+      };
     });

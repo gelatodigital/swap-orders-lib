@@ -8,7 +8,7 @@ import { Field } from "../../types";
 import { Currency, Price } from "@uniswap/sdk-core";
 import { Rate } from "../../state/gstoplimit/actions";
 import { useWeb3 } from "../../web3";
-import { useTransactionAdder } from "../../state/gtransactions/hooks";
+import { useTransactionAdder } from "../../state/gstoplimittransactions/hooks";
 import useGasPrice from "../useGasPrice";
 import useGelatoStopLimitOrdersLib from "./useGelatoStopLimitOrdersLib";
 
@@ -18,7 +18,6 @@ export interface GelatoStopLimitOrdersHandlers {
     outputToken: string;
     inputAmount: string;
     outputAmount: string;
-    slippage: number;
     owner: string;
     overrides?: Overrides;
   }) => Promise<TransactionResponse>;
@@ -40,7 +39,6 @@ export interface GelatoStopLimitOrdersHandlers {
   ) => void;
   handleSwitchTokens: () => void;
   handleRateType: (rateType: Rate, price?: Price<Currency, Currency>) => void;
-  handleSlippage: (slippage: string) => void;
 }
 
 export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrdersHandlers {
@@ -48,7 +46,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
 
   const gelatoStopLimitOrders = useGelatoStopLimitOrdersLib();
 
-  const addTransaction = useTransactionAdder();
+  const addStopLimitTransaction = useTransactionAdder();
 
   const gasPrice = useGasPrice();
 
@@ -57,7 +55,6 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
     onCurrencySelection,
     onUserInput,
     onChangeRateType,
-    onSlippageInput,
   } = useOrderActionHandlers();
 
   const handleStopLimitOrderSubmission = useCallback(
@@ -67,7 +64,6 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
         outputToken: string;
         inputAmount: string;
         outputAmount: string;
-        slippage: number;
         owner: string;
       },
       overrides?: Overrides
@@ -93,7 +89,6 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
         orderToSubmit.outputToken,
         orderToSubmit.inputAmount,
         orderToSubmit.outputAmount,
-        orderToSubmit.slippage,
         orderToSubmit.owner
       );
 
@@ -106,7 +101,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
 
       const now = Math.round(Date.now() / 1000);
 
-      addTransaction(tx, {
+      addStopLimitTransaction(tx, {
         summary: `Order submission`,
         type: "submission",
         order: {
@@ -115,12 +110,13 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
           witness,
           status: "open",
           updatedAt: now.toString(),
+          createdAt: now.toString(),
         } as StopLimitOrder,
       });
 
       return tx;
     },
-    [addTransaction, chainId, gasPrice, gelatoStopLimitOrders]
+    [addStopLimitTransaction, chainId, gasPrice, gelatoStopLimitOrders]
   );
 
   const handleStopLimitOrderCancellation = useCallback(
@@ -155,7 +151,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
           orderToCancel.data
       );
 
-      const tx = await gelatoStopLimitOrders.cancelLimitOrder(
+      const tx = await gelatoStopLimitOrders.cancelStopLimitOrder(
         orderToCancel,
         checkIfOrderExists,
         overrides ?? { gasPrice, gasLimit: 600000 }
@@ -164,10 +160,10 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
       const now = Math.round(Date.now() / 1000);
 
       const summary = orderDetails
-        ? `Order cancellation: Stoploss ${orderDetails.inputAmount} ${orderDetails.inputTokenSymbol} valid at ${orderDetails.maxOutputAmount} ${orderDetails.outputTokenSymbol}`
+        ? `Order cancellation: Stop Limit ${orderDetails.inputAmount} ${orderDetails.inputTokenSymbol} valid at ${orderDetails.maxOutputAmount} ${orderDetails.outputTokenSymbol}`
         : "Order cancellation";
 
-      addTransaction(tx, {
+      addStopLimitTransaction(tx, {
         summary,
         type: "cancellation",
         order: {
@@ -180,7 +176,7 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
 
       return tx;
     },
-    [gelatoStopLimitOrders, chainId, account, gasPrice, addTransaction]
+    [gelatoStopLimitOrders, chainId, account, gasPrice, addStopLimitTransaction]
   );
 
   const handleInput = useCallback(
@@ -214,13 +210,6 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
     [onChangeRateType, onUserInput]
   );
 
-  const handleSlippage = useCallback(
-    (slippage: string) => {
-      onSlippageInput(slippage);
-    },
-    [onSlippageInput]
-  );
-
   return {
     handleStopLimitOrderSubmission,
     handleStopLimitOrderCancellation,
@@ -228,6 +217,5 @@ export default function useGelatoStopLimitOrdersHandlers(): GelatoStopLimitOrder
     handleCurrencySelection,
     handleSwitchTokens,
     handleRateType,
-    handleSlippage,
   };
 }

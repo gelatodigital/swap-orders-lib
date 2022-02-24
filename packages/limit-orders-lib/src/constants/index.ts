@@ -1,7 +1,8 @@
 export const ETH_ADDRESS = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
 
 export const SLIPPAGE_BPS = 40; // 0.4%
-export const TWO_BPS_GELATO_FEE = 2; // 0.02%
+
+export const MAX_LIFETIME_IN_SECONDS = 7889238; // 3 months in seconds
 
 export const CHAIN_ID = {
   MAINNET: 1,
@@ -13,21 +14,39 @@ export const CHAIN_ID = {
   AVAX: 43114,
 };
 
+export const L2_BPS_GELATO_FEE = {
+  [CHAIN_ID.MATIC]: 10,
+  [CHAIN_ID.FANTOM]: 10,
+  [CHAIN_ID.BSC]: 10,
+  [CHAIN_ID.AVAX]: 10,
+};
+
+export const STOP_LIMIT_SLIPPAGE_BPS = {
+  [CHAIN_ID.MAINNET]: 500,
+  [CHAIN_ID.ROPSTEN]: 500,
+  [CHAIN_ID.MATIC]: 500,
+  [CHAIN_ID.FANTOM]: 500,
+  [CHAIN_ID.BSC]: 500,
+  [CHAIN_ID.AVAX]: 500,
+};
+
 export const HANDLERS_ADDRESSES = {
   // UniswapV2Router02Handler
   [CHAIN_ID.MAINNET]: {
     ["uniswap"]: "0x837c03414fb86861f28ca7e91e5fd770fda0f52d",
+    ["uniswap_stoplimit"]: "0xf437a1a98566872f734bd18addf4bb610d1f887b",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.ROPSTEN]: {
     ["uniswap"]: "0x1f397f95d31eb20183b69d685a5060cfdefd508b",
+    ["quickswap_stoplimit"]: "0x87bE4Eb9dFb2DefcEA035D3010f33584Fc8ddDB5",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.MATIC]: {
     ["quickswap"]: "0xaccbd2c6ad75ad3394dc5f4b1f606bf111e4eae3",
     ["polydex"]: "0x00fc86d360162e4672ec6B427E12ed36F39f1f53",
     ["cafeswap"]: "0xd167afcee4e9a89e69646fd3c27e58b61d1b7f97",
-    ["quickswap_stoploss"]: "0x6EA82C72732389c5149326e048A46Be9F8bec8E8",
+    ["quickswap_stoplimit"]: "0x51cc226648f8de65513de7cdfd3e7b116156234e",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.FANTOM]: {
@@ -35,15 +54,20 @@ export const HANDLERS_ADDRESSES = {
     ["spookyswap"]: "0x228ffd7122d202c0cd24330892881c47b0817c7a",
     ["bombswap"]: "0x87C4Fbd67f6DD8a1B5EFD9879956c728C97afeFe",
     ["defyswap"]: "0x3d401587320522a5e0bb973d10a852430a8edbbd",
+    ["spiritswap_stoplimit"]: "0x6ea82c72732389c5149326e048a46be9f8bec8e8",
+    ["spookyswap_stoplimit"]: "0xe912cd26c4a4cfffc175a297f1328ab23313a1a7",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.BSC]: {
     ["pancakeswap"]: "0x88f8CCC064bA2D39cF08D57B6e7504a7B6bE8E4e",
+    ["pancakeswap_stoplimit"]: "0x84b826bcd26f1bc0cd5fbbdef7f5b8965d6bbb38",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.AVAX]: {
     ["traderjoe"]: "0x88f8CCC064bA2D39cF08D57B6e7504a7B6bE8E4e",
     ["pangolin"]: "0x8b206547cfe6f35a77ddab2d6d97260765a349ef",
+    ["pangolin_stoplimit"]: "0xb4c53e2e32caf977d61a8a776bdc44837a5d0d91",
+    ["traderjoe_stoplimit"]: "0xcf497830e43836738bdd0c3d7e09b599ddf081b2",
   },
 };
 
@@ -58,12 +82,33 @@ export const NETWORK_NAME = {
 };
 
 export const NETWORK_HANDLERS = {
-  [CHAIN_ID.MAINNET]: ["uniswap"],
-  [CHAIN_ID.ROPSTEN]: ["uniswap"],
-  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoploss"],
-  [CHAIN_ID.FANTOM]: ["spiritswap", "spookyswap", "bombswap", "defyswap"],
-  [CHAIN_ID.BSC]: ["pancakeswap"],
-  [CHAIN_ID.AVAX]: ["traderjoe", "pangolin"],
+  [CHAIN_ID.MAINNET]: ["uniswap", "uniswap_stoplimit"],
+  [CHAIN_ID.ROPSTEN]: ["uniswap", "quickswap_stoplimit"],
+  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoplimit"],
+  [CHAIN_ID.FANTOM]: [
+    "spiritswap",
+    "spookyswap",
+    "bombswap",
+    "defyswap",
+    "spiritswap_stoplimit",
+    "spookyswap_stoplimit",
+  ],
+  [CHAIN_ID.BSC]: ["pancakeswap", "pancakeswap_stoplimit"],
+  [CHAIN_ID.AVAX]: [
+    "traderjoe",
+    "pangolin",
+    "pangolin_stoplimit",
+    "traderjoe_stoplimit",
+  ],
+};
+
+export const NETWORK_STOP_LIMIT_HANDLERS = {
+  [CHAIN_ID.MAINNET]: ["uniswap_stoplimit"],
+  [CHAIN_ID.ROPSTEN]: ["quickswap_stoplimit"],
+  [CHAIN_ID.MATIC]: ["quickswap_stoplimit"],
+  [CHAIN_ID.BSC]: ["pancakeswap_stoplimit"],
+  [CHAIN_ID.FANTOM]: ["spookyswap_stoplimit", "spiritswap_stoplimit"],
+  [CHAIN_ID.AVAX]: ["traderjoe_stoplimit", "pangolin_stoplimit"],
 };
 
 export const OLD_SUBGRAPH_URL = {
@@ -167,11 +212,11 @@ export const NATIVE_WRAPPED_TOKEN_ADDRESS = {
 
 export const GENERIC_GAS_LIMIT_ORDER_EXECUTION = "400000";
 
-export const GELATO_STOPLOSS_ORDERS_MODULE_ADDRESS = {
-  [CHAIN_ID.MATIC]: "0xE912CD26C4A4cfffc175A297F1328aB23313a1a7",
-};
-
-export const STOP_LIMIT_ORDER_SUBGRAPH_URL = {
-  [CHAIN_ID.MATIC]:
-    "https://api.thegraph.com/subgraphs/name/harrytgerman/stoplimitorder",
+export const GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS = {
+  [CHAIN_ID.MAINNET]: "0x260aB0aCb931D7Da784fC35c7E96c3B13213Abf1",
+  [CHAIN_ID.ROPSTEN]: "0xDC41072F4aFE7e4a7ea0f21d13a92662Fe733C55",
+  [CHAIN_ID.MATIC]: "0x81967ac4ce8e2d94f7e4b4cf3d2e760605079604",
+  [CHAIN_ID.BSC]: "0xe912cd26c4a4cfffc175a297f1328ab23313a1a7",
+  [CHAIN_ID.FANTOM]: "0xf437a1a98566872f734bd18addf4bb610d1f887b",
+  [CHAIN_ID.AVAX]: "0xf437a1a98566872f734bd18addf4bb610d1f887b",
 };

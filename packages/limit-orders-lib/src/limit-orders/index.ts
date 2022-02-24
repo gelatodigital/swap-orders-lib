@@ -21,7 +21,7 @@ import {
   NETWORK_HANDLERS,
   SLIPPAGE_BPS,
   SUBGRAPH_URL,
-  TWO_BPS_GELATO_FEE,
+  L2_BPS_GELATO_FEE,
 } from "../constants";
 import {
   ERC20OrderRouter,
@@ -70,12 +70,16 @@ export class GelatoLimitOrders {
   private _handlerAddress?: string;
   private _handler?: Handler;
   private _isFlashbotsProtected: boolean;
+  private readonly _gelatoFeeBPS: number;
 
   public static slippageBPS = SLIPPAGE_BPS;
-  public static gelatoFeeBPS = TWO_BPS_GELATO_FEE;
 
   get chainId(): ChainId {
     return this._chainId;
+  }
+
+  get gelatoFeeBPS(): number {
+    return this._gelatoFeeBPS;
   }
 
   get signer(): Signer | undefined {
@@ -132,6 +136,7 @@ export class GelatoLimitOrders {
     }
 
     this._chainId = chainId;
+    this._gelatoFeeBPS = L2_BPS_GELATO_FEE[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
       ? signerOrProvider
@@ -482,12 +487,10 @@ export class GelatoLimitOrders {
     }
 
     const gelatoFee = BigNumber.from(outputAmount)
-      .mul(GelatoLimitOrders.gelatoFeeBPS)
+      .mul(this._gelatoFeeBPS)
       .div(10000)
       .gte(1)
-      ? BigNumber.from(outputAmount)
-          .mul(GelatoLimitOrders.gelatoFeeBPS)
-          .div(10000)
+      ? BigNumber.from(outputAmount).mul(this._gelatoFeeBPS).div(10000)
       : BigNumber.from(1);
 
     const slippageBPS = extraSlippageBPS
@@ -512,7 +515,7 @@ export class GelatoLimitOrders {
     if (isEthereumChain(this._chainId))
       throw new Error("Method not available for current chain.");
 
-    const gelatoFee = BigNumber.from(GelatoLimitOrders.gelatoFeeBPS);
+    const gelatoFee = BigNumber.from(this._gelatoFeeBPS);
 
     const slippage = extraSlippageBPS
       ? BigNumber.from(GelatoLimitOrders.slippageBPS + extraSlippageBPS)

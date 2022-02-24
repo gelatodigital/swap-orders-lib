@@ -4,7 +4,7 @@ import { darken } from "polished";
 import { ArrowRight } from "react-feather";
 import { Text } from "rebass";
 import { RowBetween } from "../../Row";
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { Order, constants } from "@gelatonetwork/limit-orders-lib";
 import useTheme from "../../../hooks/useTheme";
 import { useCurrency } from "../../../hooks/Tokens";
 import CurrencyLogo from "../../CurrencyLogo";
@@ -54,6 +54,11 @@ const OrderPanel = styled.div`
   background-color: ${() => "transparent"};
   z-index: 1;
   width: "100%";
+`;
+
+const ExpiredText = styled.span`
+  color: ${({ theme }) => theme.text4};
+  margin-right: 5px;
 `;
 
 const Container = styled.div<{ hideInput: boolean }>`
@@ -335,6 +340,14 @@ export default function OrderCard({ order }: { order: Order }) {
     order,
   ]);
 
+  const expireDate = order.createdAt ? (
+    new Date(
+      (parseInt(order.createdAt) + constants.MAX_LIFETIME_IN_SECONDS) * 1000
+    ).toLocaleString()
+  ) : (
+    <Dots />
+  );
+
   const OrderCard = ({
     showStatusButton = true,
     hideInput = false,
@@ -483,63 +496,79 @@ export default function OrderCard({ order }: { order: Order }) {
         </Aligner>
 
         {order.status === "open" ? (
-          <Aligner style={{ marginTop: "-10px" }}>
-            <OrderRow>
-              <RowBetween>
-                <Text
-                  fontWeight={400}
-                  fontSize={12}
-                  color={theme.text1}
-                  style={{ marginRight: "4px", marginTop: "2px" }}
-                >
-                  Execution price:
-                </Text>
-                {executionPrice ? (
-                  isEthereum ? (
-                    <>
-                      <MouseoverTooltip
-                        text={`The execution price takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled, so that the minimum you receive is ${
-                          outputAmount ? outputAmount.toSignificant(4) : "-"
-                        } ${
-                          outputAmount?.currency.symbol ?? ""
-                        }. It fluctuates according to gas prices. Current gas price: ${parseFloat(
-                          gasPrice ? formatUnits(gasPrice, "gwei") : "-"
-                        ).toFixed(0)} GWEI.`}
-                      >
-                        {ethereumExecutionPrice ? (
-                          <TradePrice
-                            price={ethereumExecutionPrice}
-                            showInverted={showEthereumExecutionPriceInverted}
-                            setShowInverted={
-                              setShowEthereumExecutionPriceInverted
-                            }
-                            fontWeight={500}
-                            fontSize={12}
-                          />
-                        ) : ethereumExecutionPrice === undefined ? (
-                          <TYPE.body fontSize={14} color={theme.text2}>
-                            <HoverInlineText text={"never executes"} />
-                          </TYPE.body>
-                        ) : (
-                          <Dots />
-                        )}
-                      </MouseoverTooltip>
-                    </>
+          <>
+            <Aligner style={{ marginTop: "-10px" }}>
+              <OrderRow>
+                <RowBetween>
+                  <Text
+                    fontWeight={400}
+                    fontSize={12}
+                    color={theme.text1}
+                    style={{ marginRight: "4px", marginTop: "2px" }}
+                  >
+                    Execution price:
+                  </Text>
+                  {executionPrice ? (
+                    isEthereum ? (
+                      <>
+                        <MouseoverTooltip
+                          text={`The execution price takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled, so that the minimum you receive is ${
+                            outputAmount ? outputAmount.toSignificant(4) : "-"
+                          } ${
+                            outputAmount?.currency.symbol ?? ""
+                          }. It fluctuates according to gas prices. Current gas price: ${parseFloat(
+                            gasPrice ? formatUnits(gasPrice, "gwei") : "-"
+                          ).toFixed(0)} GWEI.`}
+                        >
+                          {ethereumExecutionPrice ? (
+                            <TradePrice
+                              price={ethereumExecutionPrice}
+                              showInverted={showEthereumExecutionPriceInverted}
+                              setShowInverted={
+                                setShowEthereumExecutionPriceInverted
+                              }
+                              fontWeight={500}
+                              fontSize={12}
+                            />
+                          ) : ethereumExecutionPrice === undefined ? (
+                            <TYPE.body fontSize={14} color={theme.text2}>
+                              <HoverInlineText text={"never executes"} />
+                            </TYPE.body>
+                          ) : (
+                            <Dots />
+                          )}
+                        </MouseoverTooltip>
+                      </>
+                    ) : (
+                      <TradePrice
+                        price={executionPrice}
+                        showInverted={showExecutionPriceInverted}
+                        setShowInverted={setShowExecutionPriceInverted}
+                        fontWeight={500}
+                        fontSize={12}
+                      />
+                    )
                   ) : (
-                    <TradePrice
-                      price={executionPrice}
-                      showInverted={showExecutionPriceInverted}
-                      setShowInverted={setShowExecutionPriceInverted}
-                      fontWeight={500}
-                      fontSize={12}
-                    />
-                  )
-                ) : (
-                  <Dots />
-                )}
-              </RowBetween>
-            </OrderRow>
-          </Aligner>
+                    <Dots />
+                  )}
+                </RowBetween>
+              </OrderRow>
+            </Aligner>
+            <Aligner style={{ marginTop: "-10px" }}>
+              <OrderRow>
+                <RowBetween>
+                  <Text
+                    fontWeight={400}
+                    fontSize={12}
+                    color={theme.text1}
+                    style={{ marginRight: "4px", marginTop: "2px" }}
+                  >
+                    Expiry Date: {expireDate}
+                  </Text>
+                </RowBetween>
+              </OrderRow>
+            </Aligner>
+          </>
         ) : null}
       </Container>
     </OrderPanel>
