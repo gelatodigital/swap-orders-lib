@@ -64,19 +64,12 @@ export class GelatoBase {
   public _abiEncoder: utils.AbiCoder;
   public _handlerAddress?: string;
   public _handler?: Handler;
-  public _gelatoFeeBPS: number;
-  public _slippageBPS: number;
+
+  public static slippageBPS: number;
+  public static gelatoFeeBPS: number;
 
   get chainId(): ChainId {
     return this._chainId;
-  }
-
-  public get slippageBPS(): number {
-    return this._slippageBPS;
-  }
-
-  public get gelatoFeeBPS(): number {
-    return this._gelatoFeeBPS;
   }
 
   get signer(): Signer | undefined {
@@ -127,10 +120,10 @@ export class GelatoBase {
     }
 
     this._chainId = chainId;
-    this._gelatoFeeBPS = isEthereumChain(chainId)
+    GelatoBase.gelatoFeeBPS = isEthereumChain(chainId)
       ? 0
       : L2_BPS_GELATO_FEE[chainId];
-    this._slippageBPS = STOP_LIMIT_SLIPPAGE_BPS[chainId];
+    GelatoBase.slippageBPS = STOP_LIMIT_SLIPPAGE_BPS[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
       ? signerOrProvider
@@ -138,20 +131,20 @@ export class GelatoBase {
     this._provider = Provider.isProvider(signerOrProvider)
       ? signerOrProvider
       : Signer.isSigner(signerOrProvider)
-      ? signerOrProvider.provider
-      : undefined;
+        ? signerOrProvider.provider
+        : undefined;
 
     this._gelatoCore = this._signer
       ? GelatoBase__factory.connect(
-          GELATO_LIMIT_ORDERS_ADDRESS[this._chainId],
-          this._signer
-        )
+        GELATO_LIMIT_ORDERS_ADDRESS[this._chainId],
+        this._signer
+      )
       : this._provider
-      ? GelatoBase__factory.connect(
+        ? GelatoBase__factory.connect(
           GELATO_LIMIT_ORDERS_ADDRESS[this._chainId],
           this._provider
         )
-      : (new Contract(
+        : (new Contract(
           GELATO_LIMIT_ORDERS_ADDRESS[this._chainId],
           GelatoBase__factory.createInterface()
         ) as GelatoBaseContract);
@@ -160,15 +153,15 @@ export class GelatoBase {
 
     this._erc20OrderRouter = this._signer
       ? ERC20OrderRouter__factory.connect(
-          GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER[this._chainId],
-          this._signer
-        )
+        GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER[this._chainId],
+        this._signer
+      )
       : this._provider
-      ? ERC20OrderRouter__factory.connect(
+        ? ERC20OrderRouter__factory.connect(
           GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER[this._chainId],
           this._provider
         )
-      : (new Contract(
+        : (new Contract(
           GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER[this._chainId],
           ERC20OrderRouter__factory.createInterface()
         ) as ERC20OrderRouter);
@@ -256,14 +249,14 @@ export class GelatoBase {
 
     return overrides
       ? ERC20__factory.connect(inputToken, this._signer).approve(
-          this._erc20OrderRouter.address,
-          amount,
-          overrides
-        )
+        this._erc20OrderRouter.address,
+        amount,
+        overrides
+      )
       : ERC20__factory.connect(inputToken, this._signer).approve(
-          this._erc20OrderRouter.address,
-          amount
-        );
+        this._erc20OrderRouter.address,
+        amount
+      );
   }
 
   public async isActiveOrder(order: StopLimitOrder): Promise<boolean> {
@@ -326,11 +319,11 @@ export class GelatoBase {
 
     const gelatoFee = isEthereumChain(this._chainId)
       ? 0
-      : BigNumber.from(outputAmount).mul(this._gelatoFeeBPS).div(10000).gte(1)
-      ? BigNumber.from(outputAmount).mul(this._gelatoFeeBPS).div(10000)
-      : BigNumber.from(1);
+      : BigNumber.from(outputAmount).mul(GelatoBase.gelatoFeeBPS).div(10000).gte(1)
+        ? BigNumber.from(outputAmount).mul(GelatoBase.gelatoFeeBPS).div(10000)
+        : BigNumber.from(1);
 
-    const slippageBPS = extraSlippageBPS ? extraSlippageBPS : this._slippageBPS;
+    const slippageBPS = extraSlippageBPS ? extraSlippageBPS : GelatoBase.slippageBPS;
 
     const slippage = BigNumber.from(outputAmount).mul(slippageBPS).div(10000);
 
@@ -350,11 +343,11 @@ export class GelatoBase {
     if (isEthereumChain(this._chainId))
       throw new Error("Method not available for current chain.");
 
-    const gelatoFee = BigNumber.from(this._gelatoFeeBPS);
+    const gelatoFee = BigNumber.from(GelatoBase.gelatoFeeBPS);
 
     const slippage = extraSlippageBPS
       ? BigNumber.from(extraSlippageBPS)
-      : BigNumber.from(this._slippageBPS);
+      : BigNumber.from(GelatoBase.slippageBPS);
 
     const fees = gelatoFee.add(slippage);
 

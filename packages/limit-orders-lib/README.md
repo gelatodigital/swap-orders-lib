@@ -136,9 +136,9 @@ const allOrders = await gelatoLimitOrders.getOrders(userAddress);
 ```typescript
 export class GelatoLimitOrders {
   static slippageBPS: number;
+  static gelatoFeeBPS: number;
 
   get chainId(): ChainId;
-  get gelatoFeeBPS(): number;
   get signer(): Signer | undefined;
   get provider(): Provider | undefined;
   get subgraphUrl(): string;
@@ -244,9 +244,10 @@ export class GelatoLimitOrders {
 }
 
 export declare class GelatoBase {
+  static slippageBPS: number;
+  static gelatoFeeBPS: number;
+
   get chainId(): ChainId;
-  get slippageBPS(): number;
-  get gelatoFeeBPS(): number;
   get signer(): Signer | undefined;
   get provider(): Provider | undefined;
   get subgraphUrl(): string;
