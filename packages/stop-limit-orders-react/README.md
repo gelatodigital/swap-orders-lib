@@ -2,13 +2,10 @@
 
 # Gelato Stop Limit Order React SDK
 
-Use Gelato's react component or hooks to place limit buy and sell orders on Ethereum, Polygon and Fantom using Gelato Network.
+Use Gelato's react component or hooks to place stop-limit orders on Ethereum, Polygon, Avalanche and Fantom using Gelato Network.
 
 - To hook it up in simple and direct way, using our default style, just use our react component (uniswap trade style widget). It's as is as a couple of lines of code.
 - If your want to build your custom UI you can use our react hooks and plug them in into your components. Check the steps below.
-
-> :warning: :warning: :warning: **Warning** :warning: :warning: :warning: :
-> Version 1.0.0 introduced new features and our system changed to an approval/transferFrom flow. You should use the latest version available (>= 1.0.0). If you are using an old version you should update to the latest version immediately. Versions below 1.0.0 are being deprecated.
 
 ## [Demo](https://www.sorbet.finance)
 
@@ -21,7 +18,7 @@ Use Gelato's react component or hooks to place limit buy and sell orders on Ethe
 
 ## Installation
 
-`yarn add -D @gelatonetwork/limit-orders-react`
+`yarn add -D @gelatonetwork/stop-limit-orders-react`
 
 or
 
@@ -67,7 +64,7 @@ In your main file wrap your app with `GelatoProvider`:
 ```tsx
 import React from "react";
 import ReactDOM from "react-dom";
-import { GelatoProvider } from "@gelatonetwork/limit-orders-react";
+import { GelatoProvider } from "@gelatonetwork/stop-limit-orders-react";
 import { useActiveWeb3React } from "hooks/web3";
 
 function Gelato({ children }: { children?: React.ReactNode }) {
@@ -77,9 +74,10 @@ function Gelato({ children }: { children?: React.ReactNode }) {
       library={library}
       chainId={chainId}
       account={account ?? undefined}
+      handler={"uniswap_stoplimit"}
+      // It's required to set a specific handler which will be encoded in the order data
+      // Currently we offer support out of the box for "uniswap_stoplimit" "quickswap_stoplimit", "spookyswap_stoplimit", "spiritswap_stoplimit", "pangolin_stoplimit" and "traderjoe_stoplimit"
 
-      // Optionally your can set a specific handler to block trades on a specific handler
-      // Currently we offer support out of the box for "uniswap", "quickswap", "spookyswap" and "spiritswap"
       // Please reach out to us if you want to register a custom handler
       // Make sure chainId and handler are valid
       // handler={'uniswap'}
@@ -100,7 +98,38 @@ function Gelato({ children }: { children?: React.ReactNode }) {
     </GelatoProvider>
   );
 }
+```
 
+If you already using `@gelatonetwork/limit-orders-react` simply render the `Provider` as a child element like so:
+
+```tsx
+import { GelatoProvider as StopLimitOrderProvider } from '@gelatonetwork/stop-limit-orders-react';
+import { GelatoProvider as LimitOrderProvider } from '@gelatonetwork/limit-orders-react';
+import { useActiveWeb3React } from "hooks/web3";
+
+function Gelato({ children }: { children?: React.ReactNode }) {
+  const { library, chainId, account } = useActiveWeb3React();
+  return (
+    <LimitOrderProvider
+      library={library}
+      chainId={chainId}
+      account={account ?? undefined}
+      handler={"uniswap"}
+      >
+      <StopLimitOrderProvider
+        library={library}
+        chainId={chainId}
+        account={account ?? undefined}
+        handler={"uniswap_stoplimit"}
+        >
+        {children}
+      </StopLimitProvider>
+    </LimitOrderProvider>
+  );
+}
+```
+
+```tsx
 ReactDOM.render(
   <StrictMode>
     <FixedGlobalStyle />
@@ -132,7 +161,7 @@ import React from "react";
 import {
   GelatoStopLimitOrderPanel,
   GelatoStopLimitOrdersHistoryPanel,
-} from "@gelatonetwork/limit-orders-react";
+} from "@gelatonetwork/stop-limit-orders-react";
 
 export default function LimitOrder() {
   return (
@@ -191,7 +220,10 @@ export default function StopLimitOrder() {
 }
 ```
 
-Important: Open orders will expire three months `7889238 seconds` after creation. Expired orders will be filtered out of `open` and pushed into the `expired` in `useGelatoLimitOrdersHistory()`.
+## Expiration
+
+> :warning: :warning: :warning: **Warning** :warning: :warning: :warning: :
+> Important: Open orders will expire three months `7889238 seconds` after creation. Expired orders will be filtered out of `open` and pushed into the `expired` in `useGelatoStopLimitOrdersHistory()`.
 
 See complete integration example [here](https://github.com/gelatodigital/limit-orders-lib/tree/master/packages/limit-orders-react/src/components/GelatoLimitOrder/index.tsx#L81).
 

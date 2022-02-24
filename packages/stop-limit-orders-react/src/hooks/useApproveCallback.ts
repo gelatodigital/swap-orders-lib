@@ -11,7 +11,7 @@ import {
 import { useTokenContract } from "./useContract";
 import { useWeb3 } from "../web3";
 import { useTokenAllowance } from "./useTokenAllowance";
-import useGelatoLimitOrdersLib from "./gelato/useGelatoStopLimitOrdersLib";
+import useGelatoStopLimitOrdersLib from "./gelato/useGelatoStopLimitOrdersLib";
 
 export enum ApprovalState {
   UNKNOWN = "UNKNOWN",
@@ -131,7 +131,7 @@ export function useApproveCallback(
 export function useApproveCallbackFromInputCurrencyAmount(
   currencyAmountIn: CurrencyAmount<Currency> | undefined
 ) {
-  const gelatoLibrary = useGelatoLimitOrdersLib();
+  const gelatoLibrary = useGelatoStopLimitOrdersLib();
 
   return useApproveCallback(
     currencyAmountIn,

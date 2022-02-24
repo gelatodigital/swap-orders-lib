@@ -22,17 +22,45 @@ or
 Instantiate GelatoLimitOrders
 
 ```typescript
-import { GelatoLimitOrders, utils } from "@gelatonetwork/limit-orders-lib";
+import {
+  GelatoLimitOrders,
+  GelatoStopLimitOrders,
+  utils,
+} from "@gelatonetwork/limit-orders-lib";
 
 // Supported networks: Mainnet = 1; Ropsten = 3; Polygon = 137; Fantom = 250; Avalanche = 43114;  BSC = 56
 const chainId = 1;
 const signerOrProvider = await provider.getSigner();
-const handler = "uniswap"; // "spookyswap" | "uniswap" | "quickswap" | "spiritswap" | "bombswap" | "polydex" | "cafeswap" | "pancakeswap" | "traderjoe" | "defyswap" | "pangolin";
+const handler = "uniswap";
+// | "spookyswap"
+// | "spookyswap_stoplimit"
+// | "uniswap"
+// | "uniswap_stoplimit"
+// | "quickswap"
+// | "quickswap_stoplimit"
+// | "spiritswap"
+// | "spiritswap_stoplimit"
+// | "bombswap"
+// | "polydex"
+// | "cafeswap"
+// | "pancakeswap"
+// | "pancakeswap_stoplimit"
+// | "traderjoe"
+// | "traderjoe_stoplimit"
+// | "defyswap"
+// | "pangolin"
+// | "pangolin_stoplimit";
 
 const gelatoLimitOrders = new GelatoLimitOrders(
   chainId as ChainId,
   signerOrProvider, // optional
   handler // optional
+);
+
+const gelatoStopLimitOrders = new GelatoStopLimitOrders(
+  chainId as ChainId,
+  signerOrProvider, // optional
+  handler // required
 );
 ```
 
@@ -40,7 +68,7 @@ Note: Use `0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE` when referring to native 
 
 ### Examples
 
-1. Submit a limit order
+1. Submit an order
 
 Note: To submit a order with an ERC20 as input you must first approve the `erc20OrderRouter`. You can get its address via `gelatoLimitOrders.erc20OrderRouter.address` or call `gelatoLimitOrders.approveTokenAmount(inputToken, inputAmount)`.
 
@@ -54,7 +82,7 @@ const outputToken = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE"; // ETH
 // Amount to sell
 const inputAmount = ethers.utils.parseUnits("2000", "18");
 
-// Minimum amount of outTOken which the users wants to receive back
+// Minimum amount of outToken which the users wants to receive back
 const minReturn = ethers.utils.parseEther("1");
 
 // Address of user who places the order (must be same as signer address)
@@ -68,6 +96,16 @@ const tx = await gelatoLimitOrders.submitLimitOrder(
   inputAmount,
   minReturn
 );
+
+// Maximum amount of outToken which the users wants to receive back => stop-limit price
+const maxReturn = ethers.utils.parseEther("1");
+
+const tx = await gelatoStopLimitOrders.submitStopLimitOrder(
+  inputToken,
+  outputToken,
+  inputAmount,
+  maxReturn
+);
 ```
 
 2. Cancel an order
@@ -76,6 +114,11 @@ const tx = await gelatoLimitOrders.submitLimitOrder(
 const tx = await gelatoLimitOrders.cancelLimitOrder(
   order,
   true // Optional: checkIsActiveOrder = true, to check if order to be cancelled actually exists. It is recommended to use this check before trying to cancel an order to avoid faulty cancellations and gas waste.
+);
+const tx = await gelatoStopLimitOrders.cancelStopLimitOrder(
+  order,
+  true // Optional: checkIsActiveOrder = true, to check if order to be cancelled actually exists. It is recommended to use this check before trying to cancel an order to avoid faulty cancellations and gas waste.
+);
 ```
 
 3. Fetch orders
@@ -93,9 +136,9 @@ const allOrders = await gelatoLimitOrders.getOrders(userAddress);
 ```typescript
 export class GelatoLimitOrders {
   static slippageBPS: number;
-  static gelatoFeeBPS: number;
 
   get chainId(): ChainId;
+  get gelatoFeeBPS(): number;
   get signer(): Signer | undefined;
   get provider(): Provider | undefined;
   get subgraphUrl(): string;
@@ -199,15 +242,153 @@ export class GelatoLimitOrders {
     includeOrdersWithNullHandler?: boolean
   ): Promise<Order[]>;
 }
+
+export declare class GelatoBase {
+  _chainId: ChainId;
+  _provider: Provider | undefined;
+  _signer: Signer | undefined;
+  _gelatoCore: GelatoBaseContract;
+  _erc20OrderRouter: ERC20OrderRouter;
+  _moduleAddress: string;
+  _subgraphUrl: string;
+  _abiEncoder: utils.AbiCoder;
+  _handlerAddress?: string;
+  _handler?: Handler;
+  _gelatoFeeBPS: number;
+  _slippageBPS: number;
+  get chainId(): ChainId;
+  get slippageBPS(): number;
+  get gelatoFeeBPS(): number;
+  get signer(): Signer | undefined;
+  get provider(): Provider | undefined;
+  get subgraphUrl(): string;
+  get handler(): Handler | undefined;
+  get handlerAddress(): string | undefined;
+  get moduleAddress(): string;
+  get contract(): GelatoBaseContract;
+  get erc20OrderRouter(): ERC20OrderRouter;
+  get abiEncoder(): any;
+  constructor(
+    chainId: ChainId,
+    moduleAddress: string,
+    signerOrProvider?: Signer | Provider,
+    handler?: Handler,
+    handlerAddress?: string
+  );
+  encodeLimitOrderCancellation(
+    order: StopLimitOrder,
+    checkIsActiveOrder?: boolean
+  ): Promise<TransactionData>;
+  cancelStopLimitOrder(
+    order: StopLimitOrder,
+    checkIsActiveOrder?: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+  approveTokenAmount(
+    inputToken: string,
+    amount: BigNumberish,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+  isActiveOrder(order: StopLimitOrder): Promise<boolean>;
+  getExchangeRate(
+    inputValue: BigNumberish,
+    inputDecimals: number,
+    outputValue: BigNumberish,
+    outputDecimals: number,
+    invert?: boolean
+  ): string;
+  getFeeAndSlippageAdjustedMinReturn(
+    outputAmount: BigNumberish,
+    extraSlippageBPS?: number
+  ): {
+    minReturn: string;
+    slippage: string;
+    gelatoFee: string;
+  };
+  getAdjustedMinReturn(
+    minReturn: BigNumberish,
+    extraSlippageBPS?: number
+  ): string;
+  getExecutionPrice(
+    inputAmount: BigNumberish,
+    inputDecimals: number,
+    outputAmount: BigNumberish,
+    outputDecimals: number,
+    isInverted?: boolean
+  ): string;
+  getPastStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
+  _getKey(order: StopLimitOrder): string;
+}
+
+class GelatoStopLimitOrders extends GelatoBase {
+  constructor(
+    chainId: ChainId,
+    signerOrProvider?: Signer | Provider,
+    handler?: Handler
+  );
+  submitStopLimitOrder(
+    inputToken: string,
+    outputToken: string,
+    inputAmount: BigNumberish,
+    maxReturn: BigNumberish,
+    checkAllowance?: boolean,
+    overrides?: Overrides
+  ): Promise<ContractTransaction>;
+  encodeStopLimitOrderSubmission(
+    inputToken: string,
+    outputToken: string,
+    inputAmount: BigNumberish,
+    maxReturn: BigNumberish,
+    owner: string,
+    checkAllowance?: boolean
+  ): Promise<TransactionData>;
+  encodeStopLimitOrderSubmissionWithSecret(
+    inputToken: string,
+    outputToken: string,
+    inputAmount: BigNumberish,
+    maxReturnToBeParsed: BigNumberish,
+    owner: string,
+    checkAllowance?: boolean
+  ): Promise<TransactionDataWithSecret>;
+  _encodeSubmitData(
+    inputToken: string,
+    outputToken: string,
+    owner: string,
+    witness: string,
+    amount: BigNumberish,
+    maxReturn: BigNumberish,
+    minReturn: BigNumberish,
+    secret: string,
+    checkAllowance: boolean
+  ): Promise<TransactionData>;
+  getOpenStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
+  getStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
+  getExecutedStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
+  getCancelledStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
+  getPastStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
+}
+
 export declare type ChainId = 1 | 3 | 56 | 137 | 250 | 43114;
 
 export type Handler =
   | "spookyswap"
+  | "spookyswap_stoplimit"
   | "uniswap"
+  | "uniswap_stoplimit"
   | "quickswap"
+  | "quickswap_stoplimit"
   | "spiritswap"
+  | "spiritswap_stoplimit"
   | "bombswap"
-  | "polydex";
+  | "polydex"
+  | "cafeswap"
+  | "pancakeswap"
+  | "pancakeswap_stoplimit"
+  | "traderjoe"
+  | "traderjoe_stoplimit"
+  | "defyswap"
+  | "pangolin"
+  | "pangolin_stoplimit";
 
 export interface TransactionData {
   to: string;
@@ -228,6 +409,7 @@ export interface Order {
   inputToken: string;
   outputToken: string;
   minReturn: string;
+  maxReturn?: string;
   adjustedMinReturn: string;
   module: string;
   witness: string;
@@ -248,6 +430,7 @@ export interface Order {
   data: string;
   inputData: string;
   handler: string | null;
+  isExpired: boolean;
 }
 
 export interface PartialOrder {

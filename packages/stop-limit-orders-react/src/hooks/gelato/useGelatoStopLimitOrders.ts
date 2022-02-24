@@ -8,7 +8,7 @@ import {
 } from "../../state/gstoplimit/hooks";
 import { StopLimitOrderState } from "../../state/gstoplimit/reducer";
 
-export default function useGelatoLimitOrders(): {
+export default function useGelatoStopLimitOrders(): {
   handlers: GelatoStopLimitOrdersHandlers;
   derivedOrderInfo: DerivedOrderInfo;
   orderState: StopLimitOrderState;

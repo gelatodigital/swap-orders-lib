@@ -188,7 +188,10 @@ export default function LimitOrder() {
 }
 ```
 
-Important: Open orders will expire three months `7889238 seconds` after creation. Expired orders will be filtered out of `open` and pushed into the `expired` in `useGelatoLimitOrdersHistory()`.
+## Expiration
+
+> :warning: :warning: :warning: **Warning** :warning: :warning: :warning: :
+> Important: Open orders will expire three months `7889238 seconds` after creation. Expired orders will be filtered out of `open` and pushed into the `expired` in `useGelatoLimitOrdersHistory()`.
 
 See complete integration example [here](https://github.com/gelatodigital/limit-orders-lib/tree/master/packages/limit-orders-react/src/components/GelatoLimitOrder/index.tsx#L81).
 
