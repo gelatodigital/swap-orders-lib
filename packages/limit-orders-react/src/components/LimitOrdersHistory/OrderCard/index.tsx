@@ -343,7 +343,11 @@ export default function OrderCard({ order }: { order: Order }) {
   const expireDate = order.createdAt ? (
     new Date(
       (parseInt(order.createdAt) + constants.MAX_LIFETIME_IN_SECONDS) * 1000
-    ).toLocaleString()
+    ).toLocaleString([], {
+      year: "numeric",
+      month: "2-digit",
+      day: "numeric",
+    })
   ) : (
     <Dots />
   );
@@ -561,7 +565,7 @@ export default function OrderCard({ order }: { order: Order }) {
                     fontWeight={400}
                     fontSize={12}
                     color={theme.text1}
-                    style={{ marginRight: "4px", marginTop: "2px" }}
+                    style={{ marginRight: "4px", marginTop: "5px" }}
                   >
                     Expiry Date: {expireDate}
                   </Text>
