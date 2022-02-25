@@ -19,9 +19,9 @@ import {
   GELATO_LIMIT_ORDERS_MODULE_FLASHBOTS_ADDRESS,
   HANDLERS_ADDRESSES,
   NETWORK_HANDLERS,
-  SLIPPAGE_BPS,
   SUBGRAPH_URL,
   L2_BPS_GELATO_FEE,
+  LIMIT_ORDER_SLIPPAGE,
 } from "../constants";
 import {
   ERC20OrderRouter,
@@ -70,9 +70,16 @@ export class GelatoLimitOrders {
   private _handlerAddress?: string;
   private _handler?: Handler;
   private _isFlashbotsProtected: boolean;
+  public _gelatoFeeBPS: number;
+  public _slippageBPS: number;
 
-  public static slippageBPS = SLIPPAGE_BPS;
-  public static gelatoFeeBPS = 0;
+  get gelatoFeeBPS(): number {
+    return this._gelatoFeeBPS;
+  }
+
+  get slippageBPS(): number {
+    return this._slippageBPS;
+  }
 
   get chainId(): ChainId {
     return this._chainId;
@@ -132,7 +139,10 @@ export class GelatoLimitOrders {
     }
 
     this._chainId = chainId;
-    GelatoLimitOrders.gelatoFeeBPS = L2_BPS_GELATO_FEE[chainId];
+    this._gelatoFeeBPS = !isEthereumChain(chainId)
+      ? L2_BPS_GELATO_FEE[chainId]
+      : 0;
+    this._slippageBPS = LIMIT_ORDER_SLIPPAGE[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
       ? signerOrProvider
@@ -483,17 +493,15 @@ export class GelatoLimitOrders {
     }
 
     const gelatoFee = BigNumber.from(outputAmount)
-      .mul(GelatoLimitOrders.gelatoFeeBPS)
+      .mul(this._gelatoFeeBPS)
       .div(10000)
       .gte(1)
-      ? BigNumber.from(outputAmount)
-          .mul(GelatoLimitOrders.gelatoFeeBPS)
-          .div(10000)
+      ? BigNumber.from(outputAmount).mul(this._gelatoFeeBPS).div(10000)
       : BigNumber.from(1);
 
     const slippageBPS = extraSlippageBPS
-      ? GelatoLimitOrders.slippageBPS + extraSlippageBPS
-      : GelatoLimitOrders.slippageBPS;
+      ? this._slippageBPS + extraSlippageBPS
+      : this._slippageBPS;
 
     const slippage = BigNumber.from(outputAmount).mul(slippageBPS).div(10000);
 
@@ -513,11 +521,11 @@ export class GelatoLimitOrders {
     if (isEthereumChain(this._chainId))
       throw new Error("Method not available for current chain.");
 
-    const gelatoFee = BigNumber.from(GelatoLimitOrders.gelatoFeeBPS);
+    const gelatoFee = BigNumber.from(this._gelatoFeeBPS);
 
     const slippage = extraSlippageBPS
-      ? BigNumber.from(GelatoLimitOrders.slippageBPS + extraSlippageBPS)
-      : BigNumber.from(GelatoLimitOrders.slippageBPS);
+      ? BigNumber.from(this._slippageBPS + extraSlippageBPS)
+      : BigNumber.from(this._slippageBPS);
 
     const fees = gelatoFee.add(slippage);
 

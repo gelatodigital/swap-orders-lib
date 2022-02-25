@@ -30,6 +30,15 @@ export const STOP_LIMIT_SLIPPAGE_BPS = {
   [CHAIN_ID.AVAX]: 500,
 };
 
+export const LIMIT_ORDER_SLIPPAGE = {
+  [CHAIN_ID.MAINNET]: 40,
+  [CHAIN_ID.ROPSTEN]: 40,
+  [CHAIN_ID.MATIC]: 40,
+  [CHAIN_ID.FANTOM]: 40,
+  [CHAIN_ID.BSC]: 40,
+  [CHAIN_ID.AVAX]: 40,
+};
+
 export const HANDLERS_ADDRESSES = {
   // UniswapV2Router02Handler
   [CHAIN_ID.MAINNET]: {

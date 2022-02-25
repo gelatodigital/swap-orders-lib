@@ -73,8 +73,8 @@ export function AdvancedSwapDetails() {
       rawOutputAmount
     );
 
-    const slippagePercentage = 500 / 100;
-    const gelatoFeePercentage = constants.L2_BPS_GELATO_FEE[chainId] / 100;
+    const slippagePercentage = library.slippageBPS / 100;
+    const gelatoFeePercentage = library.gelatoFeeBPS / 100;
 
     const minReturnParsed = CurrencyAmount.fromRawAmount(
       outputAmount.currency,
