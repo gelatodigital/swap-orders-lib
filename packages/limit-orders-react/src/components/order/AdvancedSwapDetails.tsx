@@ -97,7 +97,11 @@ export function AdvancedSwapDetails() {
 
   const expiryDate = new Date(
     new Date().getTime() + constants.MAX_LIFETIME_IN_SECONDS * 1000
-  ).toLocaleString();
+  ).toLocaleString([], {
+    year: "numeric",
+    month: "2-digit",
+    day: "numeric",
+  });
 
   return !chainId ? null : (
     <AutoColumn gap="8px">
