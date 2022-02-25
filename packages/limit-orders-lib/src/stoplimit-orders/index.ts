@@ -1,6 +1,5 @@
 import {
   BigNumber,
-  constants,
   utils,
   ContractTransaction,
   BigNumberish,
@@ -10,12 +9,10 @@ import {
 import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
 import {
-  ETH_ADDRESS,
   GELATO_STOP_LIMIT_ORDERS_MODULE_ADDRESS,
   HANDLERS_ADDRESSES,
   NETWORK_STOP_LIMIT_HANDLERS,
 } from "../constants";
-import { ERC20__factory } from "../contracts/types";
 import {
   Handler,
   ChainId,
@@ -23,7 +20,6 @@ import {
   TransactionData,
   TransactionDataWithSecret,
 } from "../types";
-import { isNetworkGasToken } from "../utils";
 import { isValidChainIdAndHandler, GelatoBase } from "./core";
 import {
   queryStopLimitOrders,
@@ -178,104 +174,36 @@ export class GelatoStopLimitOrders extends GelatoBase {
     };
   }
 
-  public async _encodeSubmitData(
-    inputToken: string,
-    outputToken: string,
-    owner: string,
-    witness: string,
-    amount: BigNumberish,
-    maxReturn: BigNumberish,
-    minReturn: BigNumberish,
-    secret: string,
-    checkAllowance: boolean
-  ): Promise<TransactionData> {
-    if (!this.provider) throw new Error("No provider");
-
-    if (!this.handlerAddress) throw new Error("No handlerAddress");
-
-    if (inputToken.toLowerCase() === outputToken.toLowerCase())
-      throw new Error("Input token and output token can not be equal");
-
-    const encodedData = this.abiEncoder.encode(
-      ["address", "uint256", "address", "uint256"],
-      [outputToken, minReturn, this.handlerAddress, maxReturn]
-    );
-
-    let data, value, to;
-    if (isNetworkGasToken(inputToken)) {
-      const encodedEthOrder = await this.contract.encodeEthOrder(
-        this.moduleAddress,
-        ETH_ADDRESS, // we also use ETH_ADDRESS if it's MATIC
-        owner,
-        witness,
-        encodedData,
-        secret
-      );
-      data = this.contract.interface.encodeFunctionData("depositEth", [
-        encodedEthOrder,
-      ]);
-      value = amount;
-      to = this.contract.address;
-    } else {
-      if (checkAllowance) {
-        const allowance = await ERC20__factory.connect(
-          inputToken,
-          this.provider
-        ).allowance(owner, this.erc20OrderRouter.address);
-
-        if (allowance.lt(amount))
-          throw new Error("Insufficient token allowance for placing order");
-      }
-
-      data = this.erc20OrderRouter.interface.encodeFunctionData(
-        "depositToken",
-        [
-          amount,
-          this.moduleAddress,
-          inputToken,
-          owner,
-          witness,
-          encodedData,
-          secret,
-        ]
-      );
-      value = constants.Zero;
-      to = this.erc20OrderRouter.address;
-    }
-
-    return { data, value, to };
-  }
-
   public async getOpenStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
-    const orders = await queryStopLimitOrders(owner, this._chainId);
+    const orders = await queryStopLimitOrders(owner, this.chainId);
     return orders;
   }
 
   public async getStopLimitOrders(owner: string): Promise<StopLimitOrder[]> {
-    const orders = await queryStopLimitOrders(owner, this._chainId);
+    const orders = await queryStopLimitOrders(owner, this.chainId);
     return orders;
   }
 
   public async getExecutedStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
-    const orders = await queryStopLimitExecutedOrders(owner, this._chainId);
+    const orders = await queryStopLimitExecutedOrders(owner, this.chainId);
     return orders;
   }
 
   public async getCancelledStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
-    const orders = await queryStopLimitCancelledOrders(owner, this._chainId);
+    const orders = await queryStopLimitCancelledOrders(owner, this.chainId);
     return orders;
   }
 
   public async getPastStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
-    const orders = await queryPastOrders(owner, this._chainId);
+    const orders = await queryPastOrders(owner, this.chainId);
     return orders;
   }
 }

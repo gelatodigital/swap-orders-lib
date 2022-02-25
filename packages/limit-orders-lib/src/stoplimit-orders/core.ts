@@ -27,9 +27,8 @@ import {
   GelatoLimitOrders as GelatoBaseContract,
   GelatoLimitOrders__factory as GelatoBase__factory,
 } from "../contracts/types";
-import { queryPastOrders } from "../utils/queries/stoplimit";
 import { Handler, ChainId, StopLimitOrder, TransactionData } from "../types";
-import { isEthereumChain } from "../utils";
+import { isEthereumChain, isNetworkGasToken } from "../utils";
 
 export const isValidChainIdAndHandler = (
   chainId: ChainId,
@@ -54,29 +53,29 @@ export const isETHOrWETH = (
 };
 
 export class GelatoBase {
-  public _chainId: ChainId;
-  public _provider: Provider | undefined;
-  public _signer: Signer | undefined;
-  public _gelatoCore: GelatoBaseContract;
-  public _erc20OrderRouter: ERC20OrderRouter;
-  public _moduleAddress: string;
-  public _subgraphUrl: string;
-  public _abiEncoder: utils.AbiCoder;
-  public _handlerAddress?: string;
-  public _handler?: Handler;
-  public _gelatoFeeBPS: number;
-  public _slippageBPS: number;
+  private _chainId: ChainId;
+  private _provider: Provider | undefined;
+  private _signer: Signer | undefined;
+  private _gelatoCore: GelatoBaseContract;
+  private _erc20OrderRouter: ERC20OrderRouter;
+  private _moduleAddress: string;
+  private _subgraphUrl: string;
+  private _abiEncoder: utils.AbiCoder;
+  private _handlerAddress?: string;
+  private _handler?: Handler;
+  private _gelatoFeeBPS: number;
+  private _slippageBPS: number;
 
-  get chainId(): ChainId {
-    return this._chainId;
+  get gelatoFeeBPS(): number {
+    return this._gelatoFeeBPS;
   }
 
-  public get slippageBPS(): number {
+  get slippageBPS(): number {
     return this._slippageBPS;
   }
 
-  public get gelatoFeeBPS(): number {
-    return this._gelatoFeeBPS;
+  get chainId(): ChainId {
+    return this._chainId;
   }
 
   get signer(): Signer | undefined {
@@ -127,9 +126,9 @@ export class GelatoBase {
     }
 
     this._chainId = chainId;
-    this._gelatoFeeBPS = isEthereumChain(chainId)
-      ? 0
-      : L2_BPS_GELATO_FEE[chainId];
+    this._gelatoFeeBPS = !isEthereumChain(chainId)
+      ? L2_BPS_GELATO_FEE[chainId]
+      : 0;
     this._slippageBPS = STOP_LIMIT_SLIPPAGE_BPS[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
@@ -389,19 +388,80 @@ export class GelatoBase {
     }
   }
 
-  public async getPastStopLimitOrders(
-    owner: string
-  ): Promise<StopLimitOrder[]> {
-    const orders = await queryPastOrders(owner, this._chainId);
-    return orders;
-  }
-
-  public _getKey(order: StopLimitOrder): string {
+  protected _getKey(order: StopLimitOrder): string {
     return utils.keccak256(
       this._abiEncoder.encode(
         ["address", "address", "address", "address", "bytes"],
         [order.module, order.inputToken, order.owner, order.witness, order.data]
       )
     );
+  }
+
+  protected async _encodeSubmitData(
+    inputToken: string,
+    outputToken: string,
+    owner: string,
+    witness: string,
+    amount: BigNumberish,
+    maxReturn: BigNumberish,
+    minReturn: BigNumberish,
+    secret: string,
+    checkAllowance: boolean
+  ): Promise<TransactionData> {
+    if (!this.provider) throw new Error("No provider");
+
+    if (!this.handlerAddress) throw new Error("No handlerAddress");
+
+    if (inputToken.toLowerCase() === outputToken.toLowerCase())
+      throw new Error("Input token and output token can not be equal");
+
+    const encodedData = this.abiEncoder.encode(
+      ["address", "uint256", "address", "uint256"],
+      [outputToken, minReturn, this.handlerAddress, maxReturn]
+    );
+
+    let data, value, to;
+    if (isNetworkGasToken(inputToken)) {
+      const encodedEthOrder = await this.contract.encodeEthOrder(
+        this.moduleAddress,
+        ETH_ADDRESS, // we also use ETH_ADDRESS if it's MATIC
+        owner,
+        witness,
+        encodedData,
+        secret
+      );
+      data = this.contract.interface.encodeFunctionData("depositEth", [
+        encodedEthOrder,
+      ]);
+      value = amount;
+      to = this.contract.address;
+    } else {
+      if (checkAllowance) {
+        const allowance = await ERC20__factory.connect(
+          inputToken,
+          this.provider
+        ).allowance(owner, this.erc20OrderRouter.address);
+
+        if (allowance.lt(amount))
+          throw new Error("Insufficient token allowance for placing order");
+      }
+
+      data = this.erc20OrderRouter.interface.encodeFunctionData(
+        "depositToken",
+        [
+          amount,
+          this.moduleAddress,
+          inputToken,
+          owner,
+          witness,
+          encodedData,
+          secret,
+        ]
+      );
+      value = constants.Zero;
+      to = this.erc20OrderRouter.address;
+    }
+
+    return { data, value, to };
   }
 }

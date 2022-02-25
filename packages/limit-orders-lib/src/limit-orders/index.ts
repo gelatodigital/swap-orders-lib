@@ -19,9 +19,9 @@ import {
   GELATO_LIMIT_ORDERS_MODULE_FLASHBOTS_ADDRESS,
   HANDLERS_ADDRESSES,
   NETWORK_HANDLERS,
-  SLIPPAGE_BPS,
   SUBGRAPH_URL,
   L2_BPS_GELATO_FEE,
+  LIMIT_ORDER_SLIPPAGE,
 } from "../constants";
 import {
   ERC20OrderRouter,
@@ -70,16 +70,19 @@ export class GelatoLimitOrders {
   private _handlerAddress?: string;
   private _handler?: Handler;
   private _isFlashbotsProtected: boolean;
-  private readonly _gelatoFeeBPS: number;
-
-  public static slippageBPS = SLIPPAGE_BPS;
-
-  get chainId(): ChainId {
-    return this._chainId;
-  }
+  private _gelatoFeeBPS: number;
+  private _slippageBPS: number;
 
   get gelatoFeeBPS(): number {
     return this._gelatoFeeBPS;
+  }
+
+  get slippageBPS(): number {
+    return this._slippageBPS;
+  }
+
+  get chainId(): ChainId {
+    return this._chainId;
   }
 
   get signer(): Signer | undefined {
@@ -136,7 +139,10 @@ export class GelatoLimitOrders {
     }
 
     this._chainId = chainId;
-    this._gelatoFeeBPS = L2_BPS_GELATO_FEE[chainId];
+    this._gelatoFeeBPS = !isEthereumChain(chainId)
+      ? L2_BPS_GELATO_FEE[chainId]
+      : 0;
+    this._slippageBPS = LIMIT_ORDER_SLIPPAGE[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
       ? signerOrProvider
@@ -494,8 +500,8 @@ export class GelatoLimitOrders {
       : BigNumber.from(1);
 
     const slippageBPS = extraSlippageBPS
-      ? GelatoLimitOrders.slippageBPS + extraSlippageBPS
-      : GelatoLimitOrders.slippageBPS;
+      ? this._slippageBPS + extraSlippageBPS
+      : this._slippageBPS;
 
     const slippage = BigNumber.from(outputAmount).mul(slippageBPS).div(10000);
 
@@ -518,8 +524,8 @@ export class GelatoLimitOrders {
     const gelatoFee = BigNumber.from(this._gelatoFeeBPS);
 
     const slippage = extraSlippageBPS
-      ? BigNumber.from(GelatoLimitOrders.slippageBPS + extraSlippageBPS)
-      : BigNumber.from(GelatoLimitOrders.slippageBPS);
+      ? BigNumber.from(this._slippageBPS + extraSlippageBPS)
+      : BigNumber.from(this._slippageBPS);
 
     const fees = gelatoFee.add(slippage);
 
