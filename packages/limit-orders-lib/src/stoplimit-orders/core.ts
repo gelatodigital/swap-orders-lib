@@ -54,18 +54,18 @@ export const isETHOrWETH = (
 };
 
 export class GelatoBase {
-  public _chainId: ChainId;
-  public _provider: Provider | undefined;
-  public _signer: Signer | undefined;
-  public _gelatoCore: GelatoBaseContract;
-  public _erc20OrderRouter: ERC20OrderRouter;
-  public _moduleAddress: string;
-  public _subgraphUrl: string;
-  public _abiEncoder: utils.AbiCoder;
-  public _handlerAddress?: string;
-  public _handler?: Handler;
-  public _gelatoFeeBPS: number;
-  public _slippageBPS: number;
+  private _chainId: ChainId;
+  private _provider: Provider | undefined;
+  private _signer: Signer | undefined;
+  private _gelatoCore: GelatoBaseContract;
+  private _erc20OrderRouter: ERC20OrderRouter;
+  private _moduleAddress: string;
+  private _subgraphUrl: string;
+  private _abiEncoder: utils.AbiCoder;
+  private _handlerAddress?: string;
+  private _handler?: Handler;
+  private _gelatoFeeBPS: number;
+  private _slippageBPS: number;
 
   get gelatoFeeBPS(): number {
     return this._gelatoFeeBPS;

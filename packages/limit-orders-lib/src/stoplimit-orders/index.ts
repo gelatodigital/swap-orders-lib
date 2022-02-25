@@ -249,33 +249,33 @@ export class GelatoStopLimitOrders extends GelatoBase {
   public async getOpenStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
-    const orders = await queryStopLimitOrders(owner, this._chainId);
+    const orders = await queryStopLimitOrders(owner, this.chainId);
     return orders;
   }
 
   public async getStopLimitOrders(owner: string): Promise<StopLimitOrder[]> {
-    const orders = await queryStopLimitOrders(owner, this._chainId);
+    const orders = await queryStopLimitOrders(owner, this.chainId);
     return orders;
   }
 
   public async getExecutedStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
-    const orders = await queryStopLimitExecutedOrders(owner, this._chainId);
+    const orders = await queryStopLimitExecutedOrders(owner, this.chainId);
     return orders;
   }
 
   public async getCancelledStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
-    const orders = await queryStopLimitCancelledOrders(owner, this._chainId);
+    const orders = await queryStopLimitCancelledOrders(owner, this.chainId);
     return orders;
   }
 
   public async getPastStopLimitOrders(
     owner: string
   ): Promise<StopLimitOrder[]> {
-    const orders = await queryPastOrders(owner, this._chainId);
+    const orders = await queryPastOrders(owner, this.chainId);
     return orders;
   }
 }

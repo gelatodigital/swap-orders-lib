@@ -70,8 +70,8 @@ export class GelatoLimitOrders {
   private _handlerAddress?: string;
   private _handler?: Handler;
   private _isFlashbotsProtected: boolean;
-  public _gelatoFeeBPS: number;
-  public _slippageBPS: number;
+  private _gelatoFeeBPS: number;
+  private _slippageBPS: number;
 
   get gelatoFeeBPS(): number {
     return this._gelatoFeeBPS;
