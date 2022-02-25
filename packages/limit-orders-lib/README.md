@@ -135,9 +135,8 @@ const allOrders = await gelatoLimitOrders.getOrders(userAddress);
 
 ```typescript
 export class GelatoLimitOrders {
-  static slippageBPS: number;
-  static gelatoFeeBPS: number;
-
+  get gelatoFeeBPS(): number;
+  get slippageBPS(): number;
   get chainId(): ChainId;
   get signer(): Signer | undefined;
   get provider(): Provider | undefined;
@@ -244,9 +243,8 @@ export class GelatoLimitOrders {
 }
 
 export declare class GelatoBase {
-  static slippageBPS: number;
-  static gelatoFeeBPS: number;
-
+  get gelatoFeeBPS(): number;
+  get slippageBPS(): number;
   get chainId(): ChainId;
   get signer(): Signer | undefined;
   get provider(): Provider | undefined;
@@ -306,7 +304,6 @@ export declare class GelatoBase {
     isInverted?: boolean
   ): string;
   getPastStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
-  _getKey(order: StopLimitOrder): string;
 }
 
 class GelatoStopLimitOrders extends GelatoBase {
@@ -339,22 +336,10 @@ class GelatoStopLimitOrders extends GelatoBase {
     owner: string,
     checkAllowance?: boolean
   ): Promise<TransactionDataWithSecret>;
-  _encodeSubmitData(
-    inputToken: string,
-    outputToken: string,
-    owner: string,
-    witness: string,
-    amount: BigNumberish,
-    maxReturn: BigNumberish,
-    minReturn: BigNumberish,
-    secret: string,
-    checkAllowance: boolean
-  ): Promise<TransactionData>;
   getOpenStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
   getStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
   getExecutedStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
   getCancelledStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
-  getPastStopLimitOrders(owner: string): Promise<StopLimitOrder[]>;
 }
 
 export declare type ChainId = 1 | 3 | 56 | 137 | 250 | 43114;
