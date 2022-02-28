@@ -262,4 +262,40 @@ describe("Library Test", () => {
       )
     );
   });
+
+  it("#12; Test getAmountsIn function from MATIC/USDC Pool", async () => {
+    // const maticUsdcPool = "0xA374094527e1673A86dE625aa59517c5dE346d32";
+
+    const pool = new ethers.Contract(
+      "0xA374094527e1673A86dE625aa59517c5dE346d32",
+      [
+        "function slot0() public view returns (uint160 sqrtPriceX96,int24 tick,uint16 observationIndex,uint16 observationCardinality,uint16 observationCardinalityNext,uint8 feeProtocol,bool unlocked)",
+        "function tickSpacing() public view returns (int24)",
+      ],
+      new ethers.providers.JsonRpcProvider(URL)
+    );
+
+    const slot0 = await pool.slot0();
+    const tickSpacing = await pool.tickSpacing();
+
+    const currentTick = slot0.tick;
+    const lowerTick = currentTick - (currentTick % tickSpacing) + tickSpacing;
+    const upperTick = lowerTick + tickSpacing;
+
+    const amountIn = BigNumber.from("1000000000000000000");
+    const amountOut = ethers.constants.Zero;
+
+    // console.log(slot0);
+
+    const result = gelatoRangeOrder.getAmountsIn(
+      currentTick,
+      lowerTick,
+      upperTick,
+      amountIn,
+      amountOut,
+      slot0.sqrtPriceX96
+    );
+
+    console.log(result);
+  });
 });

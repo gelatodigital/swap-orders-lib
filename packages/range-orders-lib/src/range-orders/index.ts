@@ -456,20 +456,20 @@ export class GelatoRangeOrder {
     return null;
   }
 
-  public getAmountIn(
-    currentTick: BigNumber,
-    lowerTick: BigNumber,
-    upperTick: BigNumber,
+  public getAmountsIn(
+    currentTick: number,
+    lowerTick: number,
+    upperTick: number,
     amount0: BigNumber,
     amount1: BigNumber,
     sqrtPriceX96: BigNumber
   ): { amount0: BigNumber; amount1: BigNumber } {
     const liquidity = maxLiquidityForAmounts(
-      JSBI.BigInt(currentTick.toString()),
-      JSBI.BigInt(lowerTick.toString()),
-      JSBI.BigInt(upperTick.toString()),
-      JSBI.BigInt(amount0.toString()),
-      JSBI.BigInt(amount1.toString()),
+      JSBI.BigInt(sqrtPriceX96),
+      TickMath.getSqrtRatioAtTick(lowerTick),
+      TickMath.getSqrtRatioAtTick(upperTick),
+      amount0.toString(),
+      amount1.toString(),
       true
     );
 
@@ -478,21 +478,21 @@ export class GelatoRangeOrder {
 
     amount0 = ethers.constants.Zero;
     amount1 = ethers.constants.Zero;
-    ƒ;
-    if (currentTick.lt(lowerTick)) {
+
+    if (currentTick < lowerTick) {
       amount0 = BigNumber.from(
         this.getAmount0Delta(
-          TickMath.getSqrtRatioAtTick(lowerTick.toNumber()),
-          TickMath.getSqrtRatioAtTick(upperTick.toNumber()),
+          TickMath.getSqrtRatioAtTick(lowerTick),
+          TickMath.getSqrtRatioAtTick(upperTick),
           liquidity,
           false
         ).toString()
       );
-    } else if (currentTick.lt(upperTick)) {
+    } else if (currentTick < upperTick) {
       amount0 = BigNumber.from(
         this.getAmount0Delta(
           JSBI.BigInt(sqrtPriceX96.toString()),
-          TickMath.getSqrtRatioAtTick(upperTick.toNumber()),
+          TickMath.getSqrtRatioAtTick(upperTick),
           liquidity,
           false
         ).toString()
@@ -500,7 +500,7 @@ export class GelatoRangeOrder {
 
       amount1 = BigNumber.from(
         this.getAmount1Delta(
-          TickMath.getSqrtRatioAtTick(lowerTick.toNumber()),
+          TickMath.getSqrtRatioAtTick(lowerTick),
           JSBI.BigInt(sqrtPriceX96.toString()),
           liquidity,
           false
@@ -509,8 +509,8 @@ export class GelatoRangeOrder {
     } else {
       amount1 = BigNumber.from(
         this.getAmount1Delta(
-          TickMath.getSqrtRatioAtTick(lowerTick.toNumber()),
-          TickMath.getSqrtRatioAtTick(upperTick.toNumber()),
+          TickMath.getSqrtRatioAtTick(lowerTick),
+          TickMath.getSqrtRatioAtTick(upperTick),
           liquidity,
           false
         ).toString()
