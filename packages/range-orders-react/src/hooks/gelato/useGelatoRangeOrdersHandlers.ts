@@ -16,7 +16,7 @@ import {
   FACTORY_ADDRESS,
   FeeAmount,
 } from "@uniswap/v3-sdk";
-import { utils } from "ethers";
+import { ethers, utils } from "ethers";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
 import {
   RangeOrderData,
@@ -272,11 +272,27 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         throw new Error("No account");
       }
 
+      const tickSpacing = pool?.tickSpacing ?? 0;
+      const lowerTick =
+        selectedTick - (selectedTick % tickSpacing) + tickSpacing;
+      const upperTick = lowerTick + tickSpacing;
+
+      const { amount0, amount1 } = gelatoRangeOrders.getAmountsIn(
+        pool?.tickCurrent ?? 0,
+        lowerTick,
+        upperTick,
+        zeroForOne ? orderToSubmit.inputAmount : ethers.constants.Zero,
+        zeroForOne ? ethers.constants.Zero : orderToSubmit.inputAmount,
+        BigNumber.from(pool?.sqrtRatioX96.toString()) ?? ethers.constants.Zero
+      );
+
+      console.log(amount0, amount1);
+
       const { order } = await gelatoRangeOrders.encodeRangeOrderSubmission(
         poolAddress,
         zeroForOne,
         selectedTick,
-        orderToSubmit.inputAmount,
+        amount0,
         account,
         BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
       );
@@ -285,18 +301,18 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         pool: poolAddress,
         zeroForOne,
         tickThreshold: selectedTick,
-        amountIn: orderToSubmit.inputAmount,
+        amountIn: zeroForOne ? amount0 : amount1,
         receiver: account,
         maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       };
+      console.log(orderPayload);
       const overrides: PayableOverrides = {
         value:
           inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address
-            ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(
-                orderToSubmit.inputAmount
-              )
+            ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(amount0)
             : BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       };
+      console.log(overrides);
 
       const tx = await gelatoRangeOrders.setRangeOrder(orderPayload, overrides);
       if (!tx) {
