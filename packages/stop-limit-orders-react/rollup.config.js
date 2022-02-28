@@ -11,10 +11,10 @@ import { visualizer } from "rollup-plugin-visualizer";
 
 // this override is needed because Module format cjs does not support top-level await
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require("./package.json");
+const pkg = require("./package.json");
 
 const globals = {
-  ...packageJson.devDependencies,
+  ...pkg.devDependencies,
 };
 
 const extensions = [".ts", ".js", ".tsx", "jsx"];
@@ -22,16 +22,20 @@ const extensions = [".ts", ".js", ".tsx", "jsx"];
 export default {
   input: "./src/index.tsx",
   output: [
-    // {
-    //   file: packageJson.main,
-    //   format: "cjs",
-    //   sourcemap: true,
-    // },
     {
-      file: packageJson.browser,
-      name: "gelatoLimitOrders",
-      format: "umd",
+      file: pkg.main,
+      exports: "named",
+      format: "cjs",
     },
+    {
+      file: pkg.module,
+      format: "esm",
+    },
+    // {
+    //   file: pkg.browser,
+    //   name: "gelatoLimitOrders",
+    //   format: "umd",
+    // },
   ],
   plugins: [
     peerDepsExternal(),
@@ -47,7 +51,7 @@ export default {
       declarationDir: ".",
     }),
     babel({
-      babelHelpers: "inline",
+      babelHelpers: "bundled",
       include: ["src/**/*"],
       exclude: "node_modules/**",
       extensions,
