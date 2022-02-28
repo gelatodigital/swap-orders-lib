@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Order, StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
+import { StopLimitOrder } from "@gelatonetwork/limit-orders-lib";
 import { useWeb3 } from "../../web3";
 import {
   getLSOrders,

@@ -2,8 +2,6 @@
 
 const COMPOUND_LIST =
   "https://raw.githubusercontent.com/compound-finance/token-list/master/compound.tokenlist.json";
-const OPYN_LIST =
-  "https://raw.githubusercontent.com/opynfinance/opyn-tokenlist/master/opyn-v1.tokenlist.json";
 const COINGECKO_LIST = "https://tokens.coingecko.com/uniswap/all.json";
 // const CMC_ALL_LIST = "defi.cmc.eth";
 // const CMC_STABLECOIN = "stablecoin.cmc.eth";
@@ -35,7 +33,6 @@ export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST];
 export const DEFAULT_LIST_OF_LISTS_MAINNET: string[] = [
   ...UNSUPPORTED_LIST_URLS, // need to load unsupported tokens as well
   COMPOUND_LIST,
-  OPYN_LIST,
   COINGECKO_LIST,
   GEMINI_LIST,
 ];

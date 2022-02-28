@@ -9,7 +9,7 @@ import useTheme from "../../../hooks/useTheme";
 import { useCurrency } from "../../../hooks/Tokens";
 import CurrencyLogo from "../../CurrencyLogo";
 import { useGelatoStopLimitOrdersHandlers } from "../../../hooks/gelato";
-import { CurrencyAmount, Price, Percent } from "@uniswap/sdk-core";
+import { CurrencyAmount, Price } from "@uniswap/sdk-core";
 import ConfirmCancellationModal from "../ConfirmCancellationModal";
 import { useTradeExactIn } from "../../../hooks/useTrade";
 import { Dots } from "../../order/styleds";
@@ -23,7 +23,6 @@ import {
   getExplorerLink,
 } from "../../../utils/getExplorerLink";
 import TradePrice from "../../order/TradePrice";
-import useGelatoStopLimitOrdersLib from "../../../hooks/gelato/useGelatoStopLimitOrdersLib";
 import useGasOverhead from "../../../hooks/useGasOverhead";
 import { MouseoverTooltip } from "../../Tooltip";
 import { TYPE } from "../../../theme";
@@ -176,11 +175,6 @@ const Spacer = styled.div`
   flex: 1 1 auto;
 `;
 
-const ExpiredText = styled.span`
-  color: ${({ theme }) => theme.text4};
-  margin-right: 5px;
-`;
-
 export default function OrderCard({ order }: { order: StopLimitOrder }) {
   const theme = useTheme();
 
@@ -202,8 +196,6 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
   const {
     handleStopLimitOrderCancellation,
   } = useGelatoStopLimitOrdersHandlers();
-
-  const gelatoLibrary = useGelatoStopLimitOrdersLib();
 
   const inputToken = useCurrency(order.inputToken);
   const outputToken = useCurrency(order.outputToken);
@@ -266,17 +258,6 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
   );
 
   const trade = useTradeExactIn(inputAmount, outputToken ?? undefined, handler);
-
-  const currentMarketRate = trade?.executionPrice ?? undefined;
-
-  const pct =
-    currentMarketRate && maxPrice
-      ? maxPrice.subtract(currentMarketRate).divide(currentMarketRate)
-      : undefined;
-
-  // const percentageRateDifference = pct
-  //   ? new Percent(pct.numerator, pct.denominator)
-  //   : undefined;
 
   const isSubmissionPending = useIsTransactionPending(order.createdTxHash);
   const isCancellationPending = useIsTransactionPending(
@@ -355,6 +336,7 @@ export default function OrderCard({ order }: { order: StopLimitOrder }) {
     outputToken,
     inputAmount,
     outputAmount,
+    maxOutputAmount,
     order,
   ]);
 

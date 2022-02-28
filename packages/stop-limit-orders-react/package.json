@@ -21,9 +21,18 @@
   },
   "license": "GPL-3.0-only",
   "author": "Gelato Network",
-  "main": "dist/index.js",
-  "module": "dist/index.esm.js",
-  "browser": "dist/index.umd.js",
+  "browser": {
+    "./dist/index.esm.js": "./dist/index.esm.js",
+    "./dist/index.cjs.js": "./dist/index.cjs.js"
+  },
+  "module": "./dist/index.esm.js",
+  "main": "./dist/index.cjs.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.cjs.js"
+    }
+  },
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -81,6 +90,7 @@
     "husky": "6.0.0",
     "jsbi": "^3.1.4",
     "lint-staged": "10.5.4",
+    "node-sass": "^7.0.1",
     "prettier": "2.2.1",
     "react": "^17.0.2",
     "react-redux": "^7.2.3",
