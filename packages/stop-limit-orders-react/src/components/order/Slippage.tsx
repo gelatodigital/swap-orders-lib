@@ -1,9 +1,8 @@
 import React from "react";
 import styled from "styled-components/macro";
-import Row, { RowBetween, RowFixed } from "../Row";
+import { RowBetween, RowFixed } from "../Row";
 import { TYPE } from "../../theme";
 import { MouseoverTooltipContent } from "../Tooltip";
-import { Input as NumericalInput } from "../NumericalInput";
 
 import { Info } from "react-feather";
 
@@ -11,19 +10,6 @@ const StyledSwap = styled.div`
   padding: 1rem 1.25rem 0.5rem 1.25rem;
   width: 100%;
   color: ${({ theme }) => theme.text2};
-`;
-
-const Tabs = styled(Row)`
-  justify-self: flex-end;
-  background-color: ${({ theme }) => theme.bg0};
-
-  border-radius: 16px;
-  display: grid;
-  grid-auto-flow: column;
-  overflow: auto;
-  ${({ theme }) => theme.mediaWidth.upToMedium`
-    justify-self: center;
-  `};
 `;
 
 const StyledInfo = styled(Info)`
@@ -34,11 +20,6 @@ const StyledInfo = styled(Info)`
   :hover {
     opacity: 0.8;
   }
-`;
-
-const StyledInput = styled(NumericalInput)`
-  height: "auto";
-  background-color: transparent;
 `;
 
 const SlippageText = () => (

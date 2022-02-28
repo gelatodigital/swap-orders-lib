@@ -26,5 +26,5 @@ export default function useGelatoStopLimitOrdersLib():
       );
       return undefined;
     }
-  }, [chainId, library]);
+  }, [chainId, library, handler]);
 }
