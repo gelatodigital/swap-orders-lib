@@ -22,8 +22,8 @@
   "license": "GPL-3.0-only",
   "author": "Gelato Network",
   "browser": {
-    "./dist/index.js": "./dist/index.browser.js",
-    "./dist/index.esm.js": "./dist/index.browser.esm.js"
+    "./dist/index.js": "./dist/index.cjs.js",
+    "./dist/index.esm.js": "./dist/index.esm.js"
   },
   "module": "./dist/index.esm.js",
   "main": "./dist/index.cjs.js",
