@@ -209,23 +209,22 @@ export default function OrderCard({ order }: { order: Order }) {
     [inputToken, order.inputAmount]
   );
 
-  const isEthereum = isTransactionCostDependentChain(chainId ?? 1);
+  const isTransactionCostDependentChainBool =
+    chainId && isTransactionCostDependentChain(chainId);
 
   const rawMinReturn = useMemo(
     () =>
       order.adjustedMinReturn
         ? order.adjustedMinReturn
         : gelatoLibrary && chainId && order.minReturn
-        ? isEthereum
-          ? order.minReturn
-          : gelatoLibrary.getAdjustedMinReturn(order.minReturn)
+        ? gelatoLibrary.getAdjustedMinReturn(order.minReturn)
         : undefined,
     [
       chainId,
       gelatoLibrary,
       order.adjustedMinReturn,
       order.minReturn,
-      isEthereum,
+      isTransactionCostDependentChainBool,
     ]
   );
 
@@ -507,7 +506,7 @@ export default function OrderCard({ order }: { order: Order }) {
                     Execution price:
                   </Text>
                   {executionPrice ? (
-                    isEthereum ? (
+                    isTransactionCostDependentChainBool ? (
                       <>
                         <MouseoverTooltip
                           text={`The execution price takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled, so that the minimum you receive is ${

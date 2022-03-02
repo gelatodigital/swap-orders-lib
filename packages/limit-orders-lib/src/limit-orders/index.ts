@@ -139,9 +139,7 @@ export class GelatoLimitOrders {
     }
 
     this._chainId = chainId;
-    this._gelatoFeeBPS = !isEthereumChain(chainId)
-      ? L2_BPS_GELATO_FEE[chainId]
-      : 0;
+    this._gelatoFeeBPS = L2_BPS_GELATO_FEE[chainId];
     this._slippageBPS = LIMIT_ORDER_SLIPPAGE[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
@@ -150,20 +148,20 @@ export class GelatoLimitOrders {
     this._provider = Provider.isProvider(signerOrProvider)
       ? signerOrProvider
       : Signer.isSigner(signerOrProvider)
-      ? signerOrProvider.provider
-      : undefined;
+        ? signerOrProvider.provider
+        : undefined;
 
     this._gelatoLimitOrders = this._signer
       ? GelatoLimitOrders__factory.connect(
-          GELATO_LIMIT_ORDERS_ADDRESS[this._chainId],
-          this._signer
-        )
+        GELATO_LIMIT_ORDERS_ADDRESS[this._chainId],
+        this._signer
+      )
       : this._provider
-      ? GelatoLimitOrders__factory.connect(
+        ? GelatoLimitOrders__factory.connect(
           GELATO_LIMIT_ORDERS_ADDRESS[this._chainId],
           this._provider
         )
-      : (new Contract(
+        : (new Contract(
           GELATO_LIMIT_ORDERS_ADDRESS[this._chainId],
           GelatoLimitOrders__factory.createInterface()
         ) as GelatoLimitOrdersContract);
@@ -180,15 +178,15 @@ export class GelatoLimitOrders {
 
     this._erc20OrderRouter = this._signer
       ? ERC20OrderRouter__factory.connect(
-          GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER[this._chainId],
-          this._signer
-        )
+        GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER[this._chainId],
+        this._signer
+      )
       : this._provider
-      ? ERC20OrderRouter__factory.connect(
+        ? ERC20OrderRouter__factory.connect(
           GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER[this._chainId],
           this._provider
         )
-      : (new Contract(
+        : (new Contract(
           GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER[this._chainId],
           ERC20OrderRouter__factory.createInterface()
         ) as ERC20OrderRouter);
@@ -228,9 +226,7 @@ export class GelatoLimitOrders {
 
     const { privateKey: secret, address: witness } = new Wallet(fullSecret);
 
-    const { minReturn } = !isEthereumChain(this._chainId)
-      ? this.getFeeAndSlippageAdjustedMinReturn(minReturnToBeParsed)
-      : { minReturn: minReturnToBeParsed };
+    const { minReturn } = this.getFeeAndSlippageAdjustedMinReturn(minReturnToBeParsed)
 
     const payload = await this._encodeSubmitData(
       inputToken,
@@ -245,13 +241,13 @@ export class GelatoLimitOrders {
 
     const encodedData = this._handlerAddress
       ? this._abiEncoder.encode(
-          ["address", "uint256", "address"],
-          [outputToken, minReturn, this._handlerAddress]
-        )
+        ["address", "uint256", "address"],
+        [outputToken, minReturn, this._handlerAddress]
+      )
       : this._abiEncoder.encode(
-          ["address", "uint256"],
-          [outputToken, minReturn]
-        );
+        ["address", "uint256"],
+        [outputToken, minReturn]
+      );
 
     return {
       payload,
@@ -378,7 +374,7 @@ export class GelatoLimitOrders {
           _order = { ...order, ...subgraphOrder };
         }
         // eslint-disable-next-line no-empty
-      } catch (error) {}
+      } catch (error) { }
     }
 
     if (!_order.inputToken) throw new Error("No input token in order");
@@ -420,14 +416,14 @@ export class GelatoLimitOrders {
 
     return overrides
       ? ERC20__factory.connect(inputToken, this._signer).approve(
-          this._erc20OrderRouter.address,
-          amount,
-          overrides
-        )
+        this._erc20OrderRouter.address,
+        amount,
+        overrides
+      )
       : ERC20__factory.connect(inputToken, this._signer).approve(
-          this._erc20OrderRouter.address,
-          amount
-        );
+        this._erc20OrderRouter.address,
+        amount
+      );
   }
 
   public async isActiveOrder(order: Order): Promise<boolean> {
@@ -484,8 +480,8 @@ export class GelatoLimitOrders {
     slippage: string;
     gelatoFee: string;
   } {
-    if (isEthereumChain(this._chainId))
-      throw new Error("Method not available for current chain.");
+    // if (isEthereumChain(this._chainId))
+    //   throw new Error("Method not available for current chain.");
 
     if (extraSlippageBPS) {
       if (!Number.isInteger(extraSlippageBPS))
@@ -518,8 +514,8 @@ export class GelatoLimitOrders {
     minReturn: BigNumberish,
     extraSlippageBPS?: number
   ): string {
-    if (isEthereumChain(this._chainId))
-      throw new Error("Method not available for current chain.");
+    // if (isEthereumChain(this._chainId))
+    //   throw new Error("Method not available for current chain.");
 
     const gelatoFee = BigNumber.from(this._gelatoFeeBPS);
 
@@ -561,15 +557,12 @@ export class GelatoLimitOrders {
   }
 
   public async getOrder(orderId: string): Promise<Order | null> {
-    const isEthereumNetwork = isEthereumChain(this._chainId);
     const order = await queryOrder(orderId, this._chainId);
 
     if (order) {
       return {
         ...order,
-        adjustedMinReturn: isEthereumNetwork
-          ? order.minReturn
-          : this.getAdjustedMinReturn(order.minReturn),
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
       };
     } else {
       return null;
@@ -580,14 +573,11 @@ export class GelatoLimitOrders {
     owner: string,
     includeOrdersWithNullHandler = false
   ): Promise<Order[]> {
-    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryOrders(owner, this._chainId);
     return orders
       .map((order) => ({
         ...order,
-        adjustedMinReturn: isEthereumNetwork
-          ? order.minReturn
-          : this.getAdjustedMinReturn(order.minReturn),
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
       }))
       .filter((order) => {
         if (this._handler && !order.handler) {
@@ -602,14 +592,11 @@ export class GelatoLimitOrders {
     owner: string,
     includeOrdersWithNullHandler = false
   ): Promise<Order[]> {
-    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryOpenOrders(owner, this._chainId);
     return orders
       .map((order) => ({
         ...order,
-        adjustedMinReturn: isEthereumNetwork
-          ? order.minReturn
-          : this.getAdjustedMinReturn(order.minReturn),
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
       }))
       .filter((order) => {
         if (this._handler && !order.handler) {
@@ -624,14 +611,11 @@ export class GelatoLimitOrders {
     owner: string,
     includeOrdersWithNullHandler = false
   ): Promise<Order[]> {
-    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryPastOrders(owner, this._chainId);
     return orders
       .map((order) => ({
         ...order,
-        adjustedMinReturn: isEthereumNetwork
-          ? order.minReturn
-          : this.getAdjustedMinReturn(order.minReturn),
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
       }))
       .filter((order) => {
         if (this._handler && !order.handler) {
@@ -646,14 +630,11 @@ export class GelatoLimitOrders {
     owner: string,
     includeOrdersWithNullHandler = false
   ): Promise<Order[]> {
-    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryExecutedOrders(owner, this._chainId);
     return orders
       .map((order) => ({
         ...order,
-        adjustedMinReturn: isEthereumNetwork
-          ? order.minReturn
-          : this.getAdjustedMinReturn(order.minReturn),
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
       }))
       .filter((order) => {
         if (this._handler && !order.handler) {
@@ -668,14 +649,11 @@ export class GelatoLimitOrders {
     owner: string,
     includeOrdersWithNullHandler = false
   ): Promise<Order[]> {
-    const isEthereumNetwork = isEthereumChain(this._chainId);
     const orders = await queryCancelledOrders(owner, this._chainId);
     return orders
       .map((order) => ({
         ...order,
-        adjustedMinReturn: isEthereumNetwork
-          ? order.minReturn
-          : this.getAdjustedMinReturn(order.minReturn),
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
       }))
       .filter((order) => {
         if (this._handler && !order.handler) {
@@ -712,13 +690,13 @@ export class GelatoLimitOrders {
 
     const encodedData = this._handlerAddress
       ? this._abiEncoder.encode(
-          ["address", "uint256", "address"],
-          [outputToken, minReturn, this._handlerAddress]
-        )
+        ["address", "uint256", "address"],
+        [outputToken, minReturn, this._handlerAddress]
+      )
       : this._abiEncoder.encode(
-          ["address", "uint256"],
-          [outputToken, minReturn]
-        );
+        ["address", "uint256"],
+        [outputToken, minReturn]
+      );
 
     let data, value, to;
     if (isNetworkGasToken(inputToken)) {
