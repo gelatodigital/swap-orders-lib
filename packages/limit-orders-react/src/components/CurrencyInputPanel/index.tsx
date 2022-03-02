@@ -342,7 +342,7 @@ export default function CurrencyInputPanel({
               <MouseoverTooltip
                 text={`The virtual price that will determine your output amount. ${
                   chainId && isTransactionCostDependentChain(chainId)
-                    ? "It does not account execution gas costs. For that check the actual execution rate below."
+                    ? "It does not account execution gas costs. For that check the projected execution rate below."
                     : ""
                 } ${rate ? rate + "." : ""}`}
               >
@@ -408,7 +408,7 @@ export default function CurrencyInputPanel({
               <RowBetween>
                 {currency && otherCurrency ? (
                   <MouseoverTooltip
-                    text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                    text={`The projected execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
                       rate
                         ? `Assuming current gas price it should execute when ` +
                           realExecutionRateExplainer +
@@ -423,7 +423,7 @@ export default function CurrencyInputPanel({
                       fontSize={14}
                       style={{ display: "inline", cursor: "pointer" }}
                     >
-                      Real execution price (?)
+                      Projected execution price (?)
                     </TYPE.body>
                   </MouseoverTooltip>
                 ) : (

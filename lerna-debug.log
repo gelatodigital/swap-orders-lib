@@ -1,0 +1,172 @@
+0 silly argv {
+0 silly argv   _: [ 'publish' ],
+0 silly argv   'dist-tag': 'next',
+0 silly argv   distTag: 'next',
+0 silly argv   composed: 'publish',
+0 silly argv   lernaVersion: '4.0.0',
+0 silly argv   '$0': 'node_modules/.bin/lerna'
+0 silly argv }
+1 notice cli v4.0.0
+2 verbose rootPath /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib
+3 info versioning independent
+4 verbose session 75cd10fee19e70c0
+5 verbose user-agent lerna/4.0.0/node@v14.15.0+x64 (darwin)
+6 silly argv {
+6 silly argv   _: [ 'publish' ],
+6 silly argv   'dist-tag': 'next',
+6 silly argv   distTag: 'next',
+6 silly argv   composed: 'publish',
+6 silly argv   lernaVersion: '4.0.0'
+6 silly argv }
+7 verbose rootPath /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib
+8 silly isAnythingCommitted
+9 verbose isAnythingCommitted 1
+10 silly getCurrentBranch
+11 verbose currentBranch migrate-side-chains-to-gas-model
+12 silly remoteBranchExists
+13 silly isBehindUpstream
+14 silly isBehindUpstream migrate-side-chains-to-gas-model is behind origin/migrate-side-chains-to-gas-model by 0 commit(s) and ahead by 0
+15 silly hasTags
+16 verbose hasTags true
+17 silly git-describe.sync "@gelatonetwork/limit-orders-lib@4.0.1-alpha.1-3-g4a3d4bf" => {"lastTagName":"@gelatonetwork/limit-orders-lib@4.0.1-alpha.1","lastVersion":"4.0.1-alpha.1","refCount":"3","sha":"4a3d4bf","isDirty":false}
+18 info Looking for changed packages since @gelatonetwork/limit-orders-lib@4.0.1-alpha.1
+19 silly checking diff packages/limit-orders-lib
+20 silly found diff in packages/limit-orders-lib/src/constants/index.ts
+20 silly found diff in packages/limit-orders-lib/src/limit-orders/index.ts
+21 verbose filtered diff [
+21 verbose filtered diff   'packages/limit-orders-lib/src/constants/index.ts',
+21 verbose filtered diff   'packages/limit-orders-lib/src/limit-orders/index.ts'
+21 verbose filtered diff ]
+22 silly checking diff packages/limit-orders-react
+23 silly found diff in packages/limit-orders-react/src/components/LimitOrdersHistory/OrderCard/index.tsx
+23 silly found diff in packages/limit-orders-react/src/components/order/AdvancedSwapDetails.tsx
+23 silly found diff in packages/limit-orders-react/src/hooks/useGasOverhead.ts
+23 silly found diff in packages/limit-orders-react/src/hooks/useGasPrice.ts
+24 verbose filtered diff [
+24 verbose filtered diff   'packages/limit-orders-react/src/components/LimitOrdersHistory/OrderCard/index.tsx',
+24 verbose filtered diff   'packages/limit-orders-react/src/components/order/AdvancedSwapDetails.tsx',
+24 verbose filtered diff   'packages/limit-orders-react/src/hooks/useGasOverhead.ts',
+24 verbose filtered diff   'packages/limit-orders-react/src/hooks/useGasPrice.ts'
+24 verbose filtered diff ]
+25 silly checking diff packages/stop-limit-orders-react
+26 silly no diff found in @gelatonetwork/stop-limit-orders-react
+27 verbose updated @gelatonetwork/limit-orders-lib
+28 verbose updated @gelatonetwork/limit-orders-react
+29 verbose updated @gelatonetwork/stop-limit-orders-react
+30 verbose git-describe undefined => "@gelatonetwork/limit-orders-lib@4.0.1-alpha.1-3-g4a3d4bf"
+31 silly git-describe parsed => {"lastTagName":"@gelatonetwork/limit-orders-lib@4.0.1-alpha.1","lastVersion":"4.0.1-alpha.1","refCount":"3","sha":"4a3d4bf","isDirty":false}
+32 info execute Skipping releases
+33 silly lifecycle No script for "preversion" in "swap-orders-lib", continuing
+34 silly lifecycle No script for "preversion" in "@gelatonetwork/limit-orders-lib", continuing
+35 silly lifecycle No script for "version" in "@gelatonetwork/limit-orders-lib", continuing
+36 silly lifecycle No script for "preversion" in "@gelatonetwork/limit-orders-react", continuing
+37 silly lifecycle No script for "preversion" in "@gelatonetwork/stop-limit-orders-react", continuing
+38 silly lifecycle No script for "version" in "@gelatonetwork/stop-limit-orders-react", continuing
+39 silly lifecycle No script for "version" in "@gelatonetwork/limit-orders-react", continuing
+40 silly lifecycle No script for "version" in "swap-orders-lib", continuing
+41 silly gitAdd [
+41 silly gitAdd   'packages/limit-orders-lib/package.json',
+41 silly gitAdd   'packages/stop-limit-orders-react/package.json',
+41 silly gitAdd   'packages/limit-orders-react/package.json'
+41 silly gitAdd ]
+42 silly gitCommit Publish
+42 silly gitCommit
+42 silly gitCommit  - @gelatonetwork/limit-orders-lib@4.0.1-alpha.2
+42 silly gitCommit  - @gelatonetwork/limit-orders-react@2.3.2-alpha.3
+42 silly gitCommit  - @gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3
+43 verbose git [
+43 verbose git   'commit',
+43 verbose git   '-F',
+43 verbose git   '/private/var/folders/1b/c3fy337j3gzdkw7508cz1swr0000gn/T/9c6a4423-c8c3-49f8-840f-db8aa9612e76/lerna-commit.txt'
+43 verbose git ]
+44 silly gitTag @gelatonetwork/limit-orders-lib@4.0.1-alpha.2
+45 verbose git [
+45 verbose git   'tag',
+45 verbose git   '@gelatonetwork/limit-orders-lib@4.0.1-alpha.2',
+45 verbose git   '-m',
+45 verbose git   '@gelatonetwork/limit-orders-lib@4.0.1-alpha.2'
+45 verbose git ]
+46 silly gitTag @gelatonetwork/limit-orders-react@2.3.2-alpha.3
+47 verbose git [
+47 verbose git   'tag',
+47 verbose git   '@gelatonetwork/limit-orders-react@2.3.2-alpha.3',
+47 verbose git   '-m',
+47 verbose git   '@gelatonetwork/limit-orders-react@2.3.2-alpha.3'
+47 verbose git ]
+48 silly gitTag @gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3
+49 verbose git [
+49 verbose git   'tag',
+49 verbose git   '@gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3',
+49 verbose git   '-m',
+49 verbose git   '@gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3'
+49 verbose git ]
+50 silly lifecycle No script for "postversion" in "@gelatonetwork/limit-orders-lib", continuing
+51 silly lifecycle No script for "postversion" in "@gelatonetwork/limit-orders-react", continuing
+52 silly lifecycle No script for "postversion" in "@gelatonetwork/stop-limit-orders-react", continuing
+53 silly lifecycle No script for "postversion" in "swap-orders-lib", continuing
+54 info git Pushing tags...
+55 silly gitPush origin migrate-side-chains-to-gas-model
+56 info publish Publishing packages to npm...
+57 notice Skipping all user and access validation due to third-party registry
+58 notice Make sure you're authenticated properly ¯\_(ツ)_/¯
+59 warn ENOLICENSE Packages @gelatonetwork/limit-orders-lib, @gelatonetwork/limit-orders-react, and @gelatonetwork/stop-limit-orders-react are missing a license.
+59 warn ENOLICENSE One way to fix this is to add a LICENSE.md file to the root of this repository.
+59 warn ENOLICENSE See https://choosealicense.com for additional guidance.
+60 silly getCurrentSHA
+61 verbose getCurrentSHA f69315b64635e5ac49bc7dff07e17587d4ac40d4
+62 silly lifecycle No script for "prepublish" in "swap-orders-lib", continuing
+63 silly lifecycle "prepare" starting in "swap-orders-lib"
+64 info lifecycle swap-orders-lib@undefined~prepare: swap-orders-lib@undefined
+65 warn lifecycle The node binary used for scripts is /var/folders/1b/c3fy337j3gzdkw7508cz1swr0000gn/T/yarn--1646249105839-0.29204127212511355/node but npm is using /Users/harrytrippel/.nvm/versions/node/v14.15.0/bin/node itself. Use the `--scripts-prepend-node-path` option to include the path for the node binary npm was executed with.
+66 verbose lifecycle swap-orders-lib@undefined~prepare: unsafe-perm in lifecycle true
+67 verbose lifecycle swap-orders-lib@undefined~prepare: PATH: /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/npm-lifecycle/node-gyp-bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/var/folders/1b/c3fy337j3gzdkw7508cz1swr0000gn/T/yarn--1646249105839-0.29204127212511355:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.config/yarn/link/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.config/yarn/link/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/libexec/lib/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/lib/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/bin/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+68 verbose lifecycle swap-orders-lib@undefined~prepare: CWD: /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib
+69 silly lifecycle swap-orders-lib@undefined~prepare: Args: [ '-c', 'husky install' ]
+70 silly lifecycle swap-orders-lib@undefined~prepare: Returned: code: 0  signal: null
+71 silly lifecycle "prepare" finished in "swap-orders-lib"
+72 silly lifecycle No script for "prepublishOnly" in "swap-orders-lib", continuing
+73 silly lifecycle No script for "prepack" in "swap-orders-lib", continuing
+74 verbose pack-directory packages/limit-orders-lib
+75 silly lifecycle No script for "prepublish" in "@gelatonetwork/limit-orders-lib", continuing
+76 silly lifecycle "prepare" starting in "@gelatonetwork/limit-orders-lib"
+77 info lifecycle @gelatonetwork/limit-orders-lib@4.0.1-alpha.2~prepare: @gelatonetwork/limit-orders-lib@4.0.1-alpha.2
+78 verbose lifecycle @gelatonetwork/limit-orders-lib@4.0.1-alpha.2~prepare: unsafe-perm in lifecycle true
+79 verbose lifecycle @gelatonetwork/limit-orders-lib@4.0.1-alpha.2~prepare: PATH: /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/npm-lifecycle/node-gyp-bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/packages/limit-orders-lib/node_modules/.bin:/var/folders/1b/c3fy337j3gzdkw7508cz1swr0000gn/T/yarn--1646249105839-0.29204127212511355:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.config/yarn/link/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.config/yarn/link/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/libexec/lib/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/lib/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/bin/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+80 verbose lifecycle @gelatonetwork/limit-orders-lib@4.0.1-alpha.2~prepare: CWD: /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/packages/limit-orders-lib
+81 silly lifecycle @gelatonetwork/limit-orders-lib@4.0.1-alpha.2~prepare: Args: [ '-c', 'yarn build && yarn format && yarn lint' ]
+82 silly lifecycle @gelatonetwork/limit-orders-lib@4.0.1-alpha.2~prepare: Returned: code: 0  signal: null
+83 silly lifecycle "prepare" finished in "@gelatonetwork/limit-orders-lib"
+84 silly lifecycle No script for "prepublishOnly" in "@gelatonetwork/limit-orders-lib", continuing
+85 silly lifecycle No script for "prepack" in "@gelatonetwork/limit-orders-lib", continuing
+86 silly lifecycle No script for "postpack" in "@gelatonetwork/limit-orders-lib", continuing
+87 verbose packed packages/limit-orders-lib
+88 verbose pack-directory packages/limit-orders-react
+89 verbose pack-directory packages/stop-limit-orders-react
+90 silly lifecycle No script for "prepublish" in "@gelatonetwork/limit-orders-react", continuing
+91 silly lifecycle No script for "prepublish" in "@gelatonetwork/stop-limit-orders-react", continuing
+92 silly lifecycle "prepare" starting in "@gelatonetwork/limit-orders-react"
+93 info lifecycle @gelatonetwork/limit-orders-react@2.3.2-alpha.3~prepare: @gelatonetwork/limit-orders-react@2.3.2-alpha.3
+94 silly lifecycle "prepare" starting in "@gelatonetwork/stop-limit-orders-react"
+95 info lifecycle @gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3~prepare: @gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3
+96 verbose lifecycle @gelatonetwork/limit-orders-react@2.3.2-alpha.3~prepare: unsafe-perm in lifecycle true
+97 verbose lifecycle @gelatonetwork/limit-orders-react@2.3.2-alpha.3~prepare: PATH: /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/npm-lifecycle/node-gyp-bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/packages/limit-orders-react/node_modules/.bin:/var/folders/1b/c3fy337j3gzdkw7508cz1swr0000gn/T/yarn--1646249105839-0.29204127212511355:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.config/yarn/link/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.config/yarn/link/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/libexec/lib/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/lib/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/bin/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+98 verbose lifecycle @gelatonetwork/limit-orders-react@2.3.2-alpha.3~prepare: CWD: /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/packages/limit-orders-react
+99 silly lifecycle @gelatonetwork/limit-orders-react@2.3.2-alpha.3~prepare: Args: [ '-c', 'yarn build && yarn format && yarn lint' ]
+100 silly lifecycle @gelatonetwork/limit-orders-react@2.3.2-alpha.3~prepare: Returned: code: 0  signal: null
+101 verbose lifecycle @gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3~prepare: unsafe-perm in lifecycle true
+102 verbose lifecycle @gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3~prepare: PATH: /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/npm-lifecycle/node-gyp-bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/packages/stop-limit-orders-react/node_modules/.bin:/var/folders/1b/c3fy337j3gzdkw7508cz1swr0000gn/T/yarn--1646249105839-0.29204127212511355:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.config/yarn/link/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.config/yarn/link/node_modules/.bin:/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/.bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/libexec/lib/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/lib/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/bin/node_modules/npm/bin/node-gyp-bin:/Users/harrytrippel/.nvm/versions/node/v14.15.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/dotnet:~/.dotnet/tools:/Library/Apple/usr/bin:/Library/Frameworks/Mono.framework/Versions/Current/Commands
+103 verbose lifecycle @gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3~prepare: CWD: /Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/packages/stop-limit-orders-react
+104 silly lifecycle @gelatonetwork/stop-limit-orders-react@1.2.2-alpha.3~prepare: Args: [ '-c', 'yarn build && yarn format && yarn lint' ]
+105 silly lifecycle "prepare" finished in "@gelatonetwork/limit-orders-react"
+106 silly lifecycle No script for "prepublishOnly" in "@gelatonetwork/limit-orders-react", continuing
+107 silly lifecycle No script for "prepack" in "@gelatonetwork/limit-orders-react", continuing
+108 error ZlibError: zlib: invalid code lengths set
+108 error     at Unzip.write (/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/minizlib/index.js:154:22)
+108 error     at Object.write (/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/tar/lib/parse.js:354:57)
+108 error     at Yallist.<anonymous> (/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/minipass/index.js:384:18)
+108 error     at Yallist.forEach (/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/yallist/yallist.js:156:8)
+108 error     at ReadStream.emit (/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/minipass/index.js:383:20)
+108 error     at ReadStream.emit (/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/fs-minipass/index.js:175:22)
+108 error     at ReadStream.write (/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/minipass/index.js:168:12)
+108 error     at ReadStream.[_handleChunk] (/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/fs-minipass/index.js:146:19)
+108 error     at ReadStream.[_onread] (/Users/harrytrippel/Desktop/gelato/limit-orders-project/swap-orders-lib/node_modules/fs-minipass/index.js:123:32)

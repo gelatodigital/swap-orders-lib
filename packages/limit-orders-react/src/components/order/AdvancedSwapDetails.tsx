@@ -142,7 +142,7 @@ export function AdvancedSwapDetails() {
           <RowBetween>
             <RowFixed>
               <MouseoverTooltip
-                text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                text={`The projected execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
                   realExecutionRateWithSymbols
                     ? `Assuming current gas price it should execute when ` +
                       realExecutionRateWithSymbols +
@@ -151,7 +151,7 @@ export function AdvancedSwapDetails() {
                 }`}
               >
                 <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-                  Real Execution Price (?)
+                  Projected Execution Price (?)
                 </TYPE.black>{" "}
               </MouseoverTooltip>
             </RowFixed>

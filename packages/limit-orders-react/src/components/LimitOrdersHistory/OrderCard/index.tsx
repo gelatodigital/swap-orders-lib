@@ -3,7 +3,7 @@ import styled, { DefaultTheme } from "styled-components/macro";
 import { darken } from "polished";
 import { ArrowRight } from "react-feather";
 import { Text } from "rebass";
-import { RowBetween } from "../../Row";
+import { RowBetween, RowFixed } from "../../Row";
 import { Order, constants } from "@gelatonetwork/limit-orders-lib";
 import useTheme from "../../../hooks/useTheme";
 import { useCurrency } from "../../../hooks/Tokens";
@@ -234,6 +234,14 @@ export default function OrderCard({ order }: { order: Order }) {
         ? CurrencyAmount.fromRawAmount(outputToken, rawMinReturn)
         : undefined,
     [outputToken, rawMinReturn]
+  );
+
+  const minReturnOutputAmount = useMemo(
+    () =>
+      outputToken && order.minReturn
+        ? CurrencyAmount.fromRawAmount(outputToken, order.minReturn)
+        : undefined,
+    [outputToken, order.minReturn]
   );
 
   const {
@@ -473,7 +481,7 @@ export default function OrderCard({ order }: { order: Order }) {
                 fontWeight={400}
                 fontSize={12}
                 color={theme.text1}
-                style={{ marginRight: "4px", marginTop: "2px" }}
+                style={{ marginRight: "4px" }}
               >
                 Current price:
               </Text>
@@ -501,7 +509,7 @@ export default function OrderCard({ order }: { order: Order }) {
                     fontWeight={400}
                     fontSize={12}
                     color={theme.text1}
-                    style={{ marginRight: "4px", marginTop: "2px" }}
+                    style={{ marginRight: "4px" }}
                   >
                     Execution price:
                   </Text>
@@ -549,6 +557,39 @@ export default function OrderCard({ order }: { order: Order }) {
                     <Dots />
                   )}
                 </RowBetween>
+              </OrderRow>
+            </Aligner>
+            <Aligner style={{ marginTop: "-7px" }}>
+              <OrderRow>
+                <RowFixed>
+                  <RowBetween>
+                    <MouseoverTooltip
+                      text={`The minimum amount you can receive. It includes all fees and maximum slippage tolerance.`}
+                    >
+                      <Text
+                        fontWeight={400}
+                        fontSize={12}
+                        color={theme.text1}
+                        style={{ marginRight: "4px" }}
+                      >
+                        Minimum Received:
+                      </Text>
+                    </MouseoverTooltip>
+                    <TYPE.black
+                      textAlign="right"
+                      fontSize={12}
+                      color={theme.text1}
+                    >
+                      {minReturnOutputAmount
+                        ? `${minReturnOutputAmount.toSignificant(4)} ${
+                            minReturnOutputAmount
+                              ? minReturnOutputAmount.currency.symbol
+                              : "-"
+                          }`
+                        : "-"}
+                    </TYPE.black>
+                  </RowBetween>
+                </RowFixed>
               </OrderRow>
             </Aligner>
             <Aligner style={{ marginTop: "-10px" }}>
