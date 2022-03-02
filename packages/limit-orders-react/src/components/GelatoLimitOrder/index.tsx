@@ -50,7 +50,9 @@ import AppBody from "./AppBody";
 import { ExternalLink, TYPE } from "../../theme";
 import { useWeb3 } from "../../web3";
 import useTheme from "../../hooks/useTheme";
-import useGasOverhead from "../../hooks/useGasOverhead";
+import useGasOverhead, {
+  handleEstimatedExecutionPrice,
+} from "../../hooks/useGasOverhead";
 import PoweredByGelato from "../../assets/svg/poweredbygelato_transparent.svg";
 import {
   ApprovalState,
@@ -373,6 +375,25 @@ export default function GelatoLimitOrder({
     realExecutionPriceAsString,
   } = useGasOverhead(parsedAmounts.input, parsedAmounts.output, rateType);
 
+  // const {
+  //   gasPrice,
+  //   realExecutionPrice,
+  //   realExecutionPriceAsString,
+  // } = handleEstimatedExecutionPrice(
+  //   parsedAmounts.input, parsedAmounts.output,
+  //   rateType)
+
+  // const {
+  //   gasPrice,
+  //   realExecutionPrice,
+  //   realExecutionPriceAsString,
+  // } = handleEstimatedExecutionPrice({
+  //   inputAmount: parsedAmounts.input,
+  //   inputToken,
+  //   output: parsedAmounts.output,
+  //   outputToken
+  // }, rateType);
+
   const showApproveFlow =
     !inputError &&
     (approvalState === ApprovalState.NOT_APPROVED ||
@@ -385,6 +406,7 @@ export default function GelatoLimitOrder({
 
   return (
     <Fragment>
+      <h1>{realExecutionPriceAsString}</h1>
       <AppBody>
         <SwapHeader handleActiveTab={handleActiveTab} activeTab={activeTab} />
         <Wrapper id="limit-order-page">

@@ -25,11 +25,12 @@ import { formatTokenAmount } from "../../utils/formatTokenAmount";
 import { MouseoverTooltip } from "../Tooltip";
 import HoverInlineText from "../HoverInlineText";
 import DropDown from "../../assets/images/dropdown.svg";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isTransactionCostDependentChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { Pair } from "../../entities/pair";
 import TradePrice from "../order/TradePrice";
 import { RatePercentage } from "./RatePercentage";
 import { Rate } from "../../state/gorder/actions";
+import Loader from "../Loader";
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -234,7 +235,7 @@ export default function CurrencyInputPanel({
     setModalOpen(false);
   }, [setModalOpen]);
 
-  const isEthereum = chainId && isEthereumChain(chainId);
+  const isEthereum = chainId && isTransactionCostDependentChain(chainId);
 
   const rate = useMemo(
     () =>
@@ -340,7 +341,7 @@ export default function CurrencyInputPanel({
             <RowFixed style={{ height: "17px" }}>
               <MouseoverTooltip
                 text={`The virtual price that will determine your output amount. ${
-                  chainId && isEthereumChain(chainId)
+                  chainId && isTransactionCostDependentChain(chainId)
                     ? "It does not account execution gas costs. For that check the actual execution rate below."
                     : ""
                 } ${rate ? rate + "." : ""}`}
@@ -442,13 +443,11 @@ export default function CurrencyInputPanel({
                     }
                   >
                     {/* {realExecutionRateExplainer ? "~" : ""} */}
-                    <HoverInlineText
-                      text={
-                        realExecutionRateExplainer
-                          ? realExecutionRateExplainer
-                          : "-"
-                      }
-                    />
+                    {realExecutionRateExplainer ? (
+                      <HoverInlineText text={realExecutionRateExplainer} />
+                    ) : (
+                      <Loader />
+                    )}
                   </TYPE.body>
                 )}
               </RowBetween>

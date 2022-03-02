@@ -152,6 +152,7 @@ Hooks available:
 - `useGelatoLimitOrdersHandlers()`
 - `useGelatoLimitOrdersHistory()`
 - `useGelatoLimitOrdersLib()`
+- `useGasOverhead()`
 
 ```tsx
 import React from "react";
@@ -185,6 +186,70 @@ export default function LimitOrder() {
   const { open, cancelled, executed, expired } = useGelatoLimitOrdersHistory();
 
   ...
+}
+```
+
+## Use the Gelato react hook `useGasOverhead()` to calculate real execution price
+
+For networks using the "gas-model" to pay for execution. The Execution price will be slightly higher then the entered Price. Orders will execute when `minReturn` + `transactionFee` === "current price"
+
+Hook to calculate actual execution price:
+
+```tsx
+import React, { useMemo } from "react";
+import {
+  useGasOverhead,
+  CurrencyAmount,
+  useCurrency,
+  TradePrice
+} from "@gelatonetwork/limit-orders-react";
+
+export default function LimitOrderCard() {
+ ...
+  const inputToken = useCurrency(order.inputToken);
+  const outputToken = useCurrency(order.outputToken);
+
+  const inputAmount = useMemo(
+    () =>
+      inputToken && order.inputAmount
+        ? CurrencyAmount.fromRawAmount(inputToken, order.inputAmount)
+        : undefined,
+    [inputToken, order.inputAmount]
+  );
+
+  const isEthereum = isEthereumChain(chainId ?? 1);
+
+  const outputAmount = useMemo(
+    () =>
+      outputToken && rawMinReturn
+        ? CurrencyAmount.fromRawAmount(outputToken, order.minReturn)
+        : undefined,
+    [outputToken, rawMinReturn]
+  );
+
+  const {
+    gasPrice,
+    realExecutionPrice, // returns @uniswap/sdk-core Price object
+    realExecutionPriceAsString,
+  } = useGasOverhead(inputAmount, outputAmount);
+
+  const [ inverted, setInverted, ] = useState<boolean>(true);
+
+  ...
+
+  return (
+    <>
+    {realExecutionPrice ? (
+      <TradePrice
+        price={ethereumExecutionPrice}
+        showInverted={inverted}
+        setShowInverted={setInverted}
+        fontWeight={500}
+        fontSize={12}
+      />
+    ): ... }
+    </>
+  )
 }
 ```
 

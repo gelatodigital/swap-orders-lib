@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { utils, constants } from "@gelatonetwork/limit-orders-lib";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import {
+  isEthereumChain,
+  isTransactionCostDependentChain,
+} from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { formatUnits } from "@ethersproject/units";
 import React, { useMemo } from "react";
@@ -65,7 +68,7 @@ export function AdvancedSwapDetails() {
         gelatoFeePercentage: undefined,
       };
 
-    if (utils.isEthereumChain(chainId))
+    if (utils.isTransactionCostDependentChain(chainId))
       return {
         minReturn: outputAmount,
         slippagePercentage: undefined,
@@ -101,7 +104,7 @@ export function AdvancedSwapDetails() {
 
   return !chainId ? null : (
     <AutoColumn gap="8px">
-      {!isEthereumChain(chainId) ? (
+      {!isTransactionCostDependentChain(chainId) ? (
         <>
           <RowBetween>
             <RowFixed>

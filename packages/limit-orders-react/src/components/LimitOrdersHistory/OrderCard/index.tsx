@@ -241,7 +241,7 @@ export default function OrderCard({ order }: { order: Order }) {
   const {
     gasPrice,
     realExecutionPrice: ethereumExecutionPrice,
-  } = useGasOverhead(inputAmount, outputAmount, Rate.MUL);
+  } = useGasOverhead(inputAmount, outputAmount);
 
   const executionPrice = useMemo(
     () =>
