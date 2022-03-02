@@ -10,6 +10,11 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "contract INonfungiblePositionManager",
+        name: "nftPositionManager_",
+        type: "address",
+      },
+      {
         internalType: "contract IEjectLP",
         name: "eject_",
         type: "address",
@@ -147,7 +152,12 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "address",
+            internalType: "uint256",
+            name: "minLiquidity",
+            type: "uint256",
+          },
+          {
+            internalType: "address payable",
             name: "receiver",
             type: "address",
           },
@@ -190,6 +200,19 @@ const _abi = [
     name: "initialize",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "nftPositionManager",
+    outputs: [
+      {
+        internalType: "contract INonfungiblePositionManager",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {
@@ -284,7 +307,12 @@ const _abi = [
             type: "uint256",
           },
           {
-            internalType: "address",
+            internalType: "uint256",
+            name: "minLiquidity",
+            type: "uint256",
+          },
+          {
+            internalType: "address payable",
             name: "receiver",
             type: "address",
           },
