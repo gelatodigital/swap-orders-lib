@@ -308,6 +308,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         poolAddress,
         zeroForOne,
         selectedTick,
+        orderToSubmit.inputAmount,
         zeroForOne ? amount0 : amount1,
         account,
         BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
@@ -317,18 +318,19 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         pool: poolAddress,
         zeroForOne,
         tickThreshold: selectedTick,
-        amountIn: zeroForOne ? amount0 : amount1,
+        amountIn: orderToSubmit.inputAmount,
+        minLiquidity: zeroForOne ? amount0 : amount1,
         receiver: account,
         maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       };
-      // console.log(orderPayload);
+      console.log(orderPayload);
       const overrides: PayableOverrides = {
         value:
           inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address
             ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(amount0)
             : BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       };
-      // console.log(overrides);
+      console.log(overrides);
 
       const tx = await gelatoRangeOrders.setRangeOrder(orderPayload, overrides);
       if (!tx) {
@@ -414,6 +416,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         pool: order.pool,
         zeroForOne,
         amountIn: order.amountIn,
+        minLiquidity: ethers.constants.Zero,
         receiver: account,
         maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
         tickThreshold: Number(order.tickThreshold.toString()),
