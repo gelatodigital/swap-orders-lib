@@ -274,8 +274,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
 
       const currentTick = pool?.tickCurrent ?? 0;
       const tickSpacing = pool?.tickSpacing ?? 0;
-      const lowerTick =
-        currentTick - (currentTick % tickSpacing) + tickSpacing;
+      const lowerTick = currentTick - (currentTick % tickSpacing) + tickSpacing;
       const upperTick = lowerTick + tickSpacing;
       // console.log(currentTick);
       // console.log(lowerTick, upperTick);
@@ -293,7 +292,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       // console.log(amount0.toString(), amount1.toString());
 
       // TODO: check if amount0 and amount1 are same after pass them again to gelatoRangeOrders.getAmountsIn
-      // 
+      //
       // const { amount0: amount0d, amount1: amount1d } = gelatoRangeOrders.getAmountsIn(
       //   currentTick,
       //   lowerTick,
