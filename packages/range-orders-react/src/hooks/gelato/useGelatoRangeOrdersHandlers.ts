@@ -283,26 +283,13 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         currentTick,
         lowerTick,
         upperTick,
-        zeroForOne ? orderToSubmit.inputAmount : ethers.constants.Zero,
         zeroForOne ? ethers.constants.Zero : orderToSubmit.inputAmount,
+        zeroForOne ? orderToSubmit.inputAmount : ethers.constants.Zero,
         BigNumber.from(pool?.sqrtRatioX96.toString()) ?? ethers.constants.Zero
       );
 
       // console.log(amount0, amount1);
       // console.log(amount0.toString(), amount1.toString());
-
-      // TODO: check if amount0 and amount1 are same after pass them again to gelatoRangeOrders.getAmountsIn
-      //
-      // const { amount0: amount0d, amount1: amount1d } = gelatoRangeOrders.getAmountsIn(
-      //   currentTick,
-      //   lowerTick,
-      //   upperTick,
-      //   amount0,
-      //   ethers.constants.Zero,
-      //   BigNumber.from(pool?.sqrtRatioX96.toString()) ?? ethers.constants.Zero
-      // );
-      // console.log(amount0d, amount1d);
-      // console.log(amount0d.toString(), amount1d.toString());
 
       const { order } = await gelatoRangeOrders.encodeRangeOrderSubmission(
         poolAddress,
