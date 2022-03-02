@@ -130,6 +130,7 @@ describe("Library Test", () => {
             zeroForOne: results[0].zeroForOne as boolean,
             tickThreshold: results[0].tickThreshold as unknown as number,
             amountIn: results[0].amountIn,
+            minLiquidity: ethers.constants.Zero,
             receiver: results[0].receiver,
             maxFeeAmount: ethers.constants.Zero,
           })

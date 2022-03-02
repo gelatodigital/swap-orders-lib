@@ -574,12 +574,23 @@ export class GelatoRangeOrder {
     zeroForOne: boolean,
     tickThreshold: number,
     amountIn: BigNumberish,
+    minLiquidity: BigNumberish,
     receiver: string,
     maxFeeAmount: BigNumberish
   ): Promise<TransactionDataWithOrder> {
     const data = this._gelatoRangeOrders.interface.encodeFunctionData(
       "setRangeOrder",
-      [{ pool, zeroForOne, tickThreshold, amountIn, receiver, maxFeeAmount }]
+      [
+        {
+          pool,
+          zeroForOne,
+          tickThreshold,
+          amountIn,
+          minLiquidity,
+          receiver,
+          maxFeeAmount,
+        },
+      ]
     );
     const value = ethers.constants.Zero;
     const to = this._gelatoRangeOrders.address;

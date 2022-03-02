@@ -34,6 +34,7 @@ export type RangeOrderPayload = {
   zeroForOne: boolean;
   tickThreshold: number;
   amountIn: BigNumber;
+  minLiquidity: BigNumber;
   receiver: string;
   maxFeeAmount: BigNumber;
 };

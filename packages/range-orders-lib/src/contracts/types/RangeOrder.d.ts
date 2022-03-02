@@ -23,14 +23,15 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 interface RangeOrderInterface extends ethers.utils.Interface {
   functions: {
     "WETH9()": FunctionFragment;
-    "cancelRangeOrder(uint256,(address,bool,int24,uint256,address,uint256),uint256)": FunctionFragment;
+    "cancelRangeOrder(uint256,(address,bool,int24,uint256,uint256,address,uint256),uint256)": FunctionFragment;
     "eject()": FunctionFragment;
     "initialize()": FunctionFragment;
+    "nftPositionManager()": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "pause()": FunctionFragment;
     "paused()": FunctionFragment;
     "rangeOrderResolver()": FunctionFragment;
-    "setRangeOrder((address,bool,int24,uint256,address,uint256))": FunctionFragment;
+    "setRangeOrder((address,bool,int24,uint256,uint256,address,uint256))": FunctionFragment;
     "unpause()": FunctionFragment;
   };
 
@@ -44,6 +45,7 @@ interface RangeOrderInterface extends ethers.utils.Interface {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
@@ -53,6 +55,10 @@ interface RangeOrderInterface extends ethers.utils.Interface {
   encodeFunctionData(functionFragment: "eject", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "initialize",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "nftPositionManager",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -73,6 +79,7 @@ interface RangeOrderInterface extends ethers.utils.Interface {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       }
@@ -87,6 +94,10 @@ interface RangeOrderInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "eject", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "nftPositionManager",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "onERC721Received",
     data: BytesLike
@@ -189,6 +200,7 @@ export class RangeOrder extends BaseContract {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
@@ -201,6 +213,8 @@ export class RangeOrder extends BaseContract {
     initialize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    nftPositionManager(overrides?: CallOverrides): Promise<[string]>;
 
     onERC721Received(
       arg0: string,
@@ -224,6 +238,7 @@ export class RangeOrder extends BaseContract {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
@@ -244,6 +259,7 @@ export class RangeOrder extends BaseContract {
       zeroForOne: boolean;
       tickThreshold: BigNumberish;
       amountIn: BigNumberish;
+      minLiquidity: BigNumberish;
       receiver: string;
       maxFeeAmount: BigNumberish;
     },
@@ -256,6 +272,8 @@ export class RangeOrder extends BaseContract {
   initialize(
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  nftPositionManager(overrides?: CallOverrides): Promise<string>;
 
   onERC721Received(
     arg0: string,
@@ -279,6 +297,7 @@ export class RangeOrder extends BaseContract {
       zeroForOne: boolean;
       tickThreshold: BigNumberish;
       amountIn: BigNumberish;
+      minLiquidity: BigNumberish;
       receiver: string;
       maxFeeAmount: BigNumberish;
     },
@@ -299,6 +318,7 @@ export class RangeOrder extends BaseContract {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
@@ -309,6 +329,8 @@ export class RangeOrder extends BaseContract {
     eject(overrides?: CallOverrides): Promise<string>;
 
     initialize(overrides?: CallOverrides): Promise<void>;
+
+    nftPositionManager(overrides?: CallOverrides): Promise<string>;
 
     onERC721Received(
       arg0: string,
@@ -330,6 +352,7 @@ export class RangeOrder extends BaseContract {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
@@ -399,6 +422,7 @@ export class RangeOrder extends BaseContract {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
@@ -411,6 +435,8 @@ export class RangeOrder extends BaseContract {
     initialize(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    nftPositionManager(overrides?: CallOverrides): Promise<BigNumber>;
 
     onERC721Received(
       arg0: string,
@@ -434,6 +460,7 @@ export class RangeOrder extends BaseContract {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
@@ -455,6 +482,7 @@ export class RangeOrder extends BaseContract {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
@@ -466,6 +494,10 @@ export class RangeOrder extends BaseContract {
 
     initialize(
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    nftPositionManager(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     onERC721Received(
@@ -492,6 +524,7 @@ export class RangeOrder extends BaseContract {
         zeroForOne: boolean;
         tickThreshold: BigNumberish;
         amountIn: BigNumberish;
+        minLiquidity: BigNumberish;
         receiver: string;
         maxFeeAmount: BigNumberish;
       },
