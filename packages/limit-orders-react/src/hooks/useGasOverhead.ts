@@ -43,12 +43,22 @@ export default function useGasOverhead(
     handler
   );
 
-  const realInputAmount = useMemo(
+  const bufferedOutputAmount = useMemo(
     () =>
       gasCostInInputTokens &&
+      gasCostInInputTokens.outputAmount &&
+      gasCostInInputTokens.outputAmount.add(
+        gasCostInInputTokens.outputAmount.multiply(2000).divide(10000)
+      ),
+    [gasCostInInputTokens]
+  );
+
+  const realInputAmount = useMemo(
+    () =>
+      bufferedOutputAmount &&
       inputAmount &&
-      inputAmount.subtract(gasCostInInputTokens.outputAmount),
-    [gasCostInInputTokens, inputAmount]
+      inputAmount.subtract(bufferedOutputAmount),
+    [bufferedOutputAmount, inputAmount]
   );
 
   const realExecutionPrice = useMemo(() => {
