@@ -52,6 +52,7 @@ export function AdvancedSwapDetails() {
           zeroForOne,
           tickThreshold: selectedTick,
           amountIn: BigNumber.from(rawAmounts.input),
+          minLiquidity: BigNumber.from(0),
           receiver: account,
           maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
         });

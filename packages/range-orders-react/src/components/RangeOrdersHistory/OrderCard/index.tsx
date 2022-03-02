@@ -23,7 +23,7 @@ import {
 import TradePrice from "../../order/TradePrice";
 import useGelatoRangeOrdersLib from "../../../hooks/gelato/useGelatoRangeOrdersLib";
 import { usePoolContract } from "../../../hooks/useContract";
-import { BigNumber } from "ethers";
+import { BigNumber, constants } from "ethers";
 import { MAX_FEE_AMOUNTS } from "../../../constants/misc";
 
 const handleColorType = (status: string, theme: DefaultTheme) => {
@@ -244,6 +244,7 @@ export default function OrderCard({ order }: { order: Order }) {
           zeroForOne: order.zeroForOne,
           tickThreshold: order.tickThreshold.toNumber(),
           amountIn: order.amountIn,
+          minLiquidity: constants.Zero,
           receiver: order.receiver,
           maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
         });
