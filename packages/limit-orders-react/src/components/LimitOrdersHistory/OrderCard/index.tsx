@@ -13,8 +13,7 @@ import { CurrencyAmount, Price } from "@uniswap/sdk-core";
 import ConfirmCancellationModal from "../ConfirmCancellationModal";
 import { useTradeExactIn } from "../../../hooks/useTrade";
 import { Dots } from "../../order/styleds";
-import { Rate } from "../../../state/gorder/actions";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isTransactionCostDependentChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { useWeb3 } from "../../../web3";
 import { ButtonGray } from "../../Button";
 import { useIsTransactionPending } from "../../../state/gtransactions/hooks";
@@ -210,7 +209,7 @@ export default function OrderCard({ order }: { order: Order }) {
     [inputToken, order.inputAmount]
   );
 
-  const isEthereum = isEthereumChain(chainId ?? 1);
+  const isEthereum = isTransactionCostDependentChain(chainId ?? 1);
 
   const rawMinReturn = useMemo(
     () =>
