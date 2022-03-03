@@ -98,7 +98,6 @@ const StyledTokenName = styled.span<{ active?: boolean }>`
 
 const OrderRow = styled(LabelRow)`
   justify-content: flex-end;
-  margin-top: -8px;
 `;
 
 const OrderStatus = styled.span<{ status: string; clickable: boolean }>`
@@ -371,7 +370,7 @@ export default function OrderCard({ order }: { order: Order }) {
                   size={"18px"}
                 />
                 <StyledTokenName>
-                  {inputToken?.name ?? <Dots />}
+                  {inputToken?.symbol ?? <Dots />}
                 </StyledTokenName>
               </Aligner>
             </CurrencySelect>
@@ -389,7 +388,7 @@ export default function OrderCard({ order }: { order: Order }) {
                   size={"18px"}
                 />
                 <StyledTokenName>
-                  {outputToken.name ?? <Dots />}
+                  {outputToken.symbol ?? <Dots />}
                 </StyledTokenName>
               </Aligner>
             </CurrencySelect>
@@ -456,156 +455,119 @@ export default function OrderCard({ order }: { order: Order }) {
           ) : null}
         </RowBetween>
 
-        <Aligner style={{ marginTop: "10px" }}>
-          <OrderRow>
-            <RowBetween>
-              <Text fontWeight={500} fontSize={14} color={theme.text1}>
-                {`Sell ${inputAmount ? inputAmount.toSignificant(4) : "-"} ${
-                  inputAmount?.currency.symbol ?? ""
-                } for ${outputAmount ? outputAmount.toSignificant(4) : "-"} ${
-                  outputAmount?.currency.symbol ?? ""
-                }`}
-              </Text>
-            </RowBetween>
-          </OrderRow>
-        </Aligner>
-        <Aligner
-          style={{
-            marginTop: "-2px",
-            marginBottom: order.status === "open" ? "1px" : "20px",
-          }}
-        >
-          <OrderRow>
-            <RowBetween>
-              <Text
-                fontWeight={400}
+        <OrderRow>
+          <RowBetween>
+            <Text fontWeight={500} fontSize={14} color={theme.text1}>
+              {`Sell ${inputAmount ? inputAmount.toSignificant(4) : "-"} ${
+                inputAmount?.currency.symbol ?? ""
+              } for ${outputAmount ? outputAmount.toSignificant(4) : "-"} ${
+                outputAmount?.currency.symbol ?? ""
+              }`}
+            </Text>
+          </RowBetween>
+        </OrderRow>
+
+        <OrderRow style={{ height: "20px" }}>
+          <RowBetween>
+            <Text fontWeight={400} fontSize={12} color={theme.text1}>
+              Current price:
+            </Text>
+            {trade ? (
+              <TradePrice
+                price={trade.executionPrice}
+                showInverted={showCurrentPriceInverted}
+                setShowInverted={setShowCurrentPriceInverted}
+                fontWeight={500}
                 fontSize={12}
-                color={theme.text1}
-                style={{ marginRight: "4px" }}
-              >
-                Current price:
-              </Text>
-              {trade ? (
-                <TradePrice
-                  price={trade.executionPrice}
-                  showInverted={showCurrentPriceInverted}
-                  setShowInverted={setShowCurrentPriceInverted}
-                  fontWeight={500}
-                  fontSize={12}
-                />
-              ) : (
-                <Dots />
-              )}
-            </RowBetween>
-          </OrderRow>
-        </Aligner>
+              />
+            ) : (
+              <Dots />
+            )}
+          </RowBetween>
+        </OrderRow>
 
         {order.status === "open" ? (
           <>
-            <Aligner style={{ marginTop: "-10px" }}>
-              <OrderRow>
-                <RowBetween>
-                  <Text
-                    fontWeight={400}
-                    fontSize={12}
-                    color={theme.text1}
-                    style={{ marginRight: "4px" }}
-                  >
-                    Execution price:
-                  </Text>
-                  {executionPrice ? (
-                    isTransactionCostDependentChainBool ? (
-                      <>
-                        <MouseoverTooltip
-                          text={`The execution price takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled, so that the minimum you receive is ${
-                            outputAmount ? outputAmount.toSignificant(4) : "-"
-                          } ${
-                            outputAmount?.currency.symbol ?? ""
-                          }. It fluctuates according to gas prices. Current gas price: ${parseFloat(
-                            gasPrice ? formatUnits(gasPrice, "gwei") : "-"
-                          ).toFixed(0)} GWEI.`}
-                        >
-                          {ethereumExecutionPrice ? (
-                            <TradePrice
-                              price={ethereumExecutionPrice}
-                              showInverted={showEthereumExecutionPriceInverted}
-                              setShowInverted={
-                                setShowEthereumExecutionPriceInverted
-                              }
-                              fontWeight={500}
-                              fontSize={12}
-                            />
-                          ) : ethereumExecutionPrice === undefined ? (
-                            <TYPE.body fontSize={14} color={theme.text2}>
-                              <HoverInlineText text={"never executes"} />
-                            </TYPE.body>
-                          ) : (
-                            <Dots />
-                          )}
-                        </MouseoverTooltip>
-                      </>
-                    ) : (
-                      <TradePrice
-                        price={executionPrice}
-                        showInverted={showExecutionPriceInverted}
-                        setShowInverted={setShowExecutionPriceInverted}
-                        fontWeight={500}
-                        fontSize={12}
-                      />
-                    )
-                  ) : (
-                    <Dots />
-                  )}
-                </RowBetween>
-              </OrderRow>
-            </Aligner>
-            <Aligner style={{ marginTop: "-7px" }}>
-              <OrderRow>
-                <RowFixed>
-                  <RowBetween>
-                    <MouseoverTooltip
-                      text={`The minimum amount you can receive. It includes all fees and maximum slippage tolerance.`}
-                    >
-                      <Text
-                        fontWeight={400}
-                        fontSize={12}
-                        color={theme.text1}
-                        style={{ marginRight: "4px" }}
+            <OrderRow style={{ height: "20px" }}>
+              <RowBetween>
+                <Text fontWeight={400} fontSize={12} color={theme.text1}>
+                  Execution price:
+                </Text>
+                {executionPrice ? (
+                  isTransactionCostDependentChainBool ? (
+                    <>
+                      <MouseoverTooltip
+                        text={`The execution price takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled, so that the minimum you receive is ${
+                          outputAmount ? outputAmount.toSignificant(4) : "-"
+                        } ${
+                          outputAmount?.currency.symbol ?? ""
+                        }. It fluctuates according to gas prices. Current gas price: ${parseFloat(
+                          gasPrice ? formatUnits(gasPrice, "gwei") : "-"
+                        ).toFixed(0)} GWEI.`}
                       >
-                        Minimum Received:
-                      </Text>
-                    </MouseoverTooltip>
-                    <TYPE.black
-                      textAlign="right"
+                        {ethereumExecutionPrice ? (
+                          <TradePrice
+                            price={ethereumExecutionPrice}
+                            showInverted={showEthereumExecutionPriceInverted}
+                            setShowInverted={
+                              setShowEthereumExecutionPriceInverted
+                            }
+                            fontWeight={500}
+                            fontSize={12}
+                          />
+                        ) : ethereumExecutionPrice === undefined ? (
+                          <TYPE.body fontSize={14} color={theme.text2}>
+                            <HoverInlineText text={"never executes"} />
+                          </TYPE.body>
+                        ) : (
+                          <Dots />
+                        )}
+                      </MouseoverTooltip>
+                    </>
+                  ) : (
+                    <TradePrice
+                      price={executionPrice}
+                      showInverted={showExecutionPriceInverted}
+                      setShowInverted={setShowExecutionPriceInverted}
+                      fontWeight={500}
                       fontSize={12}
-                      color={theme.text1}
-                    >
-                      {minReturnOutputAmount
-                        ? `${minReturnOutputAmount.toSignificant(4)} ${
-                            minReturnOutputAmount
-                              ? minReturnOutputAmount.currency.symbol
-                              : "-"
-                          }`
-                        : "-"}
-                    </TYPE.black>
-                  </RowBetween>
-                </RowFixed>
-              </OrderRow>
-            </Aligner>
-            <Aligner style={{ marginTop: "-10px" }}>
-              <OrderRow>
-                <RowBetween>
-                  <Text
-                    fontWeight={400}
-                    fontSize={12}
-                    color={theme.text1}
-                    style={{ marginRight: "4px", marginTop: "5px" }}
-                  >
-                    Expiry Date: {expireDate}
+                    />
+                  )
+                ) : (
+                  <Dots />
+                )}
+              </RowBetween>
+            </OrderRow>
+            <OrderRow style={{ height: "20px" }}>
+              <RowBetween>
+                <MouseoverTooltip
+                  text={`The minimum amount you can receive. It includes all fees and maximum slippage tolerance.`}
+                >
+                  <Text fontWeight={400} fontSize={12} color={theme.text1}>
+                    Minimum Received:
                   </Text>
-                </RowBetween>
-              </OrderRow>
-            </Aligner>
+                </MouseoverTooltip>
+                <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+                  {minReturnOutputAmount
+                    ? `${minReturnOutputAmount.toSignificant(4)} ${
+                        minReturnOutputAmount
+                          ? minReturnOutputAmount.currency.symbol
+                          : "-"
+                      }`
+                    : "-"}
+                </TYPE.black>
+              </RowBetween>
+            </OrderRow>
+            <OrderRow style={{ height: "20px" }}>
+              <RowBetween>
+                <Text fontWeight={400} fontSize={12} color={theme.text1}>
+                  Expiry Date:
+                </Text>
+                <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+                  {expireDate}
+                </TYPE.black>
+              </RowBetween>
+            </OrderRow>
           </>
         ) : null}
       </Container>
