@@ -25,7 +25,7 @@ export function AdvancedSwapDetails() {
 
   const library = useGelatoLimitOrdersLib();
 
-  const { gasPrice, realExecutionPriceAsString } = useGasOverhead(
+  const { gasPrice, projectedExecutionPriceAsString } = useGasOverhead(
     parsedAmounts.input,
     parsedAmounts.output,
     rateType
@@ -36,21 +36,19 @@ export function AdvancedSwapDetails() {
   const realExecutionRateWithSymbols = useMemo(
     () =>
       parsedAmounts.input?.currency &&
-      parsedAmounts.output?.currency &&
-      realExecutionPriceAsString
-        ? realExecutionPriceAsString === "never executes"
-          ? realExecutionPriceAsString
-          : `1 ${
-              isInvertedRate
-                ? parsedAmounts.output.currency.symbol
-                : parsedAmounts.input.currency.symbol
-            } = ${realExecutionPriceAsString} ${
-              isInvertedRate
-                ? parsedAmounts.input.currency.symbol
-                : parsedAmounts.output.currency.symbol
-            }`
+        parsedAmounts.output?.currency &&
+        projectedExecutionPriceAsString
+        ? projectedExecutionPriceAsString === "never executes"
+          ? projectedExecutionPriceAsString
+          : `1 ${isInvertedRate
+            ? parsedAmounts.output.currency.symbol
+            : parsedAmounts.input.currency.symbol
+          } = ${projectedExecutionPriceAsString} ${isInvertedRate
+            ? parsedAmounts.input.currency.symbol
+            : parsedAmounts.output.currency.symbol
+          }`
         : undefined,
-    [parsedAmounts, realExecutionPriceAsString, isInvertedRate]
+    [parsedAmounts, projectedExecutionPriceAsString, isInvertedRate]
   );
 
   const outputAmount = parsedAmounts.output;
@@ -142,13 +140,12 @@ export function AdvancedSwapDetails() {
           <RowBetween>
             <RowFixed>
               <MouseoverTooltip
-                text={`The projected execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
-                  realExecutionRateWithSymbols
+                text={`The projected execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${realExecutionRateWithSymbols
                     ? `Assuming current gas price it should execute when ` +
-                      realExecutionRateWithSymbols +
-                      "."
+                    realExecutionRateWithSymbols +
+                    "."
                     : ""
-                }`}
+                  }`}
               >
                 <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
                   Projected Execution Price (?)
@@ -197,9 +194,8 @@ export function AdvancedSwapDetails() {
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
           {minReturn
-            ? `${minReturn.toSignificant(4)} ${
-                outputAmount ? outputAmount.currency.symbol : "-"
-              }`
+            ? `${minReturn.toSignificant(4)} ${outputAmount ? outputAmount.currency.symbol : "-"
+            }`
             : "-"}
         </TYPE.black>
       </RowBetween>

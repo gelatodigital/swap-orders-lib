@@ -80,7 +80,7 @@ enum Rate {
   MUL = "MUL",
 }
 
-const PoweredByWrapper = styled(PoweredByGelato)<{ size: number }>`
+const PoweredByWrapper = styled(PoweredByGelato) <{ size: number }>`
   ${({ theme }) => theme.flexColumnNoWrap};
   height: ${() => "26px"};
   width: ${({ size }) => (size ? size + "px" : "32px")};
@@ -231,7 +231,7 @@ export default function GelatoLimitOrder({
   );
   const showMaxButton = Boolean(
     maxInputAmount?.greaterThan(0) &&
-      !parsedAmounts.input?.equalTo(maxInputAmount)
+    !parsedAmounts.input?.equalTo(maxInputAmount)
   );
 
   const handleSwap = useCallback(() => {
@@ -369,8 +369,8 @@ export default function GelatoLimitOrder({
 
   const {
     gasPrice,
-    realExecutionPrice,
-    realExecutionPriceAsString,
+    projectedExecutionPrice,
+    projectedExecutionPriceAsString,
   } = useGasOverhead(parsedAmounts.input, parsedAmounts.output, rateType);
 
   const showApproveFlow =
@@ -457,8 +457,8 @@ export default function GelatoLimitOrder({
                 showRate={true}
                 isInvertedRate={rateType === Rate.MUL ? false : true}
                 gasPrice={gasPrice}
-                realExecutionPrice={realExecutionPrice ?? undefined}
-                realExecutionPriceAsString={realExecutionPriceAsString}
+                projectedExecutionPrice={projectedExecutionPrice ?? undefined}
+                projectedExecutionPriceAsString={projectedExecutionPriceAsString}
               />
               <ArrowWrapper clickable>
                 <ArrowDown
@@ -581,8 +581,8 @@ export default function GelatoLimitOrder({
                               ${currencies.input?.symbol}.`}
                         </span>
                         {approvalState === ApprovalState.PENDING ||
-                        (approvalSubmitted &&
-                          approvalState === ApprovalState.NOT_APPROVED) ? (
+                          (approvalSubmitted &&
+                            approvalState === ApprovalState.NOT_APPROVED) ? (
                           <Loader stroke="white" />
                         ) : approvalSubmitted &&
                           approvalState === ApprovalState.APPROVED ? (

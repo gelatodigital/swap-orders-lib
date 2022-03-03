@@ -20,7 +20,7 @@ import {
   HANDLERS_ADDRESSES,
   NETWORK_HANDLERS,
   SUBGRAPH_URL,
-  L2_BPS_GELATO_FEE,
+  BPS_GELATO_FEE,
   LIMIT_ORDER_SLIPPAGE,
 } from "../constants";
 import {
@@ -139,7 +139,7 @@ export class GelatoLimitOrders {
     }
 
     this._chainId = chainId;
-    this._gelatoFeeBPS = L2_BPS_GELATO_FEE[chainId];
+    this._gelatoFeeBPS = BPS_GELATO_FEE[chainId];
     this._slippageBPS = LIMIT_ORDER_SLIPPAGE[chainId];
     this._subgraphUrl = SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
@@ -481,9 +481,6 @@ export class GelatoLimitOrders {
     slippage: string;
     gelatoFee: string;
   } {
-    // if (isEthereumChain(this._chainId))
-    //   throw new Error("Method not available for current chain.");
-
     if (extraSlippageBPS) {
       if (!Number.isInteger(extraSlippageBPS))
         throw new Error("Extra Slippage BPS must an unsigned integer");
@@ -515,9 +512,6 @@ export class GelatoLimitOrders {
     minReturn: BigNumberish,
     extraSlippageBPS?: number
   ): string {
-    // if (isEthereumChain(this._chainId))
-    //   throw new Error("Method not available for current chain.");
-
     const gelatoFee = BigNumber.from(this._gelatoFeeBPS);
 
     const slippage = extraSlippageBPS
