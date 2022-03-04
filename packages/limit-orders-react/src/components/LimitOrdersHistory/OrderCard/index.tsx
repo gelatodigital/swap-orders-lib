@@ -185,8 +185,8 @@ export default function OrderCard({ order }: { order: Order }) {
     setShowExecutionPriceInverted,
   ] = useState<boolean>(false);
   const [
-    showProjectedExecutionPriceInverted,
-    setShowProjectedExecutionPriceInverted,
+    showRealExecutionPriceInverted,
+    setShowRealExecutionPriceInverted,
   ] = useState<boolean>(true);
   const [
     showCurrentPriceInverted,
@@ -508,10 +508,8 @@ export default function OrderCard({ order }: { order: Order }) {
                         {realExecutionPrice ? (
                           <TradePrice
                             price={realExecutionPrice}
-                            showInverted={showProjectedExecutionPriceInverted}
-                            setShowInverted={
-                              setShowProjectedExecutionPriceInverted
-                            }
+                            showInverted={showRealExecutionPriceInverted}
+                            setShowInverted={setShowRealExecutionPriceInverted}
                             fontWeight={500}
                             fontSize={12}
                           />
