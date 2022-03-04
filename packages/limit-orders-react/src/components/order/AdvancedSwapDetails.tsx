@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { utils, constants } from "@gelatonetwork/limit-orders-lib";
+import { constants } from "@gelatonetwork/limit-orders-lib";
 import { isTransactionCostDependentChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { formatUnits } from "@ethersproject/units";
@@ -25,7 +25,7 @@ export function AdvancedSwapDetails() {
 
   const library = useGelatoLimitOrdersLib();
 
-  const { gasPrice, projectedExecutionPriceAsString } = useGasOverhead(
+  const { gasPrice, realExecutionPriceAsString } = useGasOverhead(
     parsedAmounts.input,
     parsedAmounts.output,
     rateType
@@ -36,19 +36,21 @@ export function AdvancedSwapDetails() {
   const realExecutionRateWithSymbols = useMemo(
     () =>
       parsedAmounts.input?.currency &&
-        parsedAmounts.output?.currency &&
-        projectedExecutionPriceAsString
-        ? projectedExecutionPriceAsString === "never executes"
-          ? projectedExecutionPriceAsString
-          : `1 ${isInvertedRate
-            ? parsedAmounts.output.currency.symbol
-            : parsedAmounts.input.currency.symbol
-          } = ${projectedExecutionPriceAsString} ${isInvertedRate
-            ? parsedAmounts.input.currency.symbol
-            : parsedAmounts.output.currency.symbol
-          }`
+      parsedAmounts.output?.currency &&
+      realExecutionPriceAsString
+        ? realExecutionPriceAsString === "never executes"
+          ? realExecutionPriceAsString
+          : `1 ${
+              isInvertedRate
+                ? parsedAmounts.output.currency.symbol
+                : parsedAmounts.input.currency.symbol
+            } = ${realExecutionPriceAsString} ${
+              isInvertedRate
+                ? parsedAmounts.input.currency.symbol
+                : parsedAmounts.output.currency.symbol
+            }`
         : undefined,
-    [parsedAmounts, projectedExecutionPriceAsString, isInvertedRate]
+    [parsedAmounts, realExecutionPriceAsString, isInvertedRate]
   );
 
   const outputAmount = parsedAmounts.output;
@@ -140,15 +142,16 @@ export function AdvancedSwapDetails() {
           <RowBetween>
             <RowFixed>
               <MouseoverTooltip
-                text={`The projected execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${realExecutionRateWithSymbols
+                text={`The real execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                  realExecutionRateWithSymbols
                     ? `Assuming current gas price it should execute when ` +
-                    realExecutionRateWithSymbols +
-                    "."
+                      realExecutionRateWithSymbols +
+                      "."
                     : ""
-                  }`}
+                }`}
               >
                 <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
-                  Projected Execution Price (?)
+                  Real Execution Price (?)
                 </TYPE.black>{" "}
               </MouseoverTooltip>
             </RowFixed>
@@ -194,8 +197,9 @@ export function AdvancedSwapDetails() {
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
           {minReturn
-            ? `${minReturn.toSignificant(4)} ${outputAmount ? outputAmount.currency.symbol : "-"
-            }`
+            ? `${minReturn.toSignificant(4)} ${
+                outputAmount ? outputAmount.currency.symbol : "-"
+              }`
             : "-"}
         </TYPE.black>
       </RowBetween>

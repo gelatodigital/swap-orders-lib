@@ -1,6 +1,6 @@
 import { Currency, TradeType } from "@uniswap/sdk-core";
 import { Trade } from "@uniswap/v2-sdk";
-import React, { useState } from "react";
+import React, { Dispatch, useState, SetStateAction, useEffect } from "react";
 import { ArrowDown, AlertTriangle } from "react-feather";
 import { Text } from "rebass";
 import styled from "styled-components";
@@ -13,13 +13,23 @@ import { AutoColumn } from "../Column";
 import { FiatValue } from "../CurrencyInputPanel/FiatValue";
 import CurrencyLogo from "../CurrencyLogo";
 import { RowBetween, RowFixed } from "../Row";
-import { TruncatedText, SwapShowAcceptChanges } from "./styleds";
+import {
+  TruncatedText,
+  SwapShowAcceptChanges,
+  DisclaimerText,
+} from "./styleds";
 import { AdvancedSwapDetails } from "./AdvancedSwapDetails";
 import { LightCard } from "../Card";
 import { DarkGreyCard } from "../Card";
 import TradePrice from "../order/TradePrice";
 import useTheme from "../../hooks/useTheme";
 import { useGelatoLimitOrders } from "../../hooks/gelato";
+import Toggle from "react-styled-toggle";
+
+export const AnimatedCard = styled(LightCard)<{ expand: boolean }>`
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+`;
 
 export const ArrowWrapper = styled.div`
   padding: 4px;
@@ -42,15 +52,19 @@ export default function SwapModalHeader({
   recipient,
   showAcceptChanges,
   onAcceptChanges,
+  onDisclaimerChange,
 }: {
   trade?: Trade<Currency, Currency, TradeType>;
   recipient: string | null;
   showAcceptChanges: boolean;
   onAcceptChanges: () => void;
+  onDisclaimerChange: Dispatch<SetStateAction<boolean>>;
 }) {
   const theme = useTheme();
 
   const [showInverted, setShowInverted] = useState<boolean>(false);
+  const [showDisclaimer, setShowDisclaimer] = useState<boolean>(true);
+  const [disclaimer, setDisclaimer] = useState<boolean>(false);
 
   const {
     derivedOrderInfo: { price, parsedAmounts },
@@ -62,7 +76,16 @@ export default function SwapModalHeader({
   const fiatValueInput = useUSDCValue(inputAmount);
   const fiatValueOutput = useUSDCValue(outputAmount);
 
+  useEffect(() => {
+    onDisclaimerChange(disclaimer);
+  }, []);
+
   if (!inputAmount || !outputAmount) return null;
+
+  const handleDisclaimer = (value: boolean) => {
+    onDisclaimerChange(value);
+    setDisclaimer(value);
+  };
 
   return (
     <AutoColumn gap={"4px"} style={{ marginTop: "1rem" }}>
@@ -156,6 +179,41 @@ export default function SwapModalHeader({
         <AdvancedSwapDetails />
       </LightCard>
 
+      {showDisclaimer && (
+        <AnimatedCard
+          style={{ padding: ".75rem", marginTop: "0.5rem" }}
+          expand={showDisclaimer}
+        >
+          <DisclaimerText />
+        </AnimatedCard>
+      )}
+
+      <RowBetween style={{ marginTop: "0.25rem", padding: "0 1rem" }}>
+        <TYPE.link
+          color={theme.blue1}
+          fontWeight={500}
+          fontSize={14}
+          style={{ cursor: "pointer" }}
+          onClick={() => setShowDisclaimer(!showDisclaimer)}
+        >
+          {!showDisclaimer ? "Show Disclaimer" : "Hide Disclaimer"}
+        </TYPE.link>
+        <Toggle
+          name={"disclaimer"}
+          disabled={false}
+          checked={disclaimer}
+          value={""}
+          onChange={() => handleDisclaimer(!disclaimer)}
+          labelLeft={"Accept Disclaimer"}
+          labelRight={""}
+          height={24}
+          sliderHeight={16}
+          width={44}
+          sliderWidth={16}
+          translate={22}
+        />
+      </RowBetween>
+
       {showAcceptChanges ? (
         <SwapShowAcceptChanges justify="flex-start" gap={"0px"}>
           <RowBetween>
@@ -192,7 +250,7 @@ export default function SwapModalHeader({
             textAlign="left"
             style={{ width: "100%" }}
           >
-            {`Output is estimated. You will receive at least `}
+            {`Output is estimated.You will receive at least `}
             <b>
               {trade.minimumAmountOut(allowedSlippage).toSignificant(6)}{" "}
               {outputAmount.currency.symbol}
@@ -205,7 +263,7 @@ export default function SwapModalHeader({
             textAlign="left"
             style={{ width: "100%" }}
           >
-            {`Input is estimated. You will sell at most `}
+            {`Input is estimated.You will sell at most`}
             <b>
               {trade.maximumAmountIn(allowedSlippage).toSignificant(6)}{" "}
               {inputAmount.currency.symbol}

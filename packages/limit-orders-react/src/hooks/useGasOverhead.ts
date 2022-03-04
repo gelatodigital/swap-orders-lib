@@ -17,8 +17,8 @@ export default function useGasOverhead(
   outputAmount: CurrencyAmount<Currency> | undefined,
   rateType: Rate = Rate.MUL
 ): {
-  projectedExecutionPrice: Price<Currency, Currency> | undefined | null;
-  projectedExecutionPriceAsString: string | undefined;
+  realExecutionPrice: Price<Currency, Currency> | undefined | null;
+  realExecutionPriceAsString: string | undefined;
   gasPrice: number | undefined;
 } {
   const { chainId, handler } = useWeb3();
@@ -61,7 +61,7 @@ export default function useGasOverhead(
     [bufferedOutputAmount, inputAmount]
   );
 
-  const projectedExecutionPrice = useMemo(() => {
+  const realExecutionPrice = useMemo(() => {
     if (
       !inputAmount ||
       !gasCostInInputTokens ||
@@ -80,7 +80,7 @@ export default function useGasOverhead(
     }
   }, [realInputAmount, outputAmount, inputAmount, gasCostInInputTokens]);
 
-  const projectedExecutionPriceAsString = useMemo(() => {
+  const realExecutionPriceAsString = useMemo(() => {
     if (
       !inputAmount ||
       !gasCostInInputTokens ||
@@ -94,23 +94,23 @@ export default function useGasOverhead(
     else
       return rateType === Rate.DIV
         ? realInputAmount
-          .divide(outputAmount.asFraction)
-          ?.multiply(
-            JSBI.exponentiate(
-              JSBI.BigInt(10),
-              JSBI.BigInt(outputAmount.currency.decimals)
+            .divide(outputAmount.asFraction)
+            ?.multiply(
+              JSBI.exponentiate(
+                JSBI.BigInt(10),
+                JSBI.BigInt(outputAmount.currency.decimals)
+              )
             )
-          )
-          ?.toSignificant(6)
+            ?.toSignificant(6)
         : outputAmount
-          ?.divide(realInputAmount.asFraction)
-          ?.multiply(
-            JSBI.exponentiate(
-              JSBI.BigInt(10),
-              JSBI.BigInt(inputAmount.currency.decimals)
+            ?.divide(realInputAmount.asFraction)
+            ?.multiply(
+              JSBI.exponentiate(
+                JSBI.BigInt(10),
+                JSBI.BigInt(inputAmount.currency.decimals)
+              )
             )
-          )
-          ?.toSignificant(6);
+            ?.toSignificant(6);
   }, [
     rateType,
     realInputAmount,
@@ -120,10 +120,10 @@ export default function useGasOverhead(
   ]);
 
   return chainId && isTransactionCostDependentChain(chainId)
-    ? { projectedExecutionPrice, gasPrice, projectedExecutionPriceAsString }
+    ? { realExecutionPrice, gasPrice, realExecutionPriceAsString }
     : {
-      projectedExecutionPrice: undefined,
-      projectedExecutionPriceAsString: undefined,
-      gasPrice: undefined,
-    };
+        realExecutionPrice: undefined,
+        realExecutionPriceAsString: undefined,
+        gasPrice: undefined,
+      };
 }

@@ -3,10 +3,10 @@ import {
   GelatoLimitOrderPanel,
   GelatoLimitOrdersHistoryPanel,
 } from "@gelatonetwork/limit-orders-react";
-import {
-  GelatoStopLimitOrderPanel,
-  GelatoStopLimitOrdersHistoryPanel
-} from "@gelatonetwork/stop-limit-orders-react";
+// import {
+//   GelatoStopLimitOrderPanel,
+//   GelatoStopLimitOrdersHistoryPanel
+// } from "@gelatonetwork/stop-limit-orders-react";
 import './App.css';
 
 function App() {
@@ -14,8 +14,8 @@ function App() {
     <div className="App">
       <GelatoLimitOrderPanel />
       <GelatoLimitOrdersHistoryPanel />
-      <GelatoStopLimitOrderPanel />
-      <GelatoStopLimitOrdersHistoryPanel />
+      {/* <GelatoStopLimitOrderPanel />
+      <GelatoStopLimitOrdersHistoryPanel /> */}
     </div>
   );
 }

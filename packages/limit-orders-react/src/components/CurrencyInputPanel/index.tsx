@@ -68,7 +68,7 @@ const Container = styled.div<{ hideInput: boolean }>`
   }
 `;
 
-const CurrencySelect = styled(ButtonGray) <{
+const CurrencySelect = styled(ButtonGray)<{
   selected: boolean;
   hideInput?: boolean;
 }>`
@@ -94,7 +94,7 @@ const CurrencySelect = styled(ButtonGray) <{
   :focus,
   :hover {
     background-color: ${({ selected, theme }) =>
-    selected ? theme.bg2 : darken(0.05, theme.primary1)};
+      selected ? theme.bg2 : darken(0.05, theme.primary1)};
   }
 `;
 
@@ -129,7 +129,7 @@ const Aligner = styled.span`
   width: 100%;
 `;
 
-const StyledDropDown = styled(DropDown) <{ selected: boolean }>`
+const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin: 0 0.25rem 0 0.35rem;
   height: 35%;
 
@@ -190,8 +190,8 @@ interface CurrencyInputPanelProps {
   showCurrencySelector?: boolean;
   showRate?: boolean;
   isInvertedRate?: boolean;
-  projectedExecutionPrice?: Price<Currency, Currency> | undefined;
-  projectedExecutionPriceAsString?: string | undefined;
+  realExecutionPrice?: Price<Currency, Currency> | undefined;
+  realExecutionPriceAsString?: string | undefined;
   gasPrice?: number;
   rateType?: Rate;
 }
@@ -216,8 +216,8 @@ export default function CurrencyInputPanel({
   showCurrencySelector = true,
   showRate = false,
   isInvertedRate = false,
-  projectedExecutionPrice,
-  projectedExecutionPriceAsString,
+  realExecutionPrice,
+  realExecutionPriceAsString,
   rateType,
   ...rest
 }: CurrencyInputPanelProps) {
@@ -240,23 +240,27 @@ export default function CurrencyInputPanel({
   const rate = useMemo(
     () =>
       currency && otherCurrency && value
-        ? `1 ${isInvertedRate ? otherCurrency?.symbol : currency?.symbol
-        } = ${value} ${isInvertedRate ? currency?.symbol : otherCurrency?.symbol
-        }`
+        ? `1 ${
+            isInvertedRate ? otherCurrency?.symbol : currency?.symbol
+          } = ${value} ${
+            isInvertedRate ? currency?.symbol : otherCurrency?.symbol
+          }`
         : undefined,
     [currency, isInvertedRate, otherCurrency, value]
   );
 
   const projectedExecutionRateExplainer = useMemo(
     () =>
-      currency && otherCurrency && projectedExecutionPriceAsString
-        ? projectedExecutionPriceAsString === "never executes"
-          ? projectedExecutionPriceAsString
-          : `1 ${isInvertedRate ? otherCurrency?.symbol : currency?.symbol
-          } = ${projectedExecutionPriceAsString} ${isInvertedRate ? currency?.symbol : otherCurrency?.symbol
-          }`
+      currency && otherCurrency && realExecutionPriceAsString
+        ? realExecutionPriceAsString === "never executes"
+          ? realExecutionPriceAsString
+          : `1 ${
+              isInvertedRate ? otherCurrency?.symbol : currency?.symbol
+            } = ${realExecutionPriceAsString} ${
+              isInvertedRate ? currency?.symbol : otherCurrency?.symbol
+            }`
         : undefined,
-    [currency, isInvertedRate, otherCurrency, projectedExecutionPriceAsString]
+    [currency, isInvertedRate, otherCurrency, realExecutionPriceAsString]
   );
 
   return (
@@ -316,14 +320,14 @@ export default function CurrencyInputPanel({
                       active={Boolean(currency && currency.symbol)}
                     >
                       {(currency &&
-                        currency.symbol &&
-                        currency.symbol.length > 20
+                      currency.symbol &&
+                      currency.symbol.length > 20
                         ? currency.symbol.slice(0, 4) +
-                        "..." +
-                        currency.symbol.slice(
-                          currency.symbol.length - 5,
-                          currency.symbol.length
-                        )
+                          "..." +
+                          currency.symbol.slice(
+                            currency.symbol.length - 5,
+                            currency.symbol.length
+                          )
                         : currency?.symbol) || "Select a token"}
                     </StyledTokenName>
                   )}
@@ -336,10 +340,11 @@ export default function CurrencyInputPanel({
           {showRate && (
             <RowFixed style={{ height: "17px" }}>
               <MouseoverTooltip
-                text={`The virtual price that will determine your output amount. ${chainId && isTransactionCostDependentChain(chainId)
-                  ? "It does not account execution gas costs. For that check the projected execution rate below."
-                  : ""
-                  } ${rate ? rate + "." : ""}`}
+                text={`The virtual price that will determine your output amount. ${
+                  chainId && isTransactionCostDependentChain(chainId)
+                    ? "It does not account execution gas costs. For that check the real execution rate below."
+                    : ""
+                } ${rate ? rate + "." : ""}`}
               >
                 <TYPE.main>{"Price"}</TYPE.main>
               </MouseoverTooltip>
@@ -370,9 +375,9 @@ export default function CurrencyInputPanel({
                   >
                     {!hideBalance && !!currency && selectedCurrencyBalance
                       ? (customBalanceText ?? "Balance: ") +
-                      formatTokenAmount(selectedCurrencyBalance, 4) +
-                      " " +
-                      currency.symbol
+                        formatTokenAmount(selectedCurrencyBalance, 4) +
+                        " " +
+                        currency.symbol
                       : "-"}
                   </TYPE.body>
                   {showMaxButton && selectedCurrencyBalance ? (
@@ -403,12 +408,13 @@ export default function CurrencyInputPanel({
               <RowBetween>
                 {currency && otherCurrency ? (
                   <MouseoverTooltip
-                    text={`The projected execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${rate
-                      ? `Assuming current gas price it should execute when ` +
-                      projectedExecutionRateExplainer +
-                      "."
-                      : ""
-                      }`}
+                    text={`The real execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                      rate
+                        ? `Assuming current gas price it should execute when ` +
+                          projectedExecutionRateExplainer +
+                          "."
+                        : ""
+                    }`}
                   >
                     <TYPE.body
                       onClick={onMax}
@@ -417,15 +423,15 @@ export default function CurrencyInputPanel({
                       fontSize={14}
                       style={{ display: "inline", cursor: "pointer" }}
                     >
-                      Projected execution price (?)
+                      Real execution price (?)
                     </TYPE.body>
                   </MouseoverTooltip>
                 ) : (
                   "-"
                 )}
-                {projectedExecutionPrice ? (
+                {realExecutionPrice ? (
                   <TradePrice
-                    price={projectedExecutionPrice}
+                    price={realExecutionPrice}
                     showInverted={showInverted}
                     setShowInverted={setShowInverted}
                   />
@@ -433,7 +439,9 @@ export default function CurrencyInputPanel({
                   <TYPE.body
                     fontSize={14}
                     color={
-                      projectedExecutionRateExplainer ? theme.text2 : theme.text4
+                      projectedExecutionRateExplainer
+                        ? theme.text2
+                        : theme.text4
                     }
                   >
                     {/* {realExecutionRateExplainer ? "~" : ""} */}

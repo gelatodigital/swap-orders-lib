@@ -229,8 +229,8 @@ export default function LimitOrderCard() {
 
   const {
     gasPrice,
-    projectedExecutionPrice, // returns @uniswap/sdk-core Price object
-    projectedExecutionPriceAsString,
+    realExecutionPrice, // returns @uniswap/sdk-core Price object
+    realExecutionPriceAsString,
   } = useGasOverhead(inputAmount, outputAmount);
 
   const [ inverted, setInverted, ] = useState<boolean>(true);
@@ -239,7 +239,7 @@ export default function LimitOrderCard() {
 
   return (
     <>
-    {projectedExecutionPrice ? (
+    {realExecutionPrice ? (
       <TradePrice
         price={ethereumExecutionPrice}
         showInverted={inverted}

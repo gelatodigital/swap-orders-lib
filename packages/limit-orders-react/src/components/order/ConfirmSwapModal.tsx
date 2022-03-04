@@ -5,7 +5,7 @@ import {
   TradeType,
 } from "@uniswap/sdk-core";
 import { Trade } from "@uniswap/v2-sdk";
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import TransactionConfirmationModal, {
   ConfirmationModalContent,
   TransactionErrorContent,
@@ -49,7 +49,9 @@ export default function ConfirmSwapModal({
   //     ),
   //   [originalTrade, trade]
   // );
-  const showAcceptChanges = false;
+
+  const [disclaimer, setDisclaimer] = useState<boolean>(false);
+  // const showAcceptChanges = false;
 
   const modalHeader = useCallback(() => {
     return (
@@ -58,6 +60,7 @@ export default function ConfirmSwapModal({
         recipient={recipient}
         showAcceptChanges={false}
         onAcceptChanges={onAcceptChanges}
+        onDisclaimerChange={(value) => setDisclaimer(value)}
       />
     );
   }, [onAcceptChanges, recipient, trade]);
@@ -67,11 +70,11 @@ export default function ConfirmSwapModal({
       <SwapModalFooter
         onConfirm={onConfirm}
         trade={trade}
-        disabledConfirm={showAcceptChanges}
+        disabledConfirm={!disclaimer}
         swapErrorMessage={swapErrorMessage}
       />
     );
-  }, [onConfirm, showAcceptChanges, swapErrorMessage, trade]);
+  }, [onConfirm, disclaimer, swapErrorMessage, trade]);
 
   // text to show while loading
   const pendingText = `Submitting order to swap ${inputAmount?.toSignificant(
