@@ -68,7 +68,7 @@ const Container = styled.div<{ hideInput: boolean }>`
   }
 `;
 
-const CurrencySelect = styled(ButtonGray) <{
+const CurrencySelect = styled(ButtonGray)<{
   selected: boolean;
   hideInput?: boolean;
 }>`
@@ -94,7 +94,7 @@ const CurrencySelect = styled(ButtonGray) <{
   :focus,
   :hover {
     background-color: ${({ selected, theme }) =>
-    selected ? theme.bg2 : darken(0.05, theme.primary1)};
+      selected ? theme.bg2 : darken(0.05, theme.primary1)};
   }
 `;
 
@@ -129,7 +129,7 @@ const Aligner = styled.span`
   width: 100%;
 `;
 
-const StyledDropDown = styled(DropDown) <{ selected: boolean }>`
+const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin: 0 0.25rem 0 0.35rem;
   height: 35%;
 
@@ -235,14 +235,17 @@ export default function CurrencyInputPanel({
     setModalOpen(false);
   }, [setModalOpen]);
 
-  const isTransactionCostDependentChainBool: boolean = chainId && isTransactionCostDependentChain(chainId);
+  const isTransactionCostDependentChainBool =
+    chainId && isTransactionCostDependentChain(chainId);
 
   const rate = useMemo(
     () =>
       currency && otherCurrency && value
-        ? `1 ${isInvertedRate ? otherCurrency?.symbol : currency?.symbol
-        } = ${value} ${isInvertedRate ? currency?.symbol : otherCurrency?.symbol
-        }`
+        ? `1 ${
+            isInvertedRate ? otherCurrency?.symbol : currency?.symbol
+          } = ${value} ${
+            isInvertedRate ? currency?.symbol : otherCurrency?.symbol
+          }`
         : undefined,
     [currency, isInvertedRate, otherCurrency, value]
   );
@@ -252,9 +255,11 @@ export default function CurrencyInputPanel({
       currency && otherCurrency && realExecutionPriceAsString
         ? realExecutionPriceAsString === "never executes"
           ? realExecutionPriceAsString
-          : `1 ${isInvertedRate ? otherCurrency?.symbol : currency?.symbol
-          } = ${realExecutionPriceAsString} ${isInvertedRate ? currency?.symbol : otherCurrency?.symbol
-          }`
+          : `1 ${
+              isInvertedRate ? otherCurrency?.symbol : currency?.symbol
+            } = ${realExecutionPriceAsString} ${
+              isInvertedRate ? currency?.symbol : otherCurrency?.symbol
+            }`
         : undefined,
     [currency, isInvertedRate, otherCurrency, realExecutionPriceAsString]
   );
@@ -316,14 +321,14 @@ export default function CurrencyInputPanel({
                       active={Boolean(currency && currency.symbol)}
                     >
                       {(currency &&
-                        currency.symbol &&
-                        currency.symbol.length > 20
+                      currency.symbol &&
+                      currency.symbol.length > 20
                         ? currency.symbol.slice(0, 4) +
-                        "..." +
-                        currency.symbol.slice(
-                          currency.symbol.length - 5,
-                          currency.symbol.length
-                        )
+                          "..." +
+                          currency.symbol.slice(
+                            currency.symbol.length - 5,
+                            currency.symbol.length
+                          )
                         : currency?.symbol) || "Select a token"}
                     </StyledTokenName>
                   )}
@@ -336,10 +341,11 @@ export default function CurrencyInputPanel({
           {showRate && (
             <RowFixed style={{ height: "17px" }}>
               <MouseoverTooltip
-                text={`The virtual price that will determine your output amount. ${isTransactionCostDependentChainBool
-                  ? "It does not account execution gas costs. For that check the real execution rate below."
-                  : ""
-                  } ${rate ? rate + "." : ""}`}
+                text={`The virtual price that will determine your output amount. ${
+                  isTransactionCostDependentChainBool
+                    ? "It does not account execution gas costs. For that check the real execution rate below."
+                    : ""
+                } ${rate ? rate + "." : ""}`}
               >
                 <TYPE.main>{"Price"}</TYPE.main>
               </MouseoverTooltip>
@@ -370,9 +376,9 @@ export default function CurrencyInputPanel({
                   >
                     {!hideBalance && !!currency && selectedCurrencyBalance
                       ? (customBalanceText ?? "Balance: ") +
-                      formatTokenAmount(selectedCurrencyBalance, 4) +
-                      " " +
-                      currency.symbol
+                        formatTokenAmount(selectedCurrencyBalance, 4) +
+                        " " +
+                        currency.symbol
                       : "-"}
                   </TYPE.body>
                   {showMaxButton && selectedCurrencyBalance ? (
@@ -397,57 +403,62 @@ export default function CurrencyInputPanel({
           </FiatRow>
         )}
 
-        {showRate && value && currency && otherCurrency && isTransactionCostDependentChainBool && (
-          <Fragment>
-            <FiatRow>
-              <RowBetween>
-                {currency && otherCurrency ? (
-                  <MouseoverTooltip
-                    text={`The real execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${rate
-                      ? `Assuming current gas price it should execute when ` +
-                      realExecutionRateExplainer +
-                      "."
-                      : ""
+        {showRate &&
+          value &&
+          currency &&
+          otherCurrency &&
+          isTransactionCostDependentChainBool && (
+            <Fragment>
+              <FiatRow>
+                <RowBetween>
+                  {currency && otherCurrency ? (
+                    <MouseoverTooltip
+                      text={`The real execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                        rate
+                          ? `Assuming current gas price it should execute when ` +
+                            realExecutionRateExplainer +
+                            "."
+                          : ""
                       }`}
-                  >
-                    <TYPE.body
-                      onClick={onMax}
-                      color={theme.text2}
-                      fontWeight={400}
-                      fontSize={14}
-                      style={{ display: "inline", cursor: "pointer" }}
                     >
-                      Real execution price (?)
+                      <TYPE.body
+                        onClick={onMax}
+                        color={theme.text2}
+                        fontWeight={400}
+                        fontSize={14}
+                        style={{ display: "inline", cursor: "pointer" }}
+                      >
+                        Real execution price (?)
+                      </TYPE.body>
+                    </MouseoverTooltip>
+                  ) : (
+                    "-"
+                  )}
+                  {realExecutionPrice ? (
+                    <TradePrice
+                      price={realExecutionPrice}
+                      showInverted={showInverted}
+                      setShowInverted={setShowInverted}
+                    />
+                  ) : (
+                    <TYPE.body
+                      fontSize={14}
+                      color={
+                        realExecutionRateExplainer ? theme.text2 : theme.text4
+                      }
+                    >
+                      {/* {realExecutionRateExplainer ? "~" : ""} */}
+                      {realExecutionRateExplainer ? (
+                        <HoverInlineText text={realExecutionRateExplainer} />
+                      ) : (
+                        <Loader />
+                      )}
                     </TYPE.body>
-                  </MouseoverTooltip>
-                ) : (
-                  "-"
-                )}
-                {realExecutionPrice ? (
-                  <TradePrice
-                    price={realExecutionPrice}
-                    showInverted={showInverted}
-                    setShowInverted={setShowInverted}
-                  />
-                ) : (
-                  <TYPE.body
-                    fontSize={14}
-                    color={
-                      realExecutionRateExplainer ? theme.text2 : theme.text4
-                    }
-                  >
-                    {/* {realExecutionRateExplainer ? "~" : ""} */}
-                    {realExecutionRateExplainer ? (
-                      <HoverInlineText text={realExecutionRateExplainer} />
-                    ) : (
-                      <Loader />
-                    )}
-                  </TYPE.body>
-                )}
-              </RowBetween>
-            </FiatRow>
-          </Fragment>
-        )}
+                  )}
+                </RowBetween>
+              </FiatRow>
+            </Fragment>
+          )}
       </Container>
       {onCurrencySelect && (
         <CurrencySearchModal
