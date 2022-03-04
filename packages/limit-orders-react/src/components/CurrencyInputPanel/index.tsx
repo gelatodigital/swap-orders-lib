@@ -249,7 +249,7 @@ export default function CurrencyInputPanel({
     [currency, isInvertedRate, otherCurrency, value]
   );
 
-  const projectedExecutionRateExplainer = useMemo(
+  const realExecutionRateExplainer = useMemo(
     () =>
       currency && otherCurrency && realExecutionPriceAsString
         ? realExecutionPriceAsString === "never executes"
@@ -411,7 +411,7 @@ export default function CurrencyInputPanel({
                     text={`The real execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
                       rate
                         ? `Assuming current gas price it should execute when ` +
-                          projectedExecutionRateExplainer +
+                          realExecutionRateExplainer +
                           "."
                         : ""
                     }`}
@@ -439,14 +439,12 @@ export default function CurrencyInputPanel({
                   <TYPE.body
                     fontSize={14}
                     color={
-                      projectedExecutionRateExplainer
-                        ? theme.text2
-                        : theme.text4
+                      realExecutionRateExplainer ? theme.text2 : theme.text4
                     }
                   >
                     {/* {realExecutionRateExplainer ? "~" : ""} */}
-                    {projectedExecutionRateExplainer ? (
-                      <HoverInlineText text={projectedExecutionRateExplainer} />
+                    {realExecutionRateExplainer ? (
+                      <HoverInlineText text={realExecutionRateExplainer} />
                     ) : (
                       <Loader />
                     )}
