@@ -4,6 +4,8 @@ import { AlertTriangle } from "react-feather";
 import styled, { css } from "styled-components";
 import { Text } from "rebass";
 import { AutoColumn } from "../Column";
+import { TYPE } from "../../theme";
+import { RowBetween } from "../Row";
 
 export const Wrapper = styled.div`
   position: relative;
@@ -186,3 +188,65 @@ export const Separator = styled.div`
   height: 1px;
   background-color: ${({ theme }) => theme.bg2};
 `;
+
+export const StyledDisclaimerText = styled(TYPE.body)`
+  font-size: 14px;
+  color: ${({ theme }) => theme.text2};
+`;
+
+export const DisclaimerText = () => (
+  <StyledDisclaimerText>
+    <AutoColumn gap={"8px"}>
+      <>
+        <TYPE.main fontSize={14} fontWeight={500}>
+          Real Execution Price:
+        </TYPE.main>
+        <RowBetween padding={"1px"}>
+          <TYPE.black marginRight={"8px"}>-</TYPE.black>
+          <TYPE.black fontSize={12} fontWeight={400}>
+            Your gas fees are paid for by the spread between your specified
+            Price and the Real Execution Price
+          </TYPE.black>
+        </RowBetween>
+        <RowBetween padding={"1px"}>
+          <TYPE.black marginRight={"8px"}>-</TYPE.black>
+          <TYPE.black fontSize={12} fontWeight={400}>
+            Gas fees are volatile and thus the exact market price at which your
+            order will execute is unpredictable
+          </TYPE.black>
+        </RowBetween>
+        <RowBetween padding={"1px"}>
+          <TYPE.black marginRight={"8px"}>-</TYPE.black>
+          <TYPE.black fontSize={12} fontWeight={400}>
+            It might take much longer than you expected, to reach the price that
+            fills your order + fees
+          </TYPE.black>
+        </RowBetween>
+      </>
+      <>
+        <TYPE.main fontSize={14} fontWeight={500}>
+          Fee on Transfer Tokens:
+        </TYPE.main>
+        <RowBetween padding={"1px"}>
+          <TYPE.black marginRight={"8px"}>-</TYPE.black>
+          <TYPE.black fontSize={12} fontWeight={400}>
+            Fee on transfer tokens should not be used with this system (use at
+            own risk)
+          </TYPE.black>
+        </RowBetween>
+      </>
+      <>
+        <TYPE.main fontSize={14} fontWeight={500}>
+          Expiry Dates:
+        </TYPE.main>
+        <RowBetween padding={"1px"}>
+          <TYPE.black marginRight={"8px"}>-</TYPE.black>
+          <TYPE.black fontSize={12} fontWeight={400}>
+            Your limit order has an expiry date, after which it might not be
+            executed any more
+          </TYPE.black>
+        </RowBetween>
+      </>
+    </AutoColumn>
+  </StyledDisclaimerText>
+);

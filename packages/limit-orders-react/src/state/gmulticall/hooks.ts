@@ -83,7 +83,7 @@ function useCallsData(
     [calls]
   );
 
-  // update listeners when there is an actual change that persists for at least 100ms
+  // update listeners when there is an real change that persists for at least 100ms
   useEffect(() => {
     const callKeys: string[] = JSON.parse(serializedCallKeys);
     if (!chainId || callKeys.length === 0) return undefined;

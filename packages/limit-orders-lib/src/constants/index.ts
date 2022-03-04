@@ -14,7 +14,8 @@ export const CHAIN_ID = {
   AVAX: 43114,
 };
 
-export const L2_BPS_GELATO_FEE = {
+export const BPS_GELATO_FEE = {
+  [CHAIN_ID.MAINNET]: 10,
   [CHAIN_ID.MATIC]: 10,
   [CHAIN_ID.FANTOM]: 10,
   [CHAIN_ID.BSC]: 10,

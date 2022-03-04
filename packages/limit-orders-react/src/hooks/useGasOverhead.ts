@@ -9,13 +9,13 @@ import { useTradeExactIn } from "./useTrade";
 import { tryParseAmount } from "../state/gorder/hooks";
 import { Currency, CurrencyAmount, Price } from "@uniswap/sdk-core";
 import JSBI from "jsbi";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isTransactionCostDependentChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { Rate } from "../state/gorder/actions";
 
 export default function useGasOverhead(
   inputAmount: CurrencyAmount<Currency> | undefined,
   outputAmount: CurrencyAmount<Currency> | undefined,
-  rateType: Rate
+  rateType: Rate = Rate.MUL
 ): {
   realExecutionPrice: Price<Currency, Currency> | undefined | null;
   realExecutionPriceAsString: string | undefined;
@@ -43,12 +43,22 @@ export default function useGasOverhead(
     handler
   );
 
-  const realInputAmount = useMemo(
+  const bufferedOutputAmount = useMemo(
     () =>
       gasCostInInputTokens &&
+      gasCostInInputTokens.outputAmount &&
+      gasCostInInputTokens.outputAmount.add(
+        gasCostInInputTokens.outputAmount.multiply(2000).divide(10000)
+      ),
+    [gasCostInInputTokens]
+  );
+
+  const realInputAmount = useMemo(
+    () =>
+      bufferedOutputAmount &&
       inputAmount &&
-      inputAmount.subtract(gasCostInInputTokens.outputAmount),
-    [gasCostInInputTokens, inputAmount]
+      inputAmount.subtract(bufferedOutputAmount),
+    [bufferedOutputAmount, inputAmount]
   );
 
   const realExecutionPrice = useMemo(() => {
@@ -77,7 +87,7 @@ export default function useGasOverhead(
       !realInputAmount ||
       !outputAmount
     )
-      return "-";
+      return undefined;
 
     if (gasCostInInputTokens.outputAmount.greaterThan(inputAmount.asFraction))
       return "never executes";
@@ -109,7 +119,7 @@ export default function useGasOverhead(
     gasCostInInputTokens,
   ]);
 
-  return chainId && isEthereumChain(chainId)
+  return chainId && isTransactionCostDependentChain(chainId)
     ? { realExecutionPrice, gasPrice, realExecutionPriceAsString }
     : {
         realExecutionPrice: undefined,
