@@ -239,9 +239,11 @@ export class GelatoRangeOrder {
         ethers.utils.parseUnits("1", decimals[1] - 18)
       );
     else
-      amountIn18 = BigNumber.from(rangeOrderPayload.amountIn).div(
+      amountIn18 = BigNumber.from(rangeOrderPayload.amountIn).mul(
         ethers.utils.parseUnits("1", 18 - decimals[1])
       );
+
+    console.log("amountIn18 : ", amountIn18.toString());
 
     return rangeOrderPayload.zeroForOne
       ? meanPrice.mul(amountIn18).div(ethers.utils.parseUnits("1", 18))
