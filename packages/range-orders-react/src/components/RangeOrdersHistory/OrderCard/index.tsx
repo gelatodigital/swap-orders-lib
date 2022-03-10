@@ -212,7 +212,13 @@ export default function OrderCard({ order }: { order: Order }) {
   const outputAmount = useMemo(
     () =>
       outputToken && minReturnRaw
-        ? CurrencyAmount.fromRawAmount(outputToken, getAdjustAmountFrom18(minReturnRaw.toString(), outputToken.decimals).toString())
+        ? CurrencyAmount.fromRawAmount(
+            outputToken,
+            getAdjustAmountFrom18(
+              minReturnRaw.toString(),
+              outputToken.decimals
+            ).toString()
+          )
         : undefined,
     [outputToken, minReturnRaw]
   );
@@ -339,7 +345,15 @@ export default function OrderCard({ order }: { order: Order }) {
           txHash: undefined,
         });
       });
-  }, [handleRangeOrderCancellation, showConfirm, inputToken, outputToken, inputAmount, outputAmount, order]);
+  }, [
+    handleRangeOrderCancellation,
+    showConfirm,
+    inputToken,
+    outputToken,
+    inputAmount,
+    outputAmount,
+    order,
+  ]);
 
   const OrderCard = ({
     showStatusButton = true,
