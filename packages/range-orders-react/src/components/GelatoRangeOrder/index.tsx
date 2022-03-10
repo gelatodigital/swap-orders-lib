@@ -291,6 +291,8 @@ export default function GelatoRangeOrder({
       }
 
       handleRangeOrderSubmission({
+        inputCurrency: currencies.input,
+        outputCurrency: currencies.output,
         inputAmount: BigNumber.from(rawAmounts.input),
       })
         .then(({ hash }: any) => {

@@ -142,7 +142,7 @@ export default function SwapModalHeader({
       </DarkGreyCard>
       <RowBetween style={{ marginTop: "0.25rem", padding: "0 1rem" }}>
         <TYPE.body color={theme.text2} fontWeight={500} fontSize={14}>
-          {"Limit Price:"}
+          {"Range Price:"}
         </TYPE.body>
         <TradePrice
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -180,40 +180,6 @@ export default function SwapModalHeader({
           </RowBetween>
         </SwapShowAcceptChanges>
       ) : null}
-
-      {/* <AutoColumn
-        justify="flex-start"
-        gap="sm"
-        style={{ padding: ".75rem 1rem" }}
-      >
-        {trade.tradeType === TradeType.EXACT_INPUT ? (
-          <TYPE.italic
-            fontWeight={400}
-            textAlign="left"
-            style={{ width: "100%" }}
-          >
-            {`Output is estimated. You will receive at least `}
-            <b>
-              {trade.minimumAmountOut(allowedSlippage).toSignificant(6)}{" "}
-              {outputAmount.currency.symbol}
-            </b>
-            {" or the transaction will revert."}
-          </TYPE.italic>
-        ) : (
-          <TYPE.italic
-            fontWeight={400}
-            textAlign="left"
-            style={{ width: "100%" }}
-          >
-            {`Input is estimated. You will sell at most `}
-            <b>
-              {trade.maximumAmountIn(allowedSlippage).toSignificant(6)}{" "}
-              {inputAmount.currency.symbol}
-            </b>
-            {" or the transaction will revert."}
-          </TYPE.italic>
-        )}
-      </AutoColumn> */}
       {recipient !== null ? (
         <AutoColumn
           justify="center"

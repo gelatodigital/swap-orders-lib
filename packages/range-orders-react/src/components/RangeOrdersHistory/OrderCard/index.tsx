@@ -25,6 +25,7 @@ import useGelatoRangeOrdersLib from "../../../hooks/gelato/useGelatoRangeOrdersL
 import { usePoolContract } from "../../../hooks/useContract";
 import { BigNumber, constants } from "ethers";
 import { MAX_FEE_AMOUNTS } from "../../../constants/misc";
+import { getAdjustAmountFrom18 } from "../../../utils/adjustCurrencyDecimals";
 
 const handleColorType = (status: string, theme: DefaultTheme) => {
   switch (status) {
@@ -195,7 +196,7 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const [token0, setToken0] = useState<string | undefined>();
   const [token1, setToken1] = useState<string | undefined>();
-  const [minReturn, setMinReturn] = useState<BigNumber | undefined>();
+  const [minReturnRaw, setMinReturn] = useState<BigNumber | undefined>();
 
   const inputToken = useCurrency(order.zeroForOne ? token0 : token1);
   const outputToken = useCurrency(order.zeroForOne ? token1 : token0);
@@ -210,10 +211,10 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const outputAmount = useMemo(
     () =>
-      outputToken && minReturn
-        ? CurrencyAmount.fromRawAmount(outputToken, minReturn.toString())
+      outputToken && minReturnRaw
+        ? CurrencyAmount.fromRawAmount(outputToken, getAdjustAmountFrom18(minReturnRaw.toString(), outputToken.decimals).toString())
         : undefined,
-    [outputToken, minReturn]
+    [outputToken, minReturnRaw]
   );
 
   useEffect(() => {
@@ -338,7 +339,7 @@ export default function OrderCard({ order }: { order: Order }) {
           txHash: undefined,
         });
       });
-  }, [handleRangeOrderCancellation, showConfirm, order]);
+  }, [handleRangeOrderCancellation, showConfirm, inputToken, outputToken, inputAmount, outputAmount, order]);
 
   const OrderCard = ({
     showStatusButton = true,

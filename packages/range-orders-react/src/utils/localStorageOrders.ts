@@ -67,11 +67,7 @@ export function removeOrder(
 
   if (!prev) return [];
 
-  const orders = prev.filter((orderInLS) =>
-    BigNumber.from(orderInLS.id).lt(BigNumber.from("100"))
-      ? !BigNumber.from(orderInLS.id).eq(order.id)
-      : orderInLS.submittedTxHash !== order.submittedTxHash
-  );
+  const orders = prev.filter((orderInLS) => orderInLS.submittedTxHash !== order.submittedTxHash);
 
   set(key, orders);
 
