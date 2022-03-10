@@ -1,6 +1,6 @@
 {
   "name": "@gelatonetwork/range-orders-lib",
-  "version": "0.0.2-alpha.5",
+  "version": "0.0.2-alpha.6",
   "description": "Library for creating uniswap V3 range orders via Gelato",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
