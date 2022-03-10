@@ -397,9 +397,13 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         throw new Error("No tick threshold");
       }
 
+      if (typeof order.zeroForOne === "undefined") {
+        throw new Error("Wrong zeroForOne");
+      }
+
       const orderPayload: RangeOrderPayload = {
         pool: order.pool,
-        zeroForOne,
+        zeroForOne: order.zeroForOne,
         amountIn: order.amountIn,
         minLiquidity: ethers.constants.Zero,
         receiver: account,
@@ -432,7 +436,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       });
       return tx;
     },
-    [account, addTransaction, chainId, gelatoRangeOrders, zeroForOne]
+    [account, addTransaction, chainId, gelatoRangeOrders]
   );
 
   const handleRangeSelection = useCallback(
