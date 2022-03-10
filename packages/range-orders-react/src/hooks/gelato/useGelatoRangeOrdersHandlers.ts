@@ -253,7 +253,11 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   );
 
   const handleRangeOrderSubmission = useCallback(
-    async (orderToSubmit: { inputCurrency: Currency; outputCurrency: Currency; inputAmount: BigNumber }) => {
+    async (orderToSubmit: {
+      inputCurrency: Currency;
+      outputCurrency: Currency;
+      inputAmount: BigNumber;
+    }) => {
       if (!gelatoRangeOrders) {
         throw new Error("Could not reach Gelato Range Orders library");
       }
@@ -322,7 +326,9 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       const overrides: PayableOverrides = {
         value:
           inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address
-            ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(orderToSubmit.inputAmount)
+            ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(
+                orderToSubmit.inputAmount
+              )
             : BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       };
       console.log(overrides);
@@ -350,7 +356,18 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
 
       return tx;
     },
-    [account, addTransaction, chainId, gelatoRangeOrders, inputCurrency, nativeCurrency, pool, poolAddress, selectedTick, zeroForOne]
+    [
+      account,
+      addTransaction,
+      chainId,
+      gelatoRangeOrders,
+      inputCurrency,
+      nativeCurrency,
+      pool,
+      poolAddress,
+      selectedTick,
+      zeroForOne,
+    ]
   );
 
   const handleRangeOrderCancellation = useCallback(
