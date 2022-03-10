@@ -1,6 +1,6 @@
 {
   "name": "@gelatonetwork/range-orders-react",
-  "version": "0.0.2-alpha.7",
+  "version": "0.0.2-alpha.8",
   "description": "React Library for creating range orders via Gelato",
   "keywords": [
     "ethereum",
