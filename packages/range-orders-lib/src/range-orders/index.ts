@@ -243,8 +243,6 @@ export class GelatoRangeOrder {
         ethers.utils.parseUnits("1", 18 - decimals[1])
       );
 
-    console.log("amountIn18 : ", amountIn18.toString());
-
     return rangeOrderPayload.zeroForOne
       ? meanPrice.mul(amountIn18).div(ethers.utils.parseUnits("1", 18))
       : amountIn18.mul(ethers.utils.parseUnits("1", 18)).div(meanPrice);
