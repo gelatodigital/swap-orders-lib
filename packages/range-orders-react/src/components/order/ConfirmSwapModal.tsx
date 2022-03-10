@@ -34,15 +34,6 @@ export default function ConfirmSwapModal({
   inputAmount: CurrencyAmount<Currency> | undefined;
   outputAmount: CurrencyAmount<Currency> | undefined;
 }) {
-  // const showAcceptChanges = useMemo(
-  //   () =>
-  //     Boolean(
-  //       trade instanceof Trade &&
-  //         originalTrade instanceof Trade &&
-  //         tradeMeaningfullyDiffers(trade, originalTrade)
-  //     ),
-  //   [originalTrade, trade]
-  // );
   const showAcceptChanges = false;
 
   const modalHeader = useCallback(() => {

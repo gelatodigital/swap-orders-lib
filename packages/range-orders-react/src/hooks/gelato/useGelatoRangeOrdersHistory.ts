@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { RangeOrderData as Order } from "@gelatonetwork/range-orders-lib";
 import { useWeb3 } from "../../web3";
-import { getLSOrders, saveOrder } from "../../utils/localStorageOrders";
+import { getLSOrders, saveOrder, removeOrder } from "../../utils/localStorageOrders";
 import useInterval from "../useInterval";
 import { useSelector } from "react-redux";
 import { AppState } from "../../state";
@@ -39,7 +39,7 @@ function parseOrderMap(order: any) {
   };
 }
 
-export default function useGelatoLimitOrdersHistory(): GelatoRangeOrdersHistory {
+export default function useGelatoRangeOrdersHistory(): GelatoRangeOrdersHistory {
   const { account, chainId } = useWeb3();
 
   const gelatoRangeOrders = useGelatoRangeOrdersLib();

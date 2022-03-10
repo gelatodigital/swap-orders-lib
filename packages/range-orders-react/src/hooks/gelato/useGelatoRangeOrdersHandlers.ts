@@ -38,6 +38,8 @@ import { getPendingLSOrdersID } from "../../utils/localStorageOrders";
 
 export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
+    inputCurrency: Currency;
+    outputCurrency: Currency;
     inputAmount: BigNumber;
   }) => Promise<TransactionResponse>;
   handleRangeOrderCancellation: (
@@ -251,7 +253,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
   );
 
   const handleRangeOrderSubmission = useCallback(
-    async (orderToSubmit: { inputAmount: BigNumber }) => {
+    async (orderToSubmit: { inputCurrency: Currency; outputCurrency: Currency; inputAmount: BigNumber }) => {
       if (!gelatoRangeOrders) {
         throw new Error("Could not reach Gelato Range Orders library");
       }
@@ -276,27 +278,33 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       const tickSpacing = pool?.tickSpacing ?? 0;
       const lowerTick = currentTick - (currentTick % tickSpacing) + tickSpacing;
       const upperTick = lowerTick + tickSpacing;
-      // console.log(currentTick);
-      // console.log(lowerTick, upperTick);
 
-      const { amount0, amount1 } = gelatoRangeOrders.getAmountsIn(
+      const { amount0 } = gelatoRangeOrders.getAmountsIn(
         currentTick,
         lowerTick,
         upperTick,
-        zeroForOne ? ethers.constants.Zero : orderToSubmit.inputAmount,
-        zeroForOne ? orderToSubmit.inputAmount : ethers.constants.Zero,
+        orderToSubmit.inputAmount,
+        ethers.constants.Zero,
         BigNumber.from(pool?.sqrtRatioX96.toString()) ?? ethers.constants.Zero
       );
 
-      // console.log(amount0, amount1);
-      // console.log(amount0.toString(), amount1.toString());
+      const mr = await gelatoRangeOrders.getMinReturn({
+        pool: poolAddress,
+        zeroForOne,
+        tickThreshold: selectedTick,
+        amountIn: orderToSubmit.inputAmount,
+        minLiquidity: amount0,
+        receiver: account,
+        maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+      });
+      console.log("mr>>>>>>", mr);
 
       const { order } = await gelatoRangeOrders.encodeRangeOrderSubmission(
         poolAddress,
         zeroForOne,
         selectedTick,
         orderToSubmit.inputAmount,
-        zeroForOne ? amount0 : amount1,
+        amount0,
         account,
         BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString())
       );
@@ -306,7 +314,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         zeroForOne,
         tickThreshold: selectedTick,
         amountIn: orderToSubmit.inputAmount,
-        minLiquidity: zeroForOne ? amount0 : amount1,
+        minLiquidity: amount0,
         receiver: account,
         maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       };
@@ -314,7 +322,7 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       const overrides: PayableOverrides = {
         value:
           inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address
-            ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(amount0)
+            ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(orderToSubmit.inputAmount)
             : BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
       };
       console.log(overrides);
@@ -331,34 +339,18 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         order: ({
           ...order,
           id: BigNumber.from(orderId).add(BigNumber.from("1")),
-          pool,
+          pool: poolAddress,
           submittedTxHash: tx?.hash.toLowerCase(),
           status: RangeOrderStatus.Submitted,
           updatedAt: now.toString(),
           feeToken: nativeCurrency?.wrapped.address,
-          amountIn:
-            inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address
-              ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(
-                  orderToSubmit.inputAmount
-                )
-              : BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
+          amountIn: orderToSubmit.inputAmount,
         } as unknown) as RangeOrderData,
       });
 
       return tx;
     },
-    [
-      account,
-      addTransaction,
-      chainId,
-      gelatoRangeOrders,
-      inputCurrency?.wrapped.address,
-      nativeCurrency?.wrapped.address,
-      pool,
-      poolAddress,
-      selectedTick,
-      zeroForOne,
-    ]
+    [account, addTransaction, chainId, gelatoRangeOrders, inputCurrency, nativeCurrency, pool, poolAddress, selectedTick, zeroForOne]
   );
 
   const handleRangeOrderCancellation = useCallback(

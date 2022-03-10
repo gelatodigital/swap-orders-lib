@@ -95,9 +95,7 @@ export default function GelatoRangeOrderHistory() {
   const { account } = useWeb3();
   const theme = useTheme();
   const { open, cancelled, executed } = useGelatoRangeOrdersHistory();
-
   const fixedListRef = useRef<FixedSizeList>();
-
   const allOpenOrders = useMemo(
     () => [...cancelled.pending, ...open.pending, ...open.confirmed],
     [open.pending, cancelled.pending, open.confirmed]
