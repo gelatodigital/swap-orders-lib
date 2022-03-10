@@ -292,17 +292,6 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
         BigNumber.from(pool?.sqrtRatioX96.toString()) ?? ethers.constants.Zero
       );
 
-      const mr = await gelatoRangeOrders.getMinReturn({
-        pool: poolAddress,
-        zeroForOne,
-        tickThreshold: selectedTick,
-        amountIn: orderToSubmit.inputAmount,
-        minLiquidity: amount0,
-        receiver: account,
-        maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
-      });
-      console.log("mr>>>>>>", mr);
-
       const { order } = await gelatoRangeOrders.encodeRangeOrderSubmission(
         poolAddress,
         zeroForOne,

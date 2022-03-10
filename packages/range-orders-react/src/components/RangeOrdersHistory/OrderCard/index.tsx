@@ -197,9 +197,23 @@ export default function OrderCard({ order }: { order: Order }) {
   const [token0, setToken0] = useState<string | undefined>();
   const [token1, setToken1] = useState<string | undefined>();
   const [minReturnRaw, setMinReturn] = useState<BigNumber | undefined>();
-
   const inputToken = useCurrency(order.zeroForOne ? token0 : token1);
   const outputToken = useCurrency(order.zeroForOne ? token1 : token0);
+  const { minReturn } = useMemo(() => {
+    if (!outputToken || !minReturnRaw)
+      return {
+        minReturn: undefined,
+        slippagePercentage: undefined,
+        gelatoFeePercentage: undefined,
+      };
+
+    return {
+      minReturn: getAdjustAmountFrom18(
+        minReturnRaw.toString(),
+        outputToken?.decimals
+      ),
+    };
+  }, [minReturnRaw, outputToken]);
 
   const inputAmount = useMemo(
     () =>
@@ -211,16 +225,10 @@ export default function OrderCard({ order }: { order: Order }) {
 
   const outputAmount = useMemo(
     () =>
-      outputToken && minReturnRaw
-        ? CurrencyAmount.fromRawAmount(
-            outputToken,
-            getAdjustAmountFrom18(
-              minReturnRaw.toString(),
-              outputToken.decimals
-            ).toString()
-          )
+      outputToken && minReturn
+        ? CurrencyAmount.fromRawAmount(outputToken, minReturn.toString())
         : undefined,
-    [outputToken, minReturnRaw]
+    [outputToken, minReturn]
   );
 
   useEffect(() => {

@@ -17,10 +17,7 @@ import {
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { useOrderState } from "../../state/gorder/hooks";
 import { MAX_FEE_AMOUNTS } from "../../constants/misc";
-import {
-  getAdjustAmountTo18,
-  getAdjustAmountFrom18,
-} from "../../utils/adjustCurrencyDecimals";
+import { getAdjustAmountFrom18 } from "../../utils/adjustCurrencyDecimals";
 
 export function AdvancedSwapDetails() {
   const theme = useTheme();
@@ -35,7 +32,6 @@ export function AdvancedSwapDetails() {
   const [minReturnRaw, setMinReturn] = useState<BigNumber>();
   const inputToken = useToken(currencies.input?.wrapped.address);
   const outputToken = useToken(currencies.output?.wrapped.address);
-  // const outputAmount = parsedAmounts.output;
   const { minReturn } = useMemo(() => {
     if (!library || !chainId || !pool || !account)
       return {
@@ -45,31 +41,26 @@ export function AdvancedSwapDetails() {
       };
 
     return {
-      minReturn: minReturnRaw ? utils.formatUnits(minReturnRaw, 18) : undefined,
+      minReturn:
+        minReturnRaw && outputToken
+          ? getAdjustAmountFrom18(
+              minReturnRaw.toString(),
+              outputToken?.decimals
+            )
+          : undefined,
     };
-  }, [library, chainId, pool, account, minReturnRaw]);
-
-  console.log("minReturnRaw------------", minReturnRaw?.toString());
-  console.log(
-    minReturnRaw && inputToken
-      ? utils.formatUnits(minReturnRaw.toString(), inputToken?.decimals)
-      : 0
-  );
-  console.log(
-    rawAmounts.input ? utils.parseUnits(rawAmounts.input, 12).toString() : 0
-  );
+  }, [library, chainId, pool, account, minReturnRaw, outputToken]);
 
   const outputAmount = useMemo(
     () =>
-      outputToken && minReturnRaw
-        ? CurrencyAmount.fromRawAmount(outputToken, minReturnRaw.toString())
+      outputToken && minReturn
+        ? CurrencyAmount.fromRawAmount(outputToken, minReturn.toString())
         : undefined,
-    [outputToken, minReturnRaw]
+    [outputToken, minReturn]
   );
 
   useEffect(() => {
     const getMinReturn = async () => {
-      console.log(rawAmounts.input);
       if (
         library &&
         pool &&
@@ -87,7 +78,6 @@ export function AdvancedSwapDetails() {
           receiver: account,
           maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
         });
-        console.log("mr------>>", mr);
         setMinReturn(mr);
       }
     };
@@ -128,7 +118,7 @@ export function AdvancedSwapDetails() {
           </MouseoverTooltip>
         </RowFixed>
         <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
-          {minReturn
+          {outputAmount
             ? `${outputAmount ? outputAmount.toSignificant(4) : "-"} ${
                 outputAmount ? outputAmount.currency.symbol : "-"
               }`
