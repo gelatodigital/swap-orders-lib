@@ -493,7 +493,7 @@ export default function CurrencyInputPanel({
                       fontSize={14}
                       style={{ display: "inline", cursor: "pointer" }}
                     >
-                      Select Range order tick
+                      Select Range order price
                     </TYPE.body>
                   </MouseoverTooltip>
                 </RowBetween>

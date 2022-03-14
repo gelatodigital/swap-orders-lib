@@ -56,7 +56,9 @@ export default function FeeInputPanel({
           style={hideInput ? { padding: "0", borderRadius: "8px" } : {}}
         >
           <RowFixed style={{ height: "17px" }}>
-            <MouseoverTooltip text={`Max fees you want to put in.`}>
+            <MouseoverTooltip
+              text={`The transaction fee for executing your Range Order will be deducted from your Fee Deposit and the remainder will be transferred back to you.`}
+            >
               <TYPE.main>{"Max fee"}</TYPE.main>
             </MouseoverTooltip>
           </RowFixed>
