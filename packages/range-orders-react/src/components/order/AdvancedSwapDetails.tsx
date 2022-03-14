@@ -110,7 +110,7 @@ export function AdvancedSwapDetails() {
       <RowBetween>
         <RowFixed>
           <MouseoverTooltip
-            text={`The minimum amount you can receive. It includes all fees and maximum slippage tolerance.`}
+            text={`The minimum amount you can receive. It includes maximum slippage tolerance.`}
           >
             <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
               Minimum Received (?)
@@ -123,6 +123,20 @@ export function AdvancedSwapDetails() {
                 outputAmount ? outputAmount.currency.symbol : "-"
               }`
             : "-"}
+        </TYPE.black>
+      </RowBetween>
+      <RowBetween>
+        <RowFixed>
+          <MouseoverTooltip
+            text={`The transaction fee for executing your Range Order will be deducted from your Fee Deposit and the remainder will be transferred back to you.`}
+          >
+            <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+              Max fee (?)
+            </TYPE.black>
+          </MouseoverTooltip>
+        </RowFixed>
+        <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+          1 MATIC
         </TYPE.black>
       </RowBetween>
     </AutoColumn>
