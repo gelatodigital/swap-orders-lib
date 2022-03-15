@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { constants, utils } from "@gelatonetwork/limit-orders-lib";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isTransactionCostDependentChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { CurrencyAmount } from "@uniswap/sdk-core";
 import { formatUnits } from "@ethersproject/units";
 import React, { useMemo } from "react";
@@ -96,7 +96,7 @@ export function AdvancedSwapDetails() {
 
   return !chainId ? null : (
     <AutoColumn gap="8px">
-      {!isEthereumChain(chainId) ? (
+      {!isTransactionCostDependentChain(chainId) ? (
         <>
           <RowBetween>
             <RowFixed>
@@ -137,7 +137,7 @@ export function AdvancedSwapDetails() {
           <RowBetween>
             <RowFixed>
               <MouseoverTooltip
-                text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                text={`The real execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
                   realExecutionRateWithSymbols
                     ? `Assuming current gas price it should execute when ` +
                       realExecutionRateWithSymbols +
@@ -156,9 +156,29 @@ export function AdvancedSwapDetails() {
                 : "-"}
             </TYPE.black>
           </RowBetween>
+          <RowBetween>
+            <RowFixed>
+              <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+                Gelato Fee
+              </TYPE.black>
+            </RowFixed>
+            <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+              {gelatoFeePercentage ? `${gelatoFeePercentage}` : "-"}%
+            </TYPE.black>
+          </RowBetween>
+
+          <RowBetween>
+            <RowFixed>
+              <TYPE.black fontSize={12} fontWeight={400} color={theme.text2}>
+                Slippage
+              </TYPE.black>
+            </RowFixed>
+            <TYPE.black textAlign="right" fontSize={12} color={theme.text1}>
+              {slippagePercentage ? `${slippagePercentage}` : "-"}%
+            </TYPE.black>
+          </RowBetween>
         </>
       )}
-
       <RowBetween>
         <RowFixed>
           <MouseoverTooltip

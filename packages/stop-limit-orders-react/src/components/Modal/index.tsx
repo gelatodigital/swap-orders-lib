@@ -31,7 +31,7 @@ const StyledDialogContent = styled(({ ...rest }) => (
 )).attrs({
   "aria-label": "dialog",
 })`
-  overflow-y: ${({ mobile }) => (mobile ? "scroll" : "hidden")};
+  overflow-y: ${({ mobile }) => (mobile ? "scroll" : "scroll")};
 
   &[data-reach-dialog-content] {
     margin: 0 0 2rem 0;
@@ -41,7 +41,7 @@ const StyledDialogContent = styled(({ ...rest }) => (
       ${({ theme }) => transparentize(0.95, theme.shadow1)};
     padding: 0px;
     width: 50vw;
-    overflow-y: ${({ mobile }) => (mobile ? "scroll" : "hidden")};
+    overflow-y: ${({ mobile }) => (mobile ? "scroll" : "scroll")};
     overflow-x: hidden;
 
     align-self: ${({ mobile }) => (mobile ? "flex-end" : "center")};

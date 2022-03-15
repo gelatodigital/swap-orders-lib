@@ -4,7 +4,7 @@ import JSBI from "jsbi";
 
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-export const GENERIC_GAS_LIMIT_ORDER_EXECUTION = BigNumber.from(400000);
+export const GENERIC_GAS_LIMIT_ORDER_EXECUTION = BigNumber.from(500000);
 
 export const NetworkContextName = "NETWORK";
 

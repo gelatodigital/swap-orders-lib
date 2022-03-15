@@ -25,11 +25,12 @@ import { formatTokenAmount } from "../../utils/formatTokenAmount";
 import { MouseoverTooltip } from "../Tooltip";
 import HoverInlineText from "../HoverInlineText";
 import DropDown from "../../assets/images/dropdown.svg";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib";
+import { isTransactionCostDependentChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { Pair } from "../../entities/pair";
 import TradePrice from "../order/TradePrice";
 import { RatePercentage } from "./RatePercentage";
 import { Rate } from "../../state/gstoplimit/actions";
+import Loader from "../Loader";
 
 const InputPanel = styled.div<{ hideInput?: boolean }>`
   ${({ theme }) => theme.flexColumnNoWrap}
@@ -131,7 +132,6 @@ const Aligner = styled.span`
 const StyledDropDown = styled(DropDown)<{ selected: boolean }>`
   margin: 0 0.25rem 0 0.35rem;
   height: 35%;
-
   path {
     stroke: ${({ selected, theme }) => (selected ? theme.text1 : theme.white)};
     stroke-width: 1.5px;
@@ -158,11 +158,9 @@ const StyledBalanceMax = styled.button<{ disabled?: boolean }>`
   opacity: ${({ disabled }) => (!disabled ? 1 : 0.4)};
   pointer-events: ${({ disabled }) => (!disabled ? "initial" : "none")};
   margin-left: 0.25rem;
-
   :focus {
     outline: none;
   }
-
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     margin-right: 0.5rem;
   `};
@@ -234,7 +232,8 @@ export default function CurrencyInputPanel({
     setModalOpen(false);
   }, [setModalOpen]);
 
-  const isEthereum = chainId && isEthereumChain(chainId);
+  const isTransactionCostDependentChainBool =
+    chainId && isTransactionCostDependentChain(chainId);
 
   const rate = useMemo(
     () =>
@@ -340,8 +339,8 @@ export default function CurrencyInputPanel({
             <RowFixed style={{ height: "17px" }}>
               <MouseoverTooltip
                 text={`The virtual price that will determine your output amount. ${
-                  chainId && isEthereumChain(chainId)
-                    ? "It does not account execution gas costs. For that check the actual execution rate below."
+                  isTransactionCostDependentChainBool
+                    ? "It does not account execution gas costs. For that check the real execution rate below."
                     : ""
                 } ${rate ? rate + "." : ""}`}
               >
@@ -400,60 +399,62 @@ export default function CurrencyInputPanel({
           </FiatRow>
         )}
 
-        {showRate && value && currency && otherCurrency && isEthereum && (
-          <Fragment>
-            <FiatRow>
-              <RowBetween>
-                {currency && otherCurrency ? (
-                  <MouseoverTooltip
-                    text={`The actual execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
-                      rate
-                        ? `Assuming current gas price it should execute when ` +
-                          realExecutionRateExplainer +
-                          "."
-                        : ""
-                    }`}
-                  >
-                    <TYPE.body
-                      onClick={onMax}
-                      color={theme.text2}
-                      fontWeight={400}
-                      fontSize={14}
-                      style={{ display: "inline", cursor: "pointer" }}
+        {showRate &&
+          value &&
+          currency &&
+          otherCurrency &&
+          isTransactionCostDependentChainBool && (
+            <Fragment>
+              <FiatRow>
+                <RowBetween>
+                  {currency && otherCurrency ? (
+                    <MouseoverTooltip
+                      text={`The real execution price. Takes into account the gas necessary to execute your order and guarantees that your desired rate is fulfilled. It fluctuates according to gas prices. ${
+                        rate
+                          ? `Assuming current gas price it should execute when ` +
+                            realExecutionRateExplainer +
+                            "."
+                          : ""
+                      }`}
                     >
-                      Real execution price (?)
-                    </TYPE.body>
-                  </MouseoverTooltip>
-                ) : (
-                  "-"
-                )}
-                {realExecutionPrice ? (
-                  <TradePrice
-                    price={realExecutionPrice}
-                    showInverted={showInverted}
-                    setShowInverted={setShowInverted}
-                  />
-                ) : (
-                  <TYPE.body
-                    fontSize={14}
-                    color={
-                      realExecutionRateExplainer ? theme.text2 : theme.text4
-                    }
-                  >
-                    {/* {realExecutionRateExplainer ? "~" : ""} */}
-                    <HoverInlineText
-                      text={
-                        realExecutionRateExplainer
-                          ? realExecutionRateExplainer
-                          : "-"
-                      }
+                      <TYPE.body
+                        onClick={onMax}
+                        color={theme.text2}
+                        fontWeight={400}
+                        fontSize={14}
+                        style={{ display: "inline", cursor: "pointer" }}
+                      >
+                        Real execution price (?)
+                      </TYPE.body>
+                    </MouseoverTooltip>
+                  ) : (
+                    "-"
+                  )}
+                  {realExecutionPrice ? (
+                    <TradePrice
+                      price={realExecutionPrice}
+                      showInverted={showInverted}
+                      setShowInverted={setShowInverted}
                     />
-                  </TYPE.body>
-                )}
-              </RowBetween>
-            </FiatRow>
-          </Fragment>
-        )}
+                  ) : (
+                    <TYPE.body
+                      fontSize={14}
+                      color={
+                        realExecutionRateExplainer ? theme.text2 : theme.text4
+                      }
+                    >
+                      {/* {realExecutionRateExplainer ? "~" : ""} */}
+                      {realExecutionRateExplainer ? (
+                        <HoverInlineText text={realExecutionRateExplainer} />
+                      ) : (
+                        <Loader />
+                      )}
+                    </TYPE.body>
+                  )}
+                </RowBetween>
+              </FiatRow>
+            </Fragment>
+          )}
       </Container>
       {onCurrencySelect && (
         <CurrencySearchModal

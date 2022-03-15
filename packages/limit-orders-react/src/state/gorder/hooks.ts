@@ -45,24 +45,24 @@ export function applyExchangeRateTo(
   if (isInverted) {
     return parsedExchangeRate && parsedInputAmount
       ? parsedInputAmount
-        ?.multiply(
-          JSBI.exponentiate(
-            JSBI.BigInt(10),
-            JSBI.BigInt(inputCurrency.decimals)
+          ?.multiply(
+            JSBI.exponentiate(
+              JSBI.BigInt(10),
+              JSBI.BigInt(inputCurrency.decimals)
+            )
           )
-        )
-        ?.divide(parsedExchangeRate.asFraction)
+          ?.divide(parsedExchangeRate.asFraction)
       : undefined;
   } else {
     return parsedExchangeRate && parsedInputAmount
       ? parsedInputAmount
-        ?.multiply(parsedExchangeRate.asFraction)
-        .divide(
-          JSBI.exponentiate(
-            JSBI.BigInt(10),
-            JSBI.BigInt(outputCurrency.decimals)
+          ?.multiply(parsedExchangeRate.asFraction)
+          .divide(
+            JSBI.exponentiate(
+              JSBI.BigInt(10),
+              JSBI.BigInt(outputCurrency.decimals)
+            )
           )
-        )
       : undefined;
   }
 }
@@ -87,8 +87,8 @@ export function useOrderActionHandlers(): {
           currencyId: currency.isToken
             ? currency.address
             : currency.isNative
-              ? "ETH"
-              : "",
+            ? "ETH"
+            : "",
         })
       );
     },
@@ -204,20 +204,20 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   const desiredRateAppliedAsCurrencyAmount =
     isDesiredRateUpdate && inputValue && inputCurrency && outputCurrency
       ? applyExchangeRateTo(
-        inputValue,
-        typedValue,
-        inputCurrency,
-        outputCurrency,
-        rateType === Rate.MUL ? false : true
-      )
+          inputValue,
+          typedValue,
+          inputCurrency,
+          outputCurrency,
+          rateType === Rate.MUL ? false : true
+        )
       : undefined;
 
   const desiredRateApplied =
     isDesiredRateUpdate &&
-      inputValue &&
-      inputCurrency &&
-      outputCurrency &&
-      desiredRateAppliedAsCurrencyAmount
+    inputValue &&
+    inputCurrency &&
+    outputCurrency &&
+    desiredRateAppliedAsCurrencyAmount
       ? desiredRateAppliedAsCurrencyAmount?.toSignificant(6)
       : typedValue;
 
@@ -228,13 +228,13 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
 
   const parsedAmountToUse = isDesiredRateUpdate
     ? tryParseAmount(
-      desiredRateApplied,
-      (isExactIn ? inputCurrency : outputCurrency) ?? undefined
-    )
+        desiredRateApplied,
+        (isExactIn ? inputCurrency : outputCurrency) ?? undefined
+      )
     : tryParseAmount(
-      typedValue,
-      (isExactIn ? inputCurrency : outputCurrency) ?? undefined
-    );
+        typedValue,
+        (isExactIn ? inputCurrency : outputCurrency) ?? undefined
+      );
 
   const bestTradeExactIn = useTradeExactIn(
     isExactIn ? parsedAmountToUse : undefined,
@@ -363,32 +363,32 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       independentField === Field.PRICE
         ? typedValue
         : rateType === Rate.MUL
-          ? price?.toSignificant(6) ?? ""
-          : price?.invert().toSignificant(6) ?? "",
+        ? price?.toSignificant(6) ?? ""
+        : price?.invert().toSignificant(6) ?? "",
   };
 
   const rawAmounts = useMemo(
     () => ({
       input: inputCurrency
         ? parsedAmounts.input
-          ?.multiply(
-            JSBI.exponentiate(
-              JSBI.BigInt(10),
-              JSBI.BigInt(inputCurrency.decimals)
+            ?.multiply(
+              JSBI.exponentiate(
+                JSBI.BigInt(10),
+                JSBI.BigInt(inputCurrency.decimals)
+              )
             )
-          )
-          .toFixed(0)
+            .toFixed(0)
         : undefined,
 
       output: outputCurrency
         ? parsedAmounts.output
-          ?.multiply(
-            JSBI.exponentiate(
-              JSBI.BigInt(10),
-              JSBI.BigInt(outputCurrency.decimals)
+            ?.multiply(
+              JSBI.exponentiate(
+                JSBI.BigInt(10),
+                JSBI.BigInt(outputCurrency.decimals)
+              )
             )
-          )
-          .toFixed(0)
+            .toFixed(0)
         : undefined,
     }),
     [inputCurrency, outputCurrency, parsedAmounts]
