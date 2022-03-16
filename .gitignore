@@ -8,4 +8,8 @@ stats.html
 
 .eslintcache
 
+<<<<<<< HEAD
 lerna-debug.log
+=======
+packages/range-orders-react/src/types/v3
+>>>>>>> e894570 (Use v3 USDC price)

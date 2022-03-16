@@ -1,4 +1,5 @@
 import { Web3Provider } from '@ethersproject/providers';
+import { SafeAppConnector } from '@gnosis.pm/safe-apps-web3-react'
 import { InjectedConnector } from '@web3-react/injected-connector';
 import getLibrary from '../utils/getLibrary';
 import { NetworkConnector } from './NetworkConnector';
@@ -31,7 +32,9 @@ export const network = new NetworkConnector({
   pollingInterval: 5000
 })
 
+
 let networkLibrary: Web3Provider | undefined
+
 export function getNetworkLibrary(): Web3Provider {
   return (networkLibrary = networkLibrary ?? getLibrary(network.provider))
 }
@@ -39,3 +42,5 @@ export function getNetworkLibrary(): Web3Provider {
 export const injected = new InjectedConnector({
   supportedChainIds: SUPPORTED_CHAIN_IDS
 })
+
+export const gnosisSafe = new SafeAppConnector()

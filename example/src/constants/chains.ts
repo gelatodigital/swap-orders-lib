@@ -11,7 +11,7 @@ export enum SupportedChainId {
   ARBITRUM_RINKEBY = 421611,
   OPTIMISM = 10,
   OPTIMISTIC_KOVAN = 69,
-  USDC_MATIC = 137,
+  POLYGON = 137,
 }
 
 export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = [
@@ -27,6 +27,7 @@ export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.ARBITRUM_RINKEBY,
   SupportedChainId.OPTIMISM,
   SupportedChainId.OPTIMISTIC_KOVAN,
+  SupportedChainId.POLYGON,
 ]
 
 export const L1_CHAIN_IDS = [
@@ -102,5 +103,11 @@ export const CHAIN_INFO: ChainInfo = {
     explorer: 'https://snowtrace.io/',
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Görli',
+  },
+  [SupportedChainId.OPTIMISM]: {
+    docs: 'https://community.optimism.io/',
+    explorer: 'https://optimistic.etherscan.io/',
+    infoLink: 'https://www.optimism.io/',
+    label: 'Optimism',
   }
 }

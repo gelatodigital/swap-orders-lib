@@ -1,0 +1,743 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "contract INonfungiblePositionManager",
+        "name": "nftPositions_",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IPokeMe",
+        "name": "pokeMe_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "factory_",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "gelato_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "LogCancelEject",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount0Out",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount1Out",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "feeAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      }
+    ],
+    "name": "LogEject",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "int24",
+            "name": "tickThreshold",
+            "type": "int24"
+          },
+          {
+            "internalType": "bool",
+            "name": "ejectAbove",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "resolver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxFeeAmount",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct OrderParams",
+        "name": "orderParams",
+        "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "startTime",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "LogSetEject",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount0Out",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount1Out",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "feeAmount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      }
+    ],
+    "name": "LogSettle",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Paused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "Unpaused",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId_",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "int24",
+            "name": "tickThreshold",
+            "type": "int24"
+          },
+          {
+            "internalType": "bool",
+            "name": "ejectAbove",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxFeeAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Order",
+        "name": "order_",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "feeToken_",
+        "type": "address"
+      }
+    ],
+    "name": "canEject",
+    "outputs": [
+      {
+        "internalType": "uint128",
+        "name": "",
+        "type": "uint128"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId_",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "int24",
+            "name": "tickThreshold",
+            "type": "int24"
+          },
+          {
+            "internalType": "bool",
+            "name": "ejectAbove",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxFeeAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Order",
+        "name": "order_",
+        "type": "tuple"
+      }
+    ],
+    "name": "cancel",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "duration",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId_",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "int24",
+            "name": "tickThreshold",
+            "type": "int24"
+          },
+          {
+            "internalType": "bool",
+            "name": "ejectAbove",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxFeeAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Order",
+        "name": "order_",
+        "type": "tuple"
+      },
+      {
+        "internalType": "bool",
+        "name": "isEjection_",
+        "type": "bool"
+      }
+    ],
+    "name": "ejectOrSettle",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "factory",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "hashById",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId_",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "int24",
+            "name": "tickThreshold",
+            "type": "int24"
+          },
+          {
+            "internalType": "bool",
+            "name": "ejectAbove",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxFeeAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Order",
+        "name": "order_",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "feeToken_",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IUniswapV3Pool",
+        "name": "pool_",
+        "type": "address"
+      }
+    ],
+    "name": "isEjectable",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId_",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "int24",
+            "name": "tickThreshold",
+            "type": "int24"
+          },
+          {
+            "internalType": "bool",
+            "name": "ejectAbove",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxFeeAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Order",
+        "name": "order_",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "feeToken_",
+        "type": "address"
+      }
+    ],
+    "name": "isExpired",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      },
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minimumFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "tokens_",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient_",
+        "type": "address"
+      }
+    ],
+    "name": "mulipleRetrieveDust",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "nftPositions",
+    "outputs": [
+      {
+        "internalType": "contract INonfungiblePositionManager",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pokeMe",
+    "outputs": [
+      {
+        "internalType": "contract IPokeMe",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tokenId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "int24",
+            "name": "tickThreshold",
+            "type": "int24"
+          },
+          {
+            "internalType": "bool",
+            "name": "ejectAbove",
+            "type": "bool"
+          },
+          {
+            "internalType": "address",
+            "name": "receiver",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "feeToken",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "resolver",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "maxFeeAmount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct OrderParams",
+        "name": "orderParams_",
+        "type": "tuple"
+      }
+    ],
+    "name": "schedule",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "duration_",
+        "type": "uint256"
+      }
+    ],
+    "name": "setDuration",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "minimumFee_",
+        "type": "uint256"
+      }
+    ],
+    "name": "setMinimumFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "taskById",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
