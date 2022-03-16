@@ -22,7 +22,8 @@ export type Handler =
   | "traderjoe_stoplimit"
   | "defyswap"
   | "pangolin"
-  | "pangolin_stoplimit";
+  | "pangolin_stoplimit"
+  | "tombswap";
 
 export interface TransactionData {
   to: string;

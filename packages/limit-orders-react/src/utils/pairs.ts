@@ -46,6 +46,10 @@ const PANGOLIN_FACTORY_ADDRESS = "0xefa94DE7a4656D787667C749f7E1223D71E9FD88";
 const PANGOLIN_INIT_CODE_HASH =
   "0x40231f6b438bce0797c9ada29b718a87ea0a5cea3fe9a771abdd76bd41a3e545";
 
+const TOMB_FACTORY_ADDRESS = "0xe236f6890f1824fa0a7ffc39b1597a5a6077cfe9";
+const TOMB_INIT_CODE_HASH =
+  "0x2dfbcf1b907f911bc66d083d103a1d7de0b8b21a6cb2a66a78d1f1559018fba4";
+
 const getSpiritSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
     ? [tokenA, tokenB]
@@ -196,6 +200,21 @@ const getPangolinPairAddress = (tokenA: Token, tokenB: Token): string => {
   );
 };
 
+const getTombSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
+  const tokens = tokenA.sortsBefore(tokenB)
+    ? [tokenA, tokenB]
+    : [tokenB, tokenA]; // does safety checks
+
+  return getCreate2Address(
+    TOMB_FACTORY_ADDRESS,
+    keccak256(
+      ["bytes"],
+      [pack(["address", "address"], [tokens[0].address, tokens[1].address])]
+    ),
+    TOMB_INIT_CODE_HASH
+  );
+};
+
 export const calculatePairAddressByHandler = (
   tokenA: Token,
   tokenB: Token,
@@ -220,6 +239,8 @@ export const calculatePairAddressByHandler = (
         return getSpookySwapPairAddress(tokenA, tokenB);
       case "defyswap":
         return getDefySwapPairAddress(tokenA, tokenB);
+      case "tombswap":
+        return getTombSwapPairAddress(tokenA, tokenB);
       default:
         return getSpookySwapPairAddress(tokenA, tokenB);
     }
