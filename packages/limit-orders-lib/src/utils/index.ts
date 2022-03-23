@@ -18,6 +18,8 @@ export const isTransactionCostDependentChain = (chainId: number): boolean => {
       return true;
     case 5:
       return true;
+    case 25:
+      return true;
     case 56:
       return true;
     case 250:

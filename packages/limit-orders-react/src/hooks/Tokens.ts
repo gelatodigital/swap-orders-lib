@@ -25,6 +25,7 @@ import { WFTM_FANTOM } from "../constants/tokens.fantom";
 import { WMATIC_MATIC } from "../constants/tokens.matic";
 import { WBNB_BSC } from "../constants/tokens.bsc";
 import { WAVAX_AVAX } from "../constants/tokens.avax";
+import { WCRO_CRONOS } from "../constants/tokens.cronos";
 
 export const WETH9: { [chainId: number]: Token } = {
   [1]: new Token(
@@ -76,7 +77,9 @@ export class NativeToken extends NativeCurrency {
 
   public get wrapped(): Token {
     const weth9 =
-      this.chainId === 56
+          this.chainId === 25 
+        ? WCRO_CRONOS
+        : this.chainId === 56
         ? WBNB_BSC
         : this.chainId === 137
         ? WMATIC_MATIC
@@ -362,14 +365,17 @@ export function useCurrency(
   const isFTM = currencyId?.toUpperCase() === "FTM";
   const isBNB = currencyId?.toUpperCase() === "BNB";
   const isAVAX = currencyId?.toUpperCase() === "AVAX";
+  const isCRO = currencyId?.toUpperCase() === "CRO";
   const isNative =
     currencyId?.toUpperCase() === "NATIVE" ||
     currencyId?.toLowerCase() === NATIVE.toLowerCase();
   const isNativeCurrency =
-    isETH || isMATIC || isFTM || isBNB || isAVAX || isNative;
+    isETH || isMATIC || isFTM || isBNB || isAVAX || isCRO || isNative;
   const token = useToken(isNativeCurrency ? undefined : currencyId);
   if (isNativeCurrency && chainId)
-    return chainId === 56
+    return chainId === 25
+      ? new NativeToken(chainId, 18, "CRO", "Cronos")
+      : chainId === 56
       ? new NativeToken(chainId, 18, "BNB", "Binance Coin")
       : chainId === 137
       ? new NativeToken(chainId, 18, "MATIC", "Matic")

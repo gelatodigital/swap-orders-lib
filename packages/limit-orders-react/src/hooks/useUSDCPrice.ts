@@ -7,6 +7,7 @@ import { useWeb3 } from "../web3";
 import { useTradeExactOut } from "./useTrade";
 import { USDC_BSC } from "../constants/tokens.bsc";
 import { USDC_AVAX } from "../constants/tokens.avax";
+import { USDC_CRONOS } from "../constants/tokens.cronos";
 
 // USDC amount used when calculating spot price for a given currency.
 // The amount is large enough to filter low liquidity pairs.
@@ -23,6 +24,12 @@ const usdcCurrencyAmountBSC = CurrencyAmount.fromRawAmount(
   USDC_BSC,
   100_000e18
 );
+
+const usdcCurrencyAmountCRO = CurrencyAmount.fromRawAmount(
+  USDC_CRONOS,
+  100_000e6
+);
+
 const usdcCurrencyAmountAVAX = CurrencyAmount.fromRawAmount(
   USDC_AVAX,
   100_000e6
@@ -38,7 +45,9 @@ export default function useUSDCPrice(
   const { chainId, handler } = useWeb3();
   const v2USDCTrade = useTradeExactOut(
     currency,
-    chainId === 56
+    chainId === 25
+    ? usdcCurrencyAmountCRO
+    : chainId === 56
       ? usdcCurrencyAmountBSC
       : chainId === 137
       ? usdcCurrencyAmountMATIC
@@ -63,6 +72,7 @@ export default function useUSDCPrice(
     // return some fake price data for non-mainnet
     if (
       chainId !== 1 &&
+      chainId !== 25 &&
       chainId !== 56 &&
       chainId !== 137 &&
       chainId !== 250 &&
@@ -90,6 +100,8 @@ export default function useUSDCPrice(
         currency,
         chainId === 1
           ? USDC
+          : chainId === 25
+          ? USDC_CRONOS
           : chainId === 56
           ? USDC_BSC
           : chainId === 137
