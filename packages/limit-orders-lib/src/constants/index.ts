@@ -8,6 +8,7 @@ export const CHAIN_ID = {
   MAINNET: 1,
   ROPSTEN: 3,
   GOERLI: 5,
+  CRONOS: 25,
   BSC: 56,
   MATIC: 137,
   FANTOM: 250,
@@ -20,6 +21,7 @@ export const BPS_GELATO_FEE = {
   [CHAIN_ID.FANTOM]: 10,
   [CHAIN_ID.BSC]: 10,
   [CHAIN_ID.AVAX]: 10,
+  [CHAIN_ID.CRONOS]: 10,
 };
 
 export const STOP_LIMIT_SLIPPAGE_BPS = {
@@ -29,6 +31,7 @@ export const STOP_LIMIT_SLIPPAGE_BPS = {
   [CHAIN_ID.FANTOM]: 500,
   [CHAIN_ID.BSC]: 500,
   [CHAIN_ID.AVAX]: 500,
+  [CHAIN_ID.CRONOS]: 500,
 };
 
 export const LIMIT_ORDER_SLIPPAGE = {
@@ -38,6 +41,7 @@ export const LIMIT_ORDER_SLIPPAGE = {
   [CHAIN_ID.FANTOM]: 40,
   [CHAIN_ID.BSC]: 40,
   [CHAIN_ID.AVAX]: 40,
+  [CHAIN_ID.CRONOS]: 40,
 };
 
 export const HANDLERS_ADDRESSES = {
@@ -80,6 +84,9 @@ export const HANDLERS_ADDRESSES = {
     ["pangolin_stoplimit"]: "0xb4c53e2e32caf977d61a8a776bdc44837a5d0d91",
     ["traderjoe_stoplimit"]: "0xcf497830e43836738bdd0c3d7e09b599ddf081b2",
   },
+  [CHAIN_ID.CRONOS]: {
+    ["vvsfinance"]: "0x6B9da2978EbE1c60d2cDAF52ee6C498cD8Bb3F16"
+  },
 };
 
 export const NETWORK_NAME = {
@@ -90,6 +97,7 @@ export const NETWORK_NAME = {
   [CHAIN_ID.FANTOM]: "FANTOM",
   [CHAIN_ID.BSC]: "BSC",
   [CHAIN_ID.AVAX]: "AVAX",
+  [CHAIN_ID.CRONOS]: "Cronos"
 };
 
 export const NETWORK_HANDLERS = {
@@ -112,6 +120,7 @@ export const NETWORK_HANDLERS = {
     "pangolin_stoplimit",
     "traderjoe_stoplimit",
   ],
+  [CHAIN_ID.CRONOS]: ["vvsfinance"]
 };
 
 export const NETWORK_STOP_LIMIT_HANDLERS = {
@@ -145,6 +154,7 @@ export const SUBGRAPH_URL = {
     "https://api.thegraph.com/subgraphs/name/gelatodigital/limit-orders-bsc",
   [CHAIN_ID.AVAX]:
     "https://api.thegraph.com/subgraphs/name/gelatodigital/limit-orders-avax",
+  [CHAIN_ID.CRONOS]: ""
 };
 
 export const GELATO_LIMIT_ORDERS_ADDRESS = {
@@ -155,6 +165,7 @@ export const GELATO_LIMIT_ORDERS_ADDRESS = {
   [CHAIN_ID.FANTOM]: "0x05Ad1094Eb6Cde564d732196F6754Ee464896031",
   [CHAIN_ID.BSC]: "0x0c30D3d66bc7C73A83fdA929888c34dcb24FD599",
   [CHAIN_ID.AVAX]: "0x0c30D3d66bc7C73A83fdA929888c34dcb24FD599",
+  [CHAIN_ID.CRONOS]: "0x5D41545c190637b9337Ec5FfA89bAC5ee0CB3a4C"
 };
 
 export const GELATO_LIMIT_ORDERS_MODULE_ADDRESS = {
@@ -165,6 +176,7 @@ export const GELATO_LIMIT_ORDERS_MODULE_ADDRESS = {
   [CHAIN_ID.FANTOM]: "0xf2253BF9a0BD002300cFe6f4E630d755669f6DCa",
   [CHAIN_ID.BSC]: "0xb7499a92fc36e9053a4324aFfae59d333635D9c3",
   [CHAIN_ID.AVAX]: "0xb7499a92fc36e9053a4324aFfae59d333635D9c3",
+  [CHAIN_ID.CRONOS]: "0xf437a1a98566872f734BD18aDdF4BB610D1F887b"
 };
 
 export const GELATO_LIMIT_ORDERS_MODULE_FLASHBOTS_ADDRESS = {
@@ -180,6 +192,7 @@ export const GELATO_LIMIT_ORDERS_ERC20_ORDER_ROUTER = {
   [CHAIN_ID.FANTOM]: "0x59e61b95f20e940ac777e88fa2dfa0a6a4c40fa0",
   [CHAIN_ID.BSC]: "0x64c7f3c2C19B41a6aD67bb5f4edc8EdbB3284F34",
   [CHAIN_ID.AVAX]: "0x64c7f3c2C19B41a6aD67bb5f4edc8EdbB3284F34",
+  [CHAIN_ID.CRONOS]: "0x260aB0aCb931D7Da784fC35c7E96c3B13213Abf1"
 };
 
 export const NATIVE_TOKEN_TICKER = {
@@ -190,6 +203,7 @@ export const NATIVE_TOKEN_TICKER = {
   [CHAIN_ID.FANTOM]: "FTM",
   [CHAIN_ID.BSC]: "BNB",
   [CHAIN_ID.AVAX]: "AVAX",
+  [CHAIN_ID.CRONOS]: "CRO"
 };
 
 export const NATIVE_WRAPPED_TOKEN_TICKER = {
@@ -200,6 +214,7 @@ export const NATIVE_WRAPPED_TOKEN_TICKER = {
   [CHAIN_ID.FANTOM]: "WFTM",
   [CHAIN_ID.BSC]: "WBNB",
   [CHAIN_ID.AVAX]: "WAVAX",
+  [CHAIN_ID.CRONOS]: "WCRO"
 };
 
 export const NATIVE_TOKEN_NAME = {
@@ -210,6 +225,7 @@ export const NATIVE_TOKEN_NAME = {
   [CHAIN_ID.FANTOM]: "Fantom",
   [CHAIN_ID.BSC]: "Bnb",
   [CHAIN_ID.AVAX]: "Avax",
+  [CHAIN_ID.CRONOS]: "Cronos"
 };
 
 export const NATIVE_WRAPPED_TOKEN_ADDRESS = {
@@ -220,6 +236,7 @@ export const NATIVE_WRAPPED_TOKEN_ADDRESS = {
   [CHAIN_ID.FANTOM]: "0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83",
   [CHAIN_ID.BSC]: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
   [CHAIN_ID.AVAX]: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+  [CHAIN_ID.CRONOS]: "0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23"
 };
 
 export const GENERIC_GAS_LIMIT_ORDER_EXECUTION = "400000";
