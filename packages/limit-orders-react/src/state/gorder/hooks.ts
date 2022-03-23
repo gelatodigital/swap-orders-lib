@@ -332,23 +332,23 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
       inputError ?? "Insufficient " + amountIn.currency.symbol + " balance";
   }
 
-  // if (price && trade) {
-  //   if (
-  //     rateType === Rate.MUL &&
-  //     (price.lessThan(trade.executionPrice.asFraction) ||
-  //       price.equalTo(trade.executionPrice.asFraction))
-  //   )
-  //     inputError =
-  //       inputError ?? "Only possible to place sell orders above market rate";
+  if (price && trade) {
+    if (
+      rateType === Rate.MUL &&
+      (price.lessThan(trade.executionPrice.asFraction) ||
+        price.equalTo(trade.executionPrice.asFraction))
+    )
+      inputError =
+        inputError ?? "Only possible to place sell orders above market rate";
 
-  //   if (
-  //     rateType === Rate.DIV &&
-  //     (price.invert().greaterThan(trade.executionPrice.invert().asFraction) ||
-  //       price.invert().equalTo(trade.executionPrice.invert().asFraction))
-  //   )
-  //     inputError =
-  //       inputError ?? "Only possible to place buy orders below market rate";
-  // }
+    if (
+      rateType === Rate.DIV &&
+      (price.invert().greaterThan(trade.executionPrice.invert().asFraction) ||
+        price.invert().equalTo(trade.executionPrice.invert().asFraction))
+    )
+      inputError =
+        inputError ?? "Only possible to place buy orders below market rate";
+  }
 
   const formattedAmounts = {
     input:
