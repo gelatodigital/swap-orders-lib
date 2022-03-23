@@ -51,7 +51,8 @@ const TOMB_INIT_CODE_HASH =
   "0x2dfbcf1b907f911bc66d083d103a1d7de0b8b21a6cb2a66a78d1f1559018fba4";
 
 const VVS_FACTORY_ADDRESS = "0x3b44b2a187a7b3824131f8db5a74194d0a42fc15";
-const VVS_INIT_CODE_HASH =  "0xa77ee1cc0f39570ddde947459e293d7ebc2c30ff4e8fc45860afdcb2c2d3dc17";
+const VVS_INIT_CODE_HASH =
+  "0xa77ee1cc0f39570ddde947459e293d7ebc2c30ff4e8fc45860afdcb2c2d3dc17";
 
 const getSpiritSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
@@ -269,8 +270,7 @@ export const calculatePairAddressByHandler = (
       default:
         return getPancakeSwapPairAddress(tokenA, tokenB);
     }
-  } 
-  else if (tokenA.chainId === 25 && tokenB.chainId === 25) {
+  } else if (tokenA.chainId === 25 && tokenB.chainId === 25) {
     switch (handler) {
       case "vvsfinance":
         return getVVSPairAddress(tokenA, tokenB);

@@ -46,8 +46,8 @@ export default function useUSDCPrice(
   const v2USDCTrade = useTradeExactOut(
     currency,
     chainId === 25
-    ? usdcCurrencyAmountCRO
-    : chainId === 56
+      ? usdcCurrencyAmountCRO
+      : chainId === 56
       ? usdcCurrencyAmountBSC
       : chainId === 137
       ? usdcCurrencyAmountMATIC
