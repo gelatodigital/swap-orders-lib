@@ -27,8 +27,7 @@ const PANCAKESWAP_LIST =
 const TRADERJOE_LIST =
   "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/joe.tokenlist.json";
 
-  const VVS_LIST =
-  "";
+const VVS_LIST = "";
 
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST];
 
@@ -51,7 +50,7 @@ export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
   QUICKSWAP_LIST,
   PANCAKESWAP_LIST,
   TRADERJOE_LIST,
-  VVS_LIST
+  VVS_LIST,
 ];
 
 export const DEFAULT_ACTIVE_LIST_URLS_BY_CHAIN_ID: {

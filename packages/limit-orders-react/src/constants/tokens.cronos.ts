@@ -40,9 +40,10 @@ export const USDT_CRONOS = new Token(
   "Tether USD"
 );
 
-
-export const CRONOS_BASES = [WCRO_CRONOS,
+export const CRONOS_BASES = [
+  WCRO_CRONOS,
   USDC_CRONOS,
   WETH_CRONOS,
   VVS_CRONOS,
-  USDT_CRONOS ];
+  USDT_CRONOS,
+];

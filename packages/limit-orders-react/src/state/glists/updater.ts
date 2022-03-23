@@ -9,7 +9,7 @@ import {
   DEFAULT_LIST_OF_LISTS_MAINNET,
   DEFAULT_LIST_OF_LISTS_MATIC,
   DEFAULT_LIST_OF_LISTS_AVALANCHE,
-  DEFAULT_LIST_OF_LISTS_CRO
+  DEFAULT_LIST_OF_LISTS_CRO,
 } from "../../constants/lists";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "..";
@@ -56,7 +56,7 @@ export default function Updater(): null {
     if (!chainId || !library || Object.keys(lists).length) return;
 
     const urlList =
-        chainId === 25
+      chainId === 25
         ? DEFAULT_LIST_OF_LISTS_CRO
         : chainId === 56
         ? DEFAULT_LIST_OF_LISTS_BSC
@@ -96,8 +96,7 @@ export default function Updater(): null {
               dispatch(removeList(listURL));
             });
         });
-      }
-     else if (
+      } else if (
         chainId === 56 &&
         !Object.keys(lists).includes(
           DEFAULT_LIST_OF_LISTS_BSC[DEFAULT_LIST_OF_LISTS_BSC.length - 1]

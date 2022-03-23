@@ -77,7 +77,7 @@ export class NativeToken extends NativeCurrency {
 
   public get wrapped(): Token {
     const weth9 =
-          this.chainId === 25 
+      this.chainId === 25
         ? WCRO_CRONOS
         : this.chainId === 56
         ? WBNB_BSC
