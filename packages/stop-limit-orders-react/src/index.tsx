@@ -22,6 +22,7 @@ import GelatoStopLimitOrderPanel from "./components/GelatoStopLimitOrder";
 import GelatoStopLimitOrdersHistoryPanel from "./components/StopLimitOrdersHistory";
 import { Web3Provider } from "./web3";
 import useGasPrice from "./hooks/useGasPrice";
+import useGasOverhead from "./hooks/useGasOverhead";
 import { useUSDCValue } from "./hooks/useUSDCPrice";
 import { useCurrency } from "./hooks/Tokens";
 import { useCurrencyBalances } from "./hooks/Balances";
@@ -33,6 +34,8 @@ import {
 } from "./hooks/useApproveCallback";
 import { useTransactionAdder } from "./state/gstoplimittransactions/hooks";
 import { clearOrdersLocalStorage } from "./utils/localStorageStopOrders";
+import { CurrencyAmount } from "@uniswap/sdk-core";
+import TradePrice from "./components/order/TradePrice";
 
 export function GelatoProvider({
   chainId,
@@ -95,6 +98,9 @@ export {
   GelatoStopLimitOrderPanel,
   GelatoStopLimitOrdersHistoryPanel,
   useGasPrice,
+  useGasOverhead,
+  CurrencyAmount,
+  TradePrice,
   gelatoStopLimitReducers,
   GELATO_STOPLIMIT_PERSISTED_KEYS,
   clearAllTransactions,
