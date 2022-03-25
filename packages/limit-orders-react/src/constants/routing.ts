@@ -22,6 +22,7 @@ import { BSC_BASES, WBNB_BSC } from "./tokens.bsc";
 import { AVAX_BASES, WAVAX_AVAX } from "./tokens.avax";
 import { WETH_FANTOM } from "./tokens.fantom";
 import { WETH_MATIC } from "./tokens.matic";
+import { CRONOS_BASES, WETH_CRONOS } from "./tokens.cronos";
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[];
@@ -56,6 +57,7 @@ const WETH_ONLY: ChainTokenList = {
   [3]: [WETH9[3]],
   [4]: [WETH9[4]],
   [5]: [WETH9[5]],
+  [25]: [WETH_CRONOS],
   [42]: [WETH9[42]],
   [56]: [WBNB_BSC],
   [250]: [WETH_FANTOM],
@@ -66,6 +68,7 @@ const WETH_ONLY: ChainTokenList = {
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ...WETH_ONLY,
   [1]: [...WETH_ONLY[1], DAI, USDC, USDT, WBTC],
+  [25]: CRONOS_BASES,
   [56]: BSC_BASES,
   [137]: MATIC_BASES,
   [250]: FANTOM_BASES,
@@ -101,6 +104,7 @@ export const CUSTOM_BASES: {
 // used for display in the default list when adding liquidity
 export const SUGGESTED_BASES: ChainCurrencyList = {
   [1]: [Ether.onChain(1), DAI, USDC, USDT, WBTC],
+  [25]: CRONOS_BASES,
   [56]: BSC_BASES,
   [137]: MATIC_BASES,
   [250]: FANTOM_BASES,
