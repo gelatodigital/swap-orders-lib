@@ -144,9 +144,9 @@ export const getBaseTokenLogoURLByTokenSymbol = (
     case "WAVAX":
     case "AVAX":
       return "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/logos/0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7/logo.png";
-    case "CRO": 
-    case "WCRO": 
-      return "https://raw.githubusercontent.com/vvs-finance/vvs-ui/master/packages/vvs-frontend/public/images/tokens/0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23.svg"
+    case "CRO":
+    case "WCRO":
+      return "https://raw.githubusercontent.com/vvs-finance/vvs-ui/master/packages/vvs-frontend/public/images/tokens/0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23.svg";
     default:
       return undefined;
   }
