@@ -9,7 +9,7 @@ import { useTradeExactIn } from "./useTrade";
 import { tryParseAmount } from "../utils/tryParseAmount";
 import { Currency, CurrencyAmount, Price } from "@uniswap/sdk-core";
 import JSBI from "jsbi";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isPolygonChainId } from "@gelatonetwork/range-orders-lib/dist/utils";
 import { Rate } from "../state/gorder/actions";
 
 export default function useGasOverhead(
@@ -109,7 +109,7 @@ export default function useGasOverhead(
     gasCostInInputTokens,
   ]);
 
-  return chainId && isEthereumChain(chainId)
+  return chainId && isPolygonChainId(chainId)
     ? { realExecutionPrice, gasPrice, realExecutionPriceAsString }
     : {
         realExecutionPrice: undefined,

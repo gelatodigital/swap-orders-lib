@@ -35,6 +35,7 @@ import {
   setSelectedTick,
 } from "../../state/gorder/actions";
 import { getPendingLSOrdersID } from "../../utils/localStorageOrders";
+import { isPolygonChainId } from "@gelatonetwork/range-orders-lib/dist/utils";
 
 export interface GelatoRangeOrdersHandlers {
   handleRangeOrderSubmission: (orderToSubmit: {
@@ -166,6 +167,9 @@ export default function useGelatoRangeOrdersHandlers(): GelatoRangeOrdersHandler
       }
       if (!chainId) {
         throw new Error("No chainId");
+      }
+      if (!isPolygonChainId(chainId)) {
+        throw new Error("Unsupported chainId");
       }
       if (!gelatoRangeOrders?.signer) {
         throw new Error("No signer");
