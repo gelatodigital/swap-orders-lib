@@ -154,7 +154,7 @@ export const SUBGRAPH_URL = {
     "https://api.thegraph.com/subgraphs/name/gelatodigital/limit-orders-bsc",
   [CHAIN_ID.AVAX]:
     "https://api.thegraph.com/subgraphs/name/gelatodigital/limit-orders-avax",
-  [CHAIN_ID.CRONOS]: "https://graph.vvs.finance/limit-orders-test/graphql",
+  [CHAIN_ID.CRONOS]: "https://graph.vvs.finance/limit-orders-test",
 };
 
 export const GELATO_LIMIT_ORDERS_ADDRESS = {
