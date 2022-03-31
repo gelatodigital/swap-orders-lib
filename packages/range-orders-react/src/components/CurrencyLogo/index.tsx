@@ -7,7 +7,7 @@ import Logo from "../Logo";
 import { getBaseTokenLogoURLByTokenSymbol } from "../../constants/tokens";
 import { useCombinedActiveList } from "../../state/glists/hooks";
 import EthereumLogo from "../../assets/images/ethereum-logo.png";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isPolygonChainId } from "@gelatonetwork/range-orders-lib/dist/utils";
 
 export const getTokenLogoURL = (address: string) =>
   `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/${address}/logo.png`;
@@ -58,7 +58,7 @@ export default function CurrencyLogo({
             ]
           : undefined;
       const defaultUrls =
-        chainId && isEthereumChain(chainId)
+        chainId && isPolygonChainId(chainId)
           ? [getTokenLogoURL(currency.address)]
           : [];
       if (currency instanceof WrappedTokenInfo) {

@@ -1,7 +1,7 @@
 import { Token } from "@uniswap/sdk-core";
 import { getCreate2Address } from "@ethersproject/address";
 import { keccak256, pack } from "@ethersproject/solidity";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isEthereumChain } from "@gelatonetwork/range-orders-lib/dist/utils";
 
 const SPOOKY_SWAP_FACTORY_ADDRESS =
   "0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3";

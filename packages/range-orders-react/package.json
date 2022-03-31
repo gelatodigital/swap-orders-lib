@@ -95,7 +95,6 @@
     "typescript": "4.2.4"
   },
   "dependencies": {
-    "@gelatonetwork/limit-orders-lib": "^3.1.0",
     "@popperjs/core": "^2.9.2",
     "@reach/dialog": "^0.15.0",
     "@uniswap/default-token-list": "^2.0.0",

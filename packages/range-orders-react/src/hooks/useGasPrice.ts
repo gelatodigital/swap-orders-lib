@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
 import { useWeb3 } from "../web3";
 import useInterval from "./useInterval";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
 import { isPolygonChainId } from "@gelatonetwork/range-orders-lib/dist/utils";
 
 export enum ChainId {
@@ -35,7 +34,7 @@ export default function useGasPrice(): number | undefined {
 
   useInterval(
     gasPriceCallback,
-    chainId && isEthereumChain(chainId) ? 15000 : 60000
+    chainId && isPolygonChainId(chainId) ? 15000 : 60000
   );
 
   return gasPrice;

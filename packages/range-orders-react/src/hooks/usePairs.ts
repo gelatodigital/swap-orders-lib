@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
 import { Handler } from "@gelatonetwork/range-orders-lib";
 import { Pair } from "../entities/pair";
 import { useWeb3 } from "../web3";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isPolygonChainId } from "@gelatonetwork/range-orders-lib/dist/utils";
 
 const PAIR_INTERFACE = new Interface(IUniswapV2PairABI);
 
@@ -49,7 +49,7 @@ export function usePairs(
     undefined,
     {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      blocksPerFetch: isEthereumChain(chainId!) ? 5 : 60,
+      blocksPerFetch: isPolygonChainId(chainId!) ? 5 : 60,
     }
   );
 
