@@ -45,6 +45,14 @@ export const USDC_AVAX = new Token(43114, "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a
 export const USDT_AVAX = new Token(43114, "0xc7198437980c041c805A1EDcbA50c1Ce5db95118", 6, "USDT.e", "Tether USD");
 export const AVAX_BASES = [WAVAX_AVAX, USDC_AVAX, USDT_AVAX]
 
+
+export const WCRO_CRONOS = new Token(25, "0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23", 18, "WCRO","Wrapped CRO");
+export const USDC_CRONOS = new Token(25,"0xc21223249CA28397B4B6541dfFaEcC539BfF0c59",6,"USDC","USD Coin");
+export const WETH_CRONOS = new Token(25,"0xe44Fd7fCb2b1581822D0c862B68222998a0c299a",18,"WETH","Wrapped Ether");
+export const VVS_CRONOS = new Token(25,"0x2D03bECE6747ADC00E1a131BBA1469C15fD11e03",18,"VVS","VVSToken");
+export const USDT_CRONOS = new Token(25,"0x66e428c3f67a68878562e79a0234c1f83c208770",6,"USDT","Tether USD");
+export const CRONOS_BASES = [WCRO_CRONOS,USDC_CRONOS,WETH_CRONOS,USDT_CRONOS,];
+
 export const getBaseTokenLogoURLByTokenSymbol = (symbol: string | undefined): string | undefined => {
   switch (symbol) {
     case 'USDC':
@@ -73,6 +81,9 @@ export const getBaseTokenLogoURLByTokenSymbol = (symbol: string | undefined): st
     case "WAVAX":
     case "AVAX":
       return "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/logos/0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7/logo.png";
+    case "CRO":
+    case "WCRO":
+      return "https://raw.githubusercontent.com/vvs-finance/vvs-ui/master/packages/vvs-frontend/public/images/tokens/0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23.svg";
     default:
       return undefined
   }

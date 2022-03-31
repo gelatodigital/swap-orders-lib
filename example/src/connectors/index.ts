@@ -18,13 +18,14 @@ const NETWORK_URLS: {
   // [4]: `https://rinkeby.infura.io/v3/${INFURA_KEY}`,
   [3]: `https://ropsten.infura.io/v3/${INFURA_KEY}`,
   [5]: `https://goerli.infura.io/v3/${INFURA_KEY}`,
+  [25]: 'https://evm.cronos.org',
   // [42]: `https://kovan.infura.io/v3/${INFURA_KEY}`,
   [56]: 'https://bsc-dataseed.binance.org',
   [137]: 'https://rpc-mainnet.maticvigil.com',
   [43114]: 'https://api.avax.network/ext/bc/C/rpc'
 }
 
-const SUPPORTED_CHAIN_IDS = [1, 3, 5, 56, 137, 43114]
+const SUPPORTED_CHAIN_IDS = [1, 3, 5,25, 56, 137, 43114]
 
 export const network = new NetworkConnector({
   urls: NETWORK_URLS,
