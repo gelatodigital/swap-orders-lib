@@ -27,6 +27,8 @@ const PANCAKESWAP_LIST =
 const TRADERJOE_LIST =
   "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/joe.tokenlist.json";
 
+const VVS_LIST = "https://vvs.finance/vvs-tokenlist.json";
+
 export const UNSUPPORTED_LIST_URLS: string[] = [BA_LIST];
 
 // lower index == higher priority for token import
@@ -54,6 +56,7 @@ export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
   QUICKSWAP_LIST,
   PANCAKESWAP_LIST,
   TRADERJOE_LIST,
+  VVS_LIST,
 ];
 
 export const DEFAULT_ACTIVE_LIST_URLS_BY_CHAIN_ID: {
@@ -63,4 +66,5 @@ export const DEFAULT_ACTIVE_LIST_URLS_BY_CHAIN_ID: {
   [56]: [PANCAKESWAP_LIST],
   [137]: [QUICKSWAP_LIST],
   [43114]: [TRADERJOE_LIST],
+  [25]: [VVS_LIST]
 };

@@ -15,6 +15,7 @@ import { Contract } from '@ethersproject/contracts'
 import { TokenInfo } from '@uniswap/token-lists'
 import { NATIVE } from '../constants/addresses'
 import { useActiveWeb3React } from './web3'
+import { WCRO_CRONOS } from '../constants/tokens'
 
 export const WFTM_FANTOM = new Token(250, '0x21be370d5312f44cb42ce377bc9b8a0cef1a4c83', 18, 'WFTM', 'Wrapped Fantom')
 
@@ -56,7 +57,7 @@ export class NativeToken extends NativeCurrency {
   }
 
   public get wrapped(): Token {
-    const weth9 = this.chainId === 56 ? WBNB_BSC : this.chainId === 137 ? WMATIC_MATIC : this.chainId === 250 ? WFTM_FANTOM : this.chainId === 43114 ? WAVAX_AVAX : WETH9[this.chainId]
+    const weth9 =  this.chainId === 25 ? WCRO_CRONOS :this.chainId === 56 ? WBNB_BSC : this.chainId === 137 ? WMATIC_MATIC : this.chainId === 250 ? WFTM_FANTOM : this.chainId === 43114 ? WAVAX_AVAX : WETH9[this.chainId]
     invariant(!!weth9, 'WRAPPED')
     return weth9
   }
@@ -264,15 +265,17 @@ export function useToken(tokenAddress?: string): Token | undefined | null {
 
 export function useCurrency(currencyId: string | undefined): Currency | null | undefined {
   const { chainId } = useActiveWeb3React()
-
   const isETH = currencyId?.toUpperCase() === 'ETH'
   const isMATIC = currencyId?.toUpperCase() === 'MATIC'
   const isFTM = currencyId?.toUpperCase() === 'FTM'
+  const isCRO = currencyId?.toUpperCase() === 'CRO'
   const isNative = currencyId?.toUpperCase() === 'NATIVE' || currencyId?.toLowerCase() === NATIVE.toLowerCase()
-  const isNativeCurrency = isETH || isMATIC || isFTM || isNative
+  const isNativeCurrency = isETH || isMATIC || isFTM || isCRO || isNative 
   const token = useToken(isNativeCurrency ? undefined : currencyId)
   if (isNativeCurrency && chainId)
-    return chainId === 56
+    return  chainId === 25
+      ? new NativeToken(chainId, 18, 'CRO', 'CRO') 
+      : chainId === 56
       ? new NativeToken(chainId, 18, 'BNB', 'BSC')
       : chainId === 137
       ? new NativeToken(chainId, 18, 'MATIC', 'Matic')
