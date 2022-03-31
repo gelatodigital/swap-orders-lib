@@ -328,8 +328,7 @@ export default function GelatoRangeOrder({
     handleRangeOrderSubmission,
     tradeToConfirm,
     showConfirm,
-    currencies.input?.wrapped.address,
-    currencies.output?.wrapped.address,
+    currencies,
     rawAmounts.input,
     rawAmounts.output,
   ]);
