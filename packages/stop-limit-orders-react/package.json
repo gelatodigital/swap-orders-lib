@@ -1,6 +1,6 @@
 {
   "name": "@gelatonetwork/stop-limit-orders-react",
-  "version": "1.4.0",
+  "version": "1.4.2",
   "description": "React Library for creating stop limit orders via Gelato",
   "keywords": [
     "ethereum",
@@ -111,7 +111,7 @@
     "styled-components": "^4.2.0 || ^5.0.0"
   },
   "dependencies": {
-    "@gelatonetwork/limit-orders-lib": "^4.2.0",
+    "@gelatonetwork/limit-orders-lib": "^4.2.1",
     "@popperjs/core": "^2.9.2",
     "@reach/dialog": "^0.15.0",
     "@uniswap/default-token-list": "^2.0.0",
