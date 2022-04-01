@@ -32,7 +32,7 @@ export const queryOrder = async (
       ...dataFromOldSubgraph.orders,
       ...dataFromNewSubgraph.orders,
     ];
-
+    
     return _getUniqueOrdersWithExpiry(allOrders, chainId).pop() ?? null;
   } catch (error) {
     throw new Error("Could not query subgraph for all orders");
@@ -88,6 +88,10 @@ export const queryOpenOrders = async (
       ...dataFromOldSubgraph.orders,
       ...dataFromNewSubgraph.orders,
     ];
+
+    console.log("allOrders",allOrders)
+
+    console.log("orders!!! ", _getUniqueOrdersWithExpiry(allOrders, chainId))
 
     return _getUniqueOrdersWithExpiry(allOrders, chainId).filter(
       (order) => order.status === "open"
