@@ -1,15 +1,19 @@
 # Place Buy/Sell range orders on Uniswap V3 Pools `@gelatonetwork/range-orders-react`
 
 ### Installation
+
 ```
 yarn add -D @gelatonetwork/range-orders-lib
 ```
+
 or
+
 ```
 npm install --save-dev @gelatonetwork/range-orders-lib
 ```
 
 ### `RangeOrderPayload`
+
 ```typescript=
 export type RangeOrderPayload = {
   pool: string; // Uniswap pool
@@ -21,12 +25,17 @@ export type RangeOrderPayload = {
   maxFeeAmount: BigNumber; // Fee amount in Native Currency
 };
 ```
+
 ### `setRangeOrder`
+
 Create a range order.
+
 ```
 setRangeOrder(rangeOrderPayload: RangeOrderPayload, overrides?: PayableOverrides): Promise<ContractTransaction | undefined>;
 ```
+
 ##### Example
+
 ```typescript=
 // MATIC/USDC Pool: "0xA374094527e1673A86dE625aa59517c5dE346d32";
 const [, pool] = usePool(
@@ -56,7 +65,7 @@ const orderPayload: RangeOrderPayload = {
 
 const overrides: PayableOverrides = {
     // max fee amount 1 MATIC + if input currency is NATIVE currency then input currency value
-    value: 
+    value:
       inputCurrency?.wrapped.address === nativeCurrency?.wrapped.address
         ? BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()).add(
             orderToSubmit.inputAmount
@@ -69,8 +78,11 @@ if (!tx) {
     throw new Error("No transaction");
 }
 ```
+
 ### `RangeOrderData`
+
 `RangeOrderData` is used to store Range Orders fetched from subgraph.
+
 ```typescript=
 export type RangeOrderData = {
   id: BigNumber;
@@ -99,13 +111,19 @@ export type RangeOrderData = {
   updatedAtBlockHash?: BytesLike | undefined;
 };
 ```
+
 ### `cancelRangeOrder`
+
 Cancel an open range order.
+
 ```
 cancelRangeOrder(tokenId: BigNumber, rangeOrderPayload: RangeOrderPayload, startTime: number): Promise<ContractTransaction | undefined>;
 ```
+
 ##### Example
+
 Fetch open range orders using `range-orders-lib`. Optionally you can use our hosted subgraph https://thegraph.com/hosted-service/subgraph/gelatodigital/range-orders-polygon to fetch the data.
+
 ```typescript=
 // Fetch open orders gelatoRangeOrders.getOpenRangeOrders(account.toLowerCase())
 const order = {
@@ -143,50 +161,77 @@ if (!tx) {
     throw new Error("No transaction");
 }
 ```
+
 ### `getExchangeRate`
+
 ### `isActiveRangeOrder`
+
 ### `getOpenRangeOrders`
+
 Get list of all open range orders.
+
 ```
 getOpenRangeOrders(user: string): Promise<RangeOrderData[]>;
 ```
+
 ##### Example
+
 ```typescript=
 const openRangeOrders = await gelatoRangeOrders.getOpenRangeOrders(account.toLowerCase())
 ```
+
 ### `getExecutedRangeOrders`
+
 Get list of all executed range orders.
+
 ```
 getExecutedRangeOrders(user: string): Promise<RangeOrderData[]>;
 ```
+
 ##### Example
+
 ```typescript=
 const executedRangeOrders = await gelatoRangeOrders.getExecutedRangeOrders(account.toLowerCase())
 ```
+
 ### `getCancelledRangeOrders`
+
 Get list of all cancelled range orders.
+
 ```
 getCancelledRangeOrders(user: string): Promise<RangeOrderData[]>;
 ```
+
 ##### Example
+
 ```typescript=
 const cancelledRangeOrders = await gelatoRangeOrders.getCancelledRangeOrders(account.toLowerCase())
 ```
+
 ### `getExpiredRangeOrders`
+
 Get list of all expired range orders.
+
 ```
 getExpiredRangeOrders(user: string): Promise<RangeOrderData[]>;
 ```
+
 ##### Example
+
 ```typescript=
 const expiredRangeOrders = await gelatoRangeOrders.getExpiredRangeOrders(account.toLowerCase())
 ```
+
 ### `getMinReturn`
+
 Get minimum return amount for a desired swap.
+
 ```
 getMinReturn(rangeOrderPayload: RangeOrderPayload): Promise<BigNumber>;
 ```
+
 ##### Example
+
 ```typescript=
 const minReturn = await library.getMinReturn({
       pool,
@@ -198,58 +243,79 @@ const minReturn = await library.getMinReturn({
       maxFeeAmount: BigNumber.from(MAX_FEE_AMOUNTS[chainId].toString()),
 });
 ```
+
 ### `getNearTicks`
+
 Get near tick values for given price. Returns nearest upper and lower tick for the given price.
+
 ```
 getNearTicks(poolAddr: string, price: BigNumber): Promise<{
     lower: number;
     upper: number;
 }>;
 ```
+
 ##### Example
+
 ```typescript=
 const ticks = await gelatoRangeOrders.getNearTicks(
   poolAddress,
   utils.parseUnits(priceValue, 18)
 );
 ```
+
 ### `getNearestPrice`
+
 Get nearest price values for given price. Returns lower price and upper price for the given price value.
+
 ```
 getNearestPrice(poolAddr: string, price: BigNumber): Promise<{
     lowerPrice: BigNumber;
     upperPrice: BigNumber;
 }>;
 ```
+
 ##### Example
+
 ```typescript=
 const prices = await gelatoRangeOrders.getNearestPrice(
   poolAddress,
   utils.parseUnits(priceValue, 18)
 );
 ```
+
 ### `getPriceFromTick`
+
 Get price for a given tick.
+
 ```
 getPriceFromTick(poolAddr: string, tick: number): Promise<{
     lowerPrice: BigNumber;
     upperPrice: BigNumber;
 }>;
 ```
+
 ##### Example
+
 ```typescript=
 const prices = await gelatoRangeOrders.getPriceFromTick(
   poolAddress,
   7735
 );
 ```
+
 ### `getRemainingTime`
+
 Get remaining time of an open range order.
+
 ```
 getRemainingTime(rangeOrderData: RangeOrderData): BigNumber | null;
 ```
+
 ### `getAmountsIn`
+
 Get required minimum liquidity for Range Order payload.
+
 ```
 getAmountsIn(
     currentTick: number,
@@ -263,7 +329,9 @@ getAmountsIn(
     amount1: BigNumber;
 };
 ```
+
 ##### Example
+
 ```typescript=
 const { amount0, amount1 } = gelatoRangeOrders.getAmountsIn(
     currentTick,
@@ -274,22 +342,26 @@ const { amount0, amount1 } = gelatoRangeOrders.getAmountsIn(
     BigNumber.from(pool?.sqrtRatioX96.toString()) ?? ethers.constants.Zero
 );
 ```
+
 ### `encodeRangeOrderSubmission`
 
 ## Development
 
 ##### Build `range-orders-lib` and `range-orders-react` library
+
 ```shell
 yarn workspace @gelatonetwork/range-orders-react build
 ```
 
 ##### Run the example app to see the changes in effect
+
 ```shell
 cd swap-orders-lib/example
 yarn start
 ```
 
 ## Publish packages
+
 ```shell
 yarn publish:lerna # publish latest versions
 yarn publish:lerna:next # publish next versions
