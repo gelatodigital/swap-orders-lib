@@ -319,8 +319,8 @@ export function ManageLists({
       fetchList(library, listUrlInput, false)
         .then((list) => setTempList(list))
         .catch((error) => {
-          console.error("fetchList ",error)
-          setAddError("Error importing list")
+          console.error("fetchList ", error);
+          setAddError("Error importing list");
         });
     }
     // if valid url, fetch details for card
