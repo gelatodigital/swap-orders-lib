@@ -40,6 +40,14 @@ export const USDT_CRONOS = new Token(
   "Tether USD"
 );
 
+export const MMF_CRONOS = new Token(
+  25,
+  "0x97749c9B61F878a880DfE312d2594AE07AEd7656",
+  18,
+  "MMF",
+  "Mad Meerkat Finance"
+);
+
 export const CRONOS_BASES = [
   WCRO_CRONOS,
   USDC_CRONOS,

@@ -54,6 +54,9 @@ const VVS_FACTORY_ADDRESS = "0x3b44b2a187a7b3824131f8db5a74194d0a42fc15";
 const VVS_INIT_CODE_HASH =
   "0xa77ee1cc0f39570ddde947459e293d7ebc2c30ff4e8fc45860afdcb2c2d3dc17";
 
+const MMF_FACTORY_ADDRESS = "0xd590cC180601AEcD6eeADD9B7f2B7611519544f4";
+const MMF_INIT_CODE_HASH = "0x7ae6954210575e79ea2402d23bc6a59c4146a6e6296118aa8b99c747afec8acf";
+
 const getSpiritSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
     ? [tokenA, tokenB]
@@ -234,6 +237,21 @@ const getVVSPairAddress = (tokenA: Token, tokenB: Token): string => {
   );
 };
 
+const getMMFPairAddress = (tokenA: Token, tokenB: Token): string => {
+  const tokens = tokenA.sortsBefore(tokenB)
+    ? [tokenA, tokenB]
+    : [tokenB, tokenA]; // does safety checks
+
+  return getCreate2Address(
+    MMF_FACTORY_ADDRESS,
+    keccak256(
+      ["bytes"],
+      [pack(["address", "address"], [tokens[0].address, tokens[1].address])]
+    ),
+    MMF_INIT_CODE_HASH
+  );
+};
+
 export const calculatePairAddressByHandler = (
   tokenA: Token,
   tokenB: Token,
@@ -274,6 +292,8 @@ export const calculatePairAddressByHandler = (
     switch (handler) {
       case "vvsfinance":
         return getVVSPairAddress(tokenA, tokenB);
+      case "mmfinance":
+        return getMMFPairAddress(tokenA, tokenB);
       default:
         return getVVSPairAddress(tokenA, tokenB);
     }
