@@ -55,7 +55,8 @@ const VVS_INIT_CODE_HASH =
   "0xa77ee1cc0f39570ddde947459e293d7ebc2c30ff4e8fc45860afdcb2c2d3dc17";
 
 const MMF_FACTORY_ADDRESS = "0xd590cC180601AEcD6eeADD9B7f2B7611519544f4";
-const MMF_INIT_CODE_HASH = "0x7ae6954210575e79ea2402d23bc6a59c4146a6e6296118aa8b99c747afec8acf";
+const MMF_INIT_CODE_HASH =
+  "0x7ae6954210575e79ea2402d23bc6a59c4146a6e6296118aa8b99c747afec8acf";
 
 const getSpiritSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
