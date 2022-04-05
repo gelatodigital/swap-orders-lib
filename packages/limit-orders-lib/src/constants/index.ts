@@ -86,6 +86,7 @@ export const HANDLERS_ADDRESSES = {
   },
   [CHAIN_ID.CRONOS]: {
     ["vvsfinance"]: "0x6b9da2978ebe1c60d2cdaf52ee6c498cd8bb3f16",
+    ["mmfinance"]: "0x2247a8d118b13cff3243acdddacce6c816980079"
   },
 };
 
@@ -120,7 +121,7 @@ export const NETWORK_HANDLERS = {
     "pangolin_stoplimit",
     "traderjoe_stoplimit",
   ],
-  [CHAIN_ID.CRONOS]: ["vvsfinance"],
+  [CHAIN_ID.CRONOS]: ["vvsfinance", "mmfinance"],
 };
 
 export const NETWORK_STOP_LIMIT_HANDLERS = {

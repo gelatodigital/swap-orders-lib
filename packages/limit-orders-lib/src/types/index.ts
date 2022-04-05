@@ -24,7 +24,8 @@ export type Handler =
   | "pangolin"
   | "pangolin_stoplimit"
   | "tombswap"
-  | "vvsfinance";
+  | "vvsfinance"
+  | "mmfinance";
 
 export interface TransactionData {
   to: string;
