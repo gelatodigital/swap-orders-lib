@@ -86,7 +86,7 @@ export const HANDLERS_ADDRESSES = {
   },
   [CHAIN_ID.CRONOS]: {
     ["vvsfinance"]: "0x6b9da2978ebe1c60d2cdaf52ee6c498cd8bb3f16",
-    ["mmfinance"]: "0x2247a8d118b13cff3243acdddacce6c816980079",
+    ["mmfinance"]: "0xee5154b3408e762d935f79ddef3a4ba56ac4d102",
   },
 };
 
