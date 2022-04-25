@@ -43,6 +43,7 @@ export function GelatoProvider({
   toggleWalletModal,
   useDefaultTheme = true,
   useDarkMode = true,
+  tokenListURLs = [],
 }: {
   chainId: number | undefined;
   library: any | undefined;
@@ -52,6 +53,7 @@ export function GelatoProvider({
   useDefaultTheme?: boolean;
   useDarkMode?: boolean;
   children?: React.ReactNode;
+  tokenListURLs?: string[];
 }) {
   return useDefaultTheme ? (
     <ThemeProvider useDarkMode={useDarkMode}>
@@ -63,7 +65,7 @@ export function GelatoProvider({
         toggleWalletModal={toggleWalletModal}
       >
         <ThemedGlobalStyle />
-        <ListsUpdater />
+        <ListsUpdater includeTokenLists={tokenListURLs} />
         <ApplicationUpdater />
         <MulticallUpdater />
         <TransactionUpdater />
@@ -78,7 +80,7 @@ export function GelatoProvider({
       handler={handler}
       toggleWalletModal={toggleWalletModal}
     >
-      <ListsUpdater />
+      <ListsUpdater includeTokenLists={tokenListURLs} />
       <ApplicationUpdater />
       <MulticallUpdater />
       <TransactionUpdater />

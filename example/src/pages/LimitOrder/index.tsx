@@ -14,6 +14,8 @@ function Gelato({ children }: { children?: React.ReactNode }) {
       account={account ?? undefined}
       toggleWalletModal={toggleWalletModal}
       useDefaultTheme={false}
+      handler={"mmfinance"}
+      tokenListURLs={["https://raw.githubusercontent.com/HarryTgerman/vvs-tokenlist/main/vvs-tokenlist.json"]}
     >
       {children}
     </GelatoProvider>

@@ -13,9 +13,13 @@ import {
 } from "../../constants/lists";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "..";
-import { addList, removeList } from "./actions";
+import { addList, removeList, enableList } from "./actions";
 
-export default function Updater(): null {
+export default function Updater({
+  includeTokenLists,
+}: {
+  includeTokenLists: string[];
+}): null {
   const { library, chainId } = useWeb3();
 
   const isWindowVisible = useIsWindowVisible();
@@ -38,6 +42,22 @@ export default function Updater(): null {
 
   // fetch all lists every 10 minutes, but only after we initialize library
   useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null);
+
+  // includeTokenLists
+  useEffect(() => {
+    if (!library || !includeTokenLists.length) return;
+    includeTokenLists.forEach((listURL: string) => {
+      fetchList(library, listURL)
+        .then(() => {
+          dispatch(addList(listURL));
+          dispatch(enableList(listURL));
+        })
+        .catch((error) => {
+          console.debug("list added fetching error", error);
+          dispatch(removeList(listURL));
+        });
+    });
+  }, [library, includeTokenLists]);
 
   // whenever a list is not loaded and not loading, try again to load it
   useEffect(() => {
