@@ -69,6 +69,7 @@ export default function FeeInputPanel({
               onUserInput={(val: string) => {
                 onUserInput(val);
               }}
+              disabled={true}
             />
           )}
           <TYPE.main style={{ paddingLeft: 2, paddingRight: 2 }} fontSize={14}>
