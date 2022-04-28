@@ -6,8 +6,10 @@ const StyledInput = styled.input<{
   error?: boolean;
   fontSize?: string;
   align?: string;
+  disabled?: boolean;
 }>`
-  color: ${({ error, theme }) => (error ? theme.red1 : theme.text1)};
+  color: ${({ disabled, error, theme }) =>
+    disabled ? theme.text2 : error ? theme.red1 : theme.text1};
   width: 0;
   position: relative;
   font-weight: 500;
