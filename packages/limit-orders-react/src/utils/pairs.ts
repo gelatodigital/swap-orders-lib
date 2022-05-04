@@ -257,7 +257,6 @@ const getMMFPairAddress = (tokenA: Token, tokenB: Token): string => {
   );
 };
 
-
 const getProtofiPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
     ? [tokenA, tokenB]
