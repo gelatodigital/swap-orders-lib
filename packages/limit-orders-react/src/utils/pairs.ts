@@ -58,6 +58,10 @@ const MMF_FACTORY_ADDRESS = "0xd590cC180601AEcD6eeADD9B7f2B7611519544f4";
 const MMF_INIT_CODE_HASH =
   "0x7ae6954210575e79ea2402d23bc6a59c4146a6e6296118aa8b99c747afec8acf";
 
+const PROTOFI_FACTORY_ADDRESS = "0x39720E5Fe53BEEeb9De4759cb91d8E7d42c17b76";
+const PROTOFI_INIT_CODE_HASH =
+  "0x5e47480f25da6d84d0437a474359e885cdb7dc9eb9f8fd61f3cb41d85a64a420";
+
 const getSpiritSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
     ? [tokenA, tokenB]
@@ -253,6 +257,22 @@ const getMMFPairAddress = (tokenA: Token, tokenB: Token): string => {
   );
 };
 
+
+const getProtofiPairAddress = (tokenA: Token, tokenB: Token): string => {
+  const tokens = tokenA.sortsBefore(tokenB)
+    ? [tokenA, tokenB]
+    : [tokenB, tokenA]; // does safety checks
+
+  return getCreate2Address(
+    PROTOFI_FACTORY_ADDRESS,
+    keccak256(
+      ["bytes"],
+      [pack(["address", "address"], [tokens[0].address, tokens[1].address])]
+    ),
+    PROTOFI_INIT_CODE_HASH
+  );
+};
+
 export const calculatePairAddressByHandler = (
   tokenA: Token,
   tokenB: Token,
@@ -279,6 +299,8 @@ export const calculatePairAddressByHandler = (
         return getDefySwapPairAddress(tokenA, tokenB);
       case "tombswap":
         return getTombSwapPairAddress(tokenA, tokenB);
+      case "protofi":
+        return getProtofiPairAddress(tokenA, tokenB);
       default:
         return getSpookySwapPairAddress(tokenA, tokenB);
     }
