@@ -64,7 +64,7 @@ export function GelatoProvider({
   children?: React.ReactNode;
   tokenListURLs?: string[];
 }) {
-  const basesToCheckTradesAgainst = bases
+  const basesToCheckTradesAgainst = bases && bases.length > 0
     ? buildBasesToCheckTradesAgainst(bases)
     : undefined;
 
