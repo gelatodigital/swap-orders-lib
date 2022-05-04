@@ -1,5 +1,5 @@
 // a list of tokens by chain
-import { Currency, Ether, Token, WETH9 } from "@uniswap/sdk-core";
+import { Currency, Token, WETH9 } from "@uniswap/sdk-core";
 import {
   AMPL,
   DAI,
@@ -26,10 +26,6 @@ import { CRONOS_BASES, WETH_CRONOS } from "./tokens.cronos";
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[];
-};
-
-type ChainCurrencyList = {
-  readonly [chainId: number]: Currency[];
 };
 
 // List of all mirror's assets addresses.
@@ -101,5 +97,3 @@ export const CUSTOM_BASES: {
     [AMPL.address]: [DAI, WETH9[1]],
   },
 };
-// used for display in the default list when adding liquidity
-export const SUGGESTED_BASES: ChainCurrencyList = BASES_TO_CHECK_TRADES_AGAINST
