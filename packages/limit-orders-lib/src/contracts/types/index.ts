@@ -4,9 +4,21 @@
 export type { ERC20 } from "./ERC20";
 export type { ERC20OrderRouter } from "./ERC20OrderRouter";
 export type { GelatoLimitOrders } from "./GelatoLimitOrders";
+export type { GelatoUniswapV2LimitOrders } from "./GelatoUniswapV2LimitOrders";
+export type { GelatoUniswapV2OrdersVault } from "./GelatoUniswapV2OrdersVault";
+export type { IGelato } from "./IGelato";
+export type { IGelatoUniswapV2Orders } from "./IGelatoUniswapV2Orders";
+export type { IUniswapV2Router02 } from "./IUniswapV2Router02";
+export type { IWETH } from "./IWETH";
 export type { Multicall } from "./Multicall";
 
 export { ERC20__factory } from "./factories/ERC20__factory";
 export { ERC20OrderRouter__factory } from "./factories/ERC20OrderRouter__factory";
 export { GelatoLimitOrders__factory } from "./factories/GelatoLimitOrders__factory";
+export { GelatoUniswapV2LimitOrders__factory } from "./factories/GelatoUniswapV2LimitOrders__factory";
+export { GelatoUniswapV2OrdersVault__factory } from "./factories/GelatoUniswapV2OrdersVault__factory";
+export { IGelato__factory } from "./factories/IGelato__factory";
+export { IGelatoUniswapV2Orders__factory } from "./factories/IGelatoUniswapV2Orders__factory";
+export { IUniswapV2Router02__factory } from "./factories/IUniswapV2Router02__factory";
+export { IWETH__factory } from "./factories/IWETH__factory";
 export { Multicall__factory } from "./factories/Multicall__factory";

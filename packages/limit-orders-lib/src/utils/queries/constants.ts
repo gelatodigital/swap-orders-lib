@@ -31,6 +31,37 @@ export const GET_ORDER_BY_ID = gql`
   }
 `;
 
+export const GET_ORDER_BY_ID_V2 = gql`
+  query getOrdersByOwner($id: String) {
+    orders(where: { id: $id }) {
+      id
+      owner
+      inputToken
+      outputToken
+      minReturn
+      inputAmount
+      vault
+      bought
+      auxData
+      status
+      createdTxHash
+      executedTxHash
+      cancelledTxHash
+      blockNumber
+      createdAt
+      updatedAt
+      updatedAtBlock
+      updatedAtBlockHash
+      data
+      factory
+      router
+      initCodeHash
+      salt
+      inputData
+    }
+  }
+`;
+
 export const GET_ALL_ORDERS_BY_OWNER = gql`
   query getOrdersByOwner($owner: String) {
     orders(
@@ -63,6 +94,42 @@ export const GET_ALL_ORDERS_BY_OWNER = gql`
       data
       inputData
       handler
+    }
+  }
+`;
+
+export const GET_ALL_ORDERS_BY_OWNER_V2 = gql`
+  query getOrdersByOwner($owner: String) {
+    orders(
+      first: 1000
+      orderBy: updatedAtBlock
+      orderDirection: desc
+      where: { owner: $owner }
+    ) {
+      id
+      owner
+      inputToken
+      outputToken
+      minReturn
+      factory
+      router
+      initCodeHash
+      salt
+      inputAmount
+      vault
+      bought
+      auxData
+      status
+      createdTxHash
+      executedTxHash
+      cancelledTxHash
+      blockNumber
+      createdAt
+      updatedAt
+      updatedAtBlock
+      updatedAtBlockHash
+      data
+      inputData
     }
   }
 `;

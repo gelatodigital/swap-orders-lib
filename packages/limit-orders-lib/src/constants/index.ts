@@ -147,6 +147,15 @@ export const SUBGRAPH_URL = {
     "https://api.thegraph.com/subgraphs/name/gelatodigital/limit-orders-avax",
 };
 
+export const SUBGRAPH_URL_V2 = {
+  [CHAIN_ID.MATIC]:
+    "https://api.thegraph.com/subgraphs/name/gelatodigital/limit-orders-v2-polygon",
+};
+
+export const GELATO_LIMIT_ORDERS_V2_ADDRESS = {
+  [CHAIN_ID.MATIC]: "0x4f999bc82e141627033922bb7c1b274b46e9f4f6",
+};
+
 export const GELATO_LIMIT_ORDERS_ADDRESS = {
   [CHAIN_ID.MAINNET]: "0x36049D479A97CdE1fC6E2a5D2caE30B666Ebf92B",
   [CHAIN_ID.ROPSTEN]: "0x0e5096D201Fe2985f5C26432A76f145D6e5D1453",

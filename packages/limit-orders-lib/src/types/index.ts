@@ -31,6 +31,11 @@ export interface TransactionData {
   value: BigNumberish;
 }
 
+export interface TransactionDataWithSalt {
+  payload: TransactionData;
+  order: PartialOrderV2;
+}
+
 export interface TransactionDataWithSecret {
   payload: TransactionData;
   secret: string;
@@ -73,9 +78,55 @@ export interface Order {
   isExpired: boolean;
 }
 
+export interface OrderV2 {
+  id: string;
+  owner: string;
+  inputToken: string;
+  outputToken: string;
+  minReturn: string;
+  factory: string;
+  router: string;
+  salt: string;
+  initCodeHash: string;
+  maxReturn?: string;
+  adjustedMinReturn: string;
+  inputAmount: string;
+  bought: string | null;
+  auxData: string | null;
+  status: string;
+  createdTxHash: string;
+  executedTxHash: string | null;
+  cancelledTxHash: string | null;
+  blockNumber: string;
+  createdAt: string;
+  updatedAt: string;
+  updatedAtBlock: string;
+  updatedAtBlockHash: string;
+  data: string;
+  inputData: string;
+  isExpired: boolean;
+}
+
 export interface StopLimitOrder extends Order {
   maxReturn: string;
 }
+
+export interface PartialOrderV2 {
+  id: string;
+  owner: string;
+  inputToken: string;
+  outputToken: string;
+  minReturn: string;
+  adjustedMinReturn: string;
+  inputAmount: string;
+  data: string;
+  inputData: string;
+  factory: string;
+  router: string;
+  salt: string;
+  initCodeHash: string;
+}
+
 export interface PartialOrder {
   id: string;
   owner: string;
