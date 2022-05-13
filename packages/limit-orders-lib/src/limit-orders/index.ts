@@ -5,9 +5,7 @@ import {
   ContractTransaction,
   BigNumberish,
   Contract,
-  Wallet,
   Overrides,
-  Bytes,
 } from "ethers";
 import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
@@ -37,7 +35,6 @@ import {
 import {
   Handler,
   ChainId,
-  Order,
   OrderV2,
   TransactionData,
   TransactionDataWithSalt,
@@ -64,7 +61,6 @@ export class GelatoLimitOrders {
   private _signer: Signer | undefined;
   private _gelatoUniswapV2LimitOrders: GelatoUniswapV2LimitOrders;
   private _subgraphUrl: string;
-  private _abiEncoder: utils.AbiCoder;
   private _isFlashbotsProtected: boolean;
   private _gelatoFeeBPS: number;
   private _slippageBPS: number;
@@ -109,6 +105,7 @@ export class GelatoLimitOrders {
     isFlashbotsProtected = false,
     signerOrProvider?: Signer | Provider
   ) {
+
     if (!router) {
       throw new Error("No Router defined");
     }
@@ -139,12 +136,12 @@ export class GelatoLimitOrders {
         )
       : this._provider
       ? GelatoUniswapV2LimitOrders__factory.connect(
-          GELATO_LIMIT_ORDERS_V2_ADDRESS[this._chainId],
+        GELATO_LIMIT_ORDERS_V2_ADDRESS[this._chainId],
           this._provider
         )
       : (new Contract(
-          GELATO_LIMIT_ORDERS_V2_ADDRESS[this._chainId],
-          GelatoUniswapV2LimitOrders__factory.createInterface()
+        GELATO_LIMIT_ORDERS_V2_ADDRESS[this._chainId],
+        GelatoUniswapV2LimitOrders__factory.createInterface()
         ) as GelatoUniswapV2LimitOrders);
 
     this._routerAddress = router;
@@ -153,7 +150,6 @@ export class GelatoLimitOrders {
 
     this._isFlashbotsProtected = isFlashbotsProtected;
 
-    this._abiEncoder = new utils.AbiCoder();
   }
 
   public async encodeLimitOrderSubmission(
@@ -186,7 +182,7 @@ export class GelatoLimitOrders {
   ): Promise<TransactionDataWithSalt> {
     if (!this._signer) throw new Error("No signer");
 
-    const salt = BigNumber.from(utils.randomBytes(32));
+    const salt = BigNumber.from(utils.randomBytes(32))
 
     const { minReturn } =
       this.getFeeAndSlippageAdjustedMinReturn(minReturnToBeParsed);
@@ -201,7 +197,7 @@ export class GelatoLimitOrders {
       checkAllowance
     );
 
-    const encodedData = "0x00";
+    const encodedData = "0x00"
 
     const orderKey = await this._gelatoUniswapV2LimitOrders.keyOf({
       owner,
@@ -214,7 +210,7 @@ export class GelatoLimitOrders {
       salt,
       initCodeHash: this._initCodeHash,
       data: encodedData,
-    });
+    })
 
     return {
       payload,
@@ -350,7 +346,7 @@ export class GelatoLimitOrders {
     if (owner.toLowerCase() !== order.owner.toLowerCase())
       throw new Error("Owner and signer mismatch");
 
-    const oderStruct = this._toOrderStruct(_order);
+    const oderStruct = this._toOrderStruct(_order)
 
     return this._gelatoUniswapV2LimitOrders.cancelOrder(
       oderStruct,
@@ -501,7 +497,7 @@ export class GelatoLimitOrders {
       return {
         ...order,
         adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-      };
+      }
     } else {
       return null;
     }
@@ -512,10 +508,11 @@ export class GelatoLimitOrders {
     includeOrdersWithNullHandler = false
   ): Promise<OrderV2[]> {
     const orders = await queryOrdersV2(owner, this._chainId);
-    return orders.map((order) => ({
-      ...order,
-      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-    }));
+    return orders
+      .map((order) => ({
+        ...order,
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      }));
   }
 
   public async getOpenOrders(
@@ -523,10 +520,11 @@ export class GelatoLimitOrders {
     includeOrdersWithNullHandler = false
   ): Promise<OrderV2[]> {
     const orders = await queryOpenOrdersV2(owner, this._chainId);
-    return orders.map((order) => ({
-      ...order,
-      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-    }));
+    return orders
+      .map((order) => ({
+        ...order,
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      }));
   }
 
   public async getPastOrders(
@@ -534,10 +532,11 @@ export class GelatoLimitOrders {
     includeOrdersWithNullHandler = false
   ): Promise<OrderV2[]> {
     const orders = await queryPastOrdersV2(owner, this._chainId);
-    return orders.map((order) => ({
-      ...order,
-      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-    }));
+    return orders
+      .map((order) => ({
+        ...order,
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      }));
   }
 
   public async getExecutedOrders(
@@ -545,10 +544,11 @@ export class GelatoLimitOrders {
     includeOrdersWithNullHandler = false
   ): Promise<OrderV2[]> {
     const orders = await queryExecutedOrdersV2(owner, this._chainId);
-    return orders.map((order) => ({
-      ...order,
-      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-    }));
+    return orders
+      .map((order) => ({
+        ...order,
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      }));
   }
 
   public async getCancelledOrders(
@@ -556,14 +556,15 @@ export class GelatoLimitOrders {
     includeOrdersWithNullHandler = false
   ): Promise<OrderV2[]> {
     const orders = await queryCancelledOrdersV2(owner, this._chainId);
-    return orders.map((order) => ({
-      ...order,
-      adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
-    }));
+    return orders
+      .map((order) => ({
+        ...order,
+        adjustedMinReturn: this.getAdjustedMinReturn(order.minReturn),
+      }));
   }
 
-  private _toOrderStruct(order: OrderV2) {
-    return {
+  private _toOrderStruct(order: OrderV2)  {
+   return { 
       owner: order.owner,
       inputToken: order.inputToken,
       outputToken: order.outputToken,
@@ -572,9 +573,9 @@ export class GelatoLimitOrders {
       amountIn: BigNumber.from(order.inputAmount),
       minReturn: BigNumber.from(order.minReturn),
       salt: BigNumber.from(order.salt),
-      initCodeHash: utils.formatBytes32String(order.initCodeHash),
-      data: order.data,
-    };
+      initCodeHash:  utils.formatBytes32String(order.initCodeHash),
+      data: order.data
+    }
   }
 
   private async _encodeSubmitData(
@@ -605,7 +606,7 @@ export class GelatoLimitOrders {
         minReturn,
         salt,
         initCodeHash: this._initCodeHash,
-        data: encodedData,
+        data: encodedData
       };
 
       data = this._gelatoUniswapV2LimitOrders.interface.encodeFunctionData(
@@ -635,7 +636,7 @@ export class GelatoLimitOrders {
         minReturn,
         salt,
         initCodeHash: this._initCodeHash,
-        data: encodedData,
+        data: encodedData
       };
 
       data = this._gelatoUniswapV2LimitOrders.interface.encodeFunctionData(

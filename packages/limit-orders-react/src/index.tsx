@@ -39,7 +39,9 @@ export function GelatoProvider({
   library,
   children,
   account,
-  handler,
+  router,
+  factory,
+  initCodeHash,
   toggleWalletModal,
   useDefaultTheme = true,
   useDarkMode = true,
@@ -47,7 +49,9 @@ export function GelatoProvider({
   chainId: number | undefined;
   library: any | undefined;
   account: string | undefined;
-  handler?: Handler;
+  router: string;
+  factory: string;
+  initCodeHash: string;
   toggleWalletModal?: () => void;
   useDefaultTheme?: boolean;
   useDarkMode?: boolean;
@@ -59,7 +63,9 @@ export function GelatoProvider({
         chainId={chainId}
         library={library}
         account={account}
-        handler={handler}
+        router={router}
+        factory={factory}
+        initCodeHash={initCodeHash}
         toggleWalletModal={toggleWalletModal}
       >
         <ThemedGlobalStyle />
@@ -75,7 +81,9 @@ export function GelatoProvider({
       chainId={chainId}
       library={library}
       account={account}
-      handler={handler}
+      router={router}
+      factory={factory}
+      initCodeHash={initCodeHash}
       toggleWalletModal={toggleWalletModal}
     >
       <ListsUpdater />

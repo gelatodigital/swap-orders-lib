@@ -27,23 +27,26 @@ export const _1000 = JSBI.BigInt(1000);
 const calculatePairAddress = (
   tokenA: Token,
   tokenB: Token,
-  handler?: string
+  factory: string,
+  initCodeHash: string
 ): string | undefined => {
-  return calculatePairAddressByHandler(tokenA, tokenB, handler);
+  return calculatePairAddressByHandler(tokenA, tokenB, factory, initCodeHash);
 };
 
 export class Pair {
   public readonly liquidityToken: Token;
-  public readonly handler?: string;
+  public readonly factory: string;
+  public readonly initCodeHash: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   private readonly tokenAmounts: [CurrencyAmount<Token>, CurrencyAmount<Token>];
 
   public static getAddress(
     tokenA: Token,
     tokenB: Token,
-    handler?: string
+    factory: string,
+    initCodeHash: string
   ): string {
-    const address = calculatePairAddress(tokenA, tokenB, handler);
+    const address = calculatePairAddress(tokenA, tokenB, factory, initCodeHash);
 
     if (!address) throw new Error("Pair: no address");
 
@@ -53,7 +56,8 @@ export class Pair {
   public constructor(
     currencyAmountA: CurrencyAmount<Token>,
     tokenAmountB: CurrencyAmount<Token>,
-    handler?: string
+    factory: string,
+    initCodeHash: string
   ) {
     const tokenAmounts = currencyAmountA.currency.sortsBefore(
       tokenAmountB.currency
@@ -65,13 +69,15 @@ export class Pair {
       Pair.getAddress(
         tokenAmounts[0].currency,
         tokenAmounts[1].currency,
-        handler
+        factory,
+        initCodeHash
       ),
       18,
       "UNI-V2",
       "Uniswap V2"
     );
-    this.handler = handler;
+    this.factory = factory;
+    this.initCodeHash = initCodeHash;
     this.tokenAmounts = tokenAmounts as [
       CurrencyAmount<Token>,
       CurrencyAmount<Token>
@@ -183,7 +189,8 @@ export class Pair {
       new Pair(
         inputReserve.add(inputAmount),
         outputReserve.subtract(outputAmount),
-        this.handler
+        this.factory,
+        this.initCodeHash
       ),
     ];
   }
@@ -224,7 +231,8 @@ export class Pair {
       new Pair(
         inputReserve.add(inputAmount),
         outputReserve.subtract(outputAmount),
-        this.handler
+        this.factory,
+        this.initCodeHash
       ),
     ];
   }

@@ -1,4 +1,4 @@
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { OrderV2 } from "@gelatonetwork/limit-orders-lib";
 import { get, set, clear } from "local-storage";
 
 const LS_ORDERS = "gorders_";
@@ -16,7 +16,7 @@ export function getLSOrders(chainId: number, account: string, pending = false) {
     ? lsKey(LS_ORDERS + "pending_", account, chainId)
     : lsKey(LS_ORDERS, account, chainId);
 
-  const orders = get<Order[]>(key);
+  const orders = get<OrderV2[]>(key);
 
   return orders ? getUniqueOrders(orders) : [];
 }
@@ -24,7 +24,7 @@ export function getLSOrders(chainId: number, account: string, pending = false) {
 export function saveOrder(
   chainId: number,
   account: string,
-  order: Order,
+  order: OrderV2 | any,
   pending = false
 ) {
   const key = pending
@@ -48,14 +48,14 @@ export function saveOrder(
 export function removeOrder(
   chainId: number,
   account: string,
-  order: Order,
+  order: OrderV2,
   pending = false
 ) {
   const key = pending
     ? lsKey(LS_ORDERS + "pending_", account, chainId)
     : lsKey(LS_ORDERS, account, chainId);
 
-  const prev = get<Order[]>(key);
+  const prev = get<OrderV2[]>(key);
 
   if (!prev) return [];
 
@@ -76,7 +76,7 @@ export function confirmOrderCancellation(
 ) {
   const cancelHash = cancellationHash.toLowerCase();
   const pendingKey = lsKey(LS_ORDERS + "pending_", account, chainId);
-  const pendingOrders = get<Order[]>(pendingKey);
+  const pendingOrders = get<OrderV2[]>(pendingKey);
   const confirmedOrder = pendingOrders.find(
     (order) => order.cancelledTxHash?.toLowerCase() === cancelHash
   );
@@ -85,7 +85,7 @@ export function confirmOrderCancellation(
 
   if (success && confirmedOrder) {
     const ordersKey = lsKey(LS_ORDERS, account, chainId);
-    const orders = get<Order[]>(ordersKey);
+    const orders = get<OrderV2[]>(ordersKey);
     if (orders) {
       const ordersToSave = removeOrder(chainId, account, confirmedOrder);
       ordersToSave.push({
@@ -112,7 +112,7 @@ export function confirmOrderSubmission(
 ) {
   const creationHash = submissionHash.toLowerCase();
   const pendingKey = lsKey(LS_ORDERS + "pending_", account, chainId);
-  const pendingOrders = get<Order[]>(pendingKey);
+  const pendingOrders = get<OrderV2[]>(pendingKey);
   const confirmedOrder = pendingOrders.find(
     (order) => order.createdTxHash?.toLowerCase() === creationHash
   );
@@ -121,7 +121,7 @@ export function confirmOrderSubmission(
 
   if (success && confirmedOrder) {
     const ordersKey = lsKey(LS_ORDERS, account, chainId);
-    const orders = get<Order[]>(ordersKey);
+    const orders = get<OrderV2[]>(ordersKey);
     if (orders) {
       const ordersToSave = removeOrder(chainId, account, {
         ...confirmedOrder,
@@ -143,7 +143,7 @@ export function confirmOrderSubmission(
   }
 }
 
-export const getUniqueOrders = (allOrders: Order[]): Order[] => [
+export const getUniqueOrders = (allOrders: OrderV2[]): OrderV2[] => [
   ...new Map(
     allOrders
       // sort by `updatedAt` asc so that the most recent one will be used

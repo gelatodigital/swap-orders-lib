@@ -35,7 +35,7 @@ const usdcCurrencyAmountAVAX = CurrencyAmount.fromRawAmount(
 export default function useUSDCPrice(
   currency?: Currency
 ): Price<Currency, Token> | undefined {
-  const { chainId, handler } = useWeb3();
+  const { chainId, factory, initCodeHash } = useWeb3();
   const v2USDCTrade = useTradeExactOut(
     currency,
     chainId === 56
@@ -49,7 +49,7 @@ export default function useUSDCPrice(
       : chainId === 1
       ? usdcCurrencyAmount
       : undefined,
-    handler,
+      factory, initCodeHash,
     {
       maxHops: 2,
     }

@@ -104,10 +104,10 @@ export function useURLWarningVisible(): boolean {
  * @param tokenA one of the two tokens
  * @param tokenB the other token
  */
-export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token]): Token {
+export function toV2LiquidityToken([tokenA, tokenB]: [Token, Token], factory: string, initCodeHash:string): Token {
   return new Token(
     tokenA.chainId,
-    Pair.getAddress(tokenA, tokenB),
+    Pair.getAddress(tokenA, tokenB, factory, initCodeHash),
     18,
     "UNI-V2",
     "Uniswap V2"

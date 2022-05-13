@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { OrderV2 } from "@gelatonetwork/limit-orders-lib";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Overrides } from "@ethersproject/contracts";
 import { TransactionResponse } from "@ethersproject/abstract-provider";
@@ -23,7 +23,7 @@ export interface GelatoLimitOrdersHandlers {
     overrides?: Overrides;
   }) => Promise<TransactionResponse>;
   handleLimitOrderCancellation: (
-    order: Order,
+    order: OrderV2,
     orderDetails?: {
       inputTokenSymbol: string;
       outputTokenSymbol: string;
@@ -79,10 +79,9 @@ export default function useGelatoLimitOrdersHandlers(): GelatoLimitOrdersHandler
       }
 
       const {
-        witness,
         payload,
         order,
-      } = await gelatoLimitOrders.encodeLimitOrderSubmissionWithSecret(
+      } = await gelatoLimitOrders.encodeLimitOrderSubmissionWithSalt(
         orderToSubmit.inputToken,
         orderToSubmit.outputToken,
         orderToSubmit.inputAmount,
@@ -105,11 +104,10 @@ export default function useGelatoLimitOrdersHandlers(): GelatoLimitOrdersHandler
         order: {
           ...order,
           createdTxHash: tx?.hash.toLowerCase(),
-          witness,
           status: "open",
           updatedAt: now.toString(),
           createdAt: now.toString(),
-        } as Order,
+        } as OrderV2,
       });
 
       return tx;
@@ -119,7 +117,7 @@ export default function useGelatoLimitOrdersHandlers(): GelatoLimitOrdersHandler
 
   const handleLimitOrderCancellation = useCallback(
     async (
-      orderToCancel: Order,
+      orderToCancel: OrderV2,
       orderDetails?: {
         inputTokenSymbol: string;
         outputTokenSymbol: string;
@@ -141,10 +139,11 @@ export default function useGelatoLimitOrdersHandlers(): GelatoLimitOrdersHandler
       }
 
       const checkIfOrderExists = Boolean(
-        orderToCancel.module &&
+        orderToCancel.factory &&
+        orderToCancel.initCodeHash &&
+        orderToCancel.router &&
           orderToCancel.inputToken &&
           orderToCancel.owner &&
-          orderToCancel.witness &&
           orderToCancel.data
       );
 

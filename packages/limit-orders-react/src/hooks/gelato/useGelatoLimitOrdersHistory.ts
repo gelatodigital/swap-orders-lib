@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { OrderV2 } from "@gelatonetwork/limit-orders-lib";
 import { useWeb3 } from "../../web3";
 import {
   clearOrdersLocalStorage,
@@ -12,14 +12,14 @@ import { AppState } from "../../state";
 import useGelatoLimitOrdersLib from "./useGelatoLimitOrdersLib";
 
 export interface GelatoLimitOrdersHistory {
-  open: { pending: Order[]; confirmed: Order[] };
-  cancelled: { pending: Order[]; confirmed: Order[] };
-  executed: Order[];
-  expired: Order[];
+  open: { pending: OrderV2[]; confirmed: OrderV2[] };
+  cancelled: { pending: OrderV2[]; confirmed: OrderV2[] };
+  executed: OrderV2[];
+  expired: OrderV2[];
   clearLocalStorageAndRefetchDataFromSubgraph: () => void;
 }
 
-function newOrdersFirst(a: Order, b: Order) {
+function newOrdersFirst(a: OrderV2, b: OrderV2) {
   return Number(b.updatedAt) - Number(a.updatedAt);
 }
 
@@ -31,15 +31,15 @@ export default function useGelatoLimitOrdersHistory(
   const gelatoLimitOrders = useGelatoLimitOrdersLib();
 
   const [openOrders, setOpenOrders] = useState<{
-    pending: Order[];
-    confirmed: Order[];
+    pending: OrderV2[];
+    confirmed: OrderV2[];
   }>({ pending: [], confirmed: [] });
   const [cancelledOrders, setCancelledOrders] = useState<{
-    pending: Order[];
-    confirmed: Order[];
+    pending: OrderV2[];
+    confirmed: OrderV2[];
   }>({ pending: [], confirmed: [] });
-  const [executedOrders, setExecutedOrders] = useState<Order[]>([]);
-  const [expiredOrders, setExpiredOrders] = useState<Order[]>([]);
+  const [executedOrders, setExecutedOrders] = useState<OrderV2[]>([]);
+  const [expiredOrders, setExpiredOrders] = useState<OrderV2[]>([]);
 
   const state = useSelector<AppState, AppState["gtransactions"]>(
     (state) => state.gtransactions
@@ -57,7 +57,7 @@ export default function useGelatoLimitOrdersHistory(
         .then(async (orders) => {
           const ordersLS = getLSOrders(chainId, account);
 
-          orders.forEach((order: Order) => {
+          orders.forEach((order: OrderV2) => {
             const orderExists = ordersLS.find(
               (confOrder) =>
                 confOrder.id.toLowerCase() === order.id.toLowerCase()
@@ -86,7 +86,7 @@ export default function useGelatoLimitOrdersHistory(
           setOpenOrders({
             confirmed: openOrdersLS
               .filter((order) => !order.isExpired)
-              .filter((order: Order) => {
+              .filter((order: OrderV2) => {
                 const orderCancelled = pendingOrdersLS
                   .filter((pendingOrder) => pendingOrder.status === "cancelled")
                   .find(
@@ -118,7 +118,7 @@ export default function useGelatoLimitOrdersHistory(
           setOpenOrders({
             confirmed: openOrdersLS
               .filter((order) => !order.isExpired)
-              .filter((order: Order) => {
+              .filter((order: OrderV2) => {
                 const orderCancelled = pendingOrdersLS
                   .filter((pendingOrder) => pendingOrder.status === "cancelled")
                   .find(
@@ -142,7 +142,7 @@ export default function useGelatoLimitOrdersHistory(
         .then(async (orders) => {
           const ordersLS = getLSOrders(chainId, account);
 
-          orders.forEach((order: Order) => {
+          orders.forEach((order: OrderV2) => {
             const orderExists = ordersLS.find(
               (confOrder) =>
                 confOrder.id.toLowerCase() === order.id.toLowerCase()
@@ -197,7 +197,7 @@ export default function useGelatoLimitOrdersHistory(
         .then(async (orders) => {
           const ordersLS = getLSOrders(chainId, account);
 
-          orders.forEach((order: Order) => {
+          orders.forEach((order: OrderV2) => {
             const orderExists = ordersLS.find(
               (confOrder) =>
                 confOrder.id.toLowerCase() === order.id.toLowerCase()

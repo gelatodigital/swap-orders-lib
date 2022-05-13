@@ -178,7 +178,7 @@ const Spacer = styled.div`
 export default function OrderCard({ order }: { order: Order }) {
   const theme = useTheme();
 
-  const { chainId, handler } = useWeb3();
+  const { chainId, factory, initCodeHash } = useWeb3();
 
   const [
     showExecutionPriceInverted,
@@ -259,7 +259,7 @@ export default function OrderCard({ order }: { order: Order }) {
     [inputAmount, outputAmount]
   );
 
-  const trade = useTradeExactIn(inputAmount, outputToken ?? undefined, handler);
+  const trade = useTradeExactIn(inputAmount, outputToken ?? undefined, factory, initCodeHash);
 
   const isSubmissionPending = useIsTransactionPending(order.createdTxHash);
   const isCancellationPending = useIsTransactionPending(

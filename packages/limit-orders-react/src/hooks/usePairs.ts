@@ -3,7 +3,6 @@ import { abi as IUniswapV2PairABI } from "../abis/IUniswapV2Pair.json";
 import { Interface } from "@ethersproject/abi";
 import { useMultipleContractSingleData } from "../state/gmulticall/hooks";
 import { Currency, CurrencyAmount } from "@uniswap/sdk-core";
-import { Handler } from "@gelatonetwork/limit-orders-lib";
 import { Pair } from "../entities/pair";
 import { useWeb3 } from "../web3";
 import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
@@ -19,10 +18,9 @@ export enum PairState {
 
 export function usePairs(
   currencies: [Currency | undefined, Currency | undefined][],
-  handler?: Handler
-): [PairState, Pair | null][] {
-  const { chainId } = useWeb3();
-
+): [PairState | undefined, Pair | null][] {
+  const { chainId, factory, initCodeHash } = useWeb3();
+  if(!factory || !initCodeHash) return [[undefined, null]];
   const tokens = useMemo(
     () =>
       currencies.map(([currencyA, currencyB]) => [
@@ -36,10 +34,10 @@ export function usePairs(
     () =>
       tokens.map(([tokenA, tokenB]) => {
         return tokenA && tokenB && !tokenA.equals(tokenB)
-          ? Pair.getAddress(tokenA, tokenB, handler)
+          ? Pair.getAddress(tokenA, tokenB, factory, initCodeHash)
           : undefined;
       }),
-    [tokens, handler]
+    [tokens, factory, initCodeHash]
   );
 
   const results = useMultipleContractSingleData(
@@ -72,17 +70,18 @@ export function usePairs(
         new Pair(
           CurrencyAmount.fromRawAmount(token0, reserve0.toString()),
           CurrencyAmount.fromRawAmount(token1, reserve1.toString()),
-          handler
+          factory,
+          initCodeHash
         ),
       ];
     });
-  }, [results, tokens, handler]);
+  }, [results, tokens, factory, initCodeHash]);
 }
 
 export function usePair(
   tokenA?: Currency,
   tokenB?: Currency
-): [PairState, Pair | null] {
+): [PairState | undefined, Pair | null] {
   const inputs: [[Currency | undefined, Currency | undefined]] = useMemo(
     () => [[tokenA, tokenB]],
     [tokenA, tokenB]

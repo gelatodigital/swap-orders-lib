@@ -21,7 +21,7 @@ export default function useGasOverhead(
   realExecutionPriceAsString: string | undefined;
   gasPrice: number | undefined;
 } {
-  const { chainId, handler } = useWeb3();
+  const { chainId, factory, initCodeHash } = useWeb3();
 
   const gasPrice = useGasPrice();
   const nativeCurrency = useCurrency("NATIVE");
@@ -40,7 +40,8 @@ export default function useGasOverhead(
   const gasCostInInputTokens = useTradeExactIn(
     requiredGasAsCurrencyAmount,
     inputAmount?.currency,
-    handler
+    factory, 
+    initCodeHash
   );
 
   const bufferedOutputAmount = useMemo(

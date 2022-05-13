@@ -6,16 +6,16 @@ import { useFrontrunProtected } from "../../state/gapplication/hooks";
 export default function useGelatoLimitOrdersLib():
   | GelatoLimitOrders
   | undefined {
-  const { chainId, library, handler } = useWeb3();
+  const { chainId, library, router, factory, initCodeHash } = useWeb3();
   const frontrunProtected = useFrontrunProtected();
 
   return useMemo(() => {
     try {
-      return chainId && library
+      return chainId && library && router && factory && initCodeHash
         ? new GelatoLimitOrders(
             chainId as ChainId,
-            library?.getSigner(),
-            frontrunProtected ? undefined : handler,
+            library.getSigner(),
+            router, factory, initCodeHash,
             frontrunProtected
           )
         : undefined;
@@ -25,5 +25,5 @@ export default function useGelatoLimitOrdersLib():
       );
       return undefined;
     }
-  }, [chainId, library, handler, frontrunProtected]);
+  }, [chainId, library, router, factory, initCodeHash, frontrunProtected]);
 }
