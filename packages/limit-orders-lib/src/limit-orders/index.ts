@@ -573,7 +573,7 @@ export class GelatoLimitOrders {
       amountIn: BigNumber.from(order.inputAmount),
       minReturn: BigNumber.from(order.minReturn),
       salt: BigNumber.from(order.salt),
-      initCodeHash:  utils.formatBytes32String(order.initCodeHash),
+      initCodeHash:  order.initCodeHash,
       data: order.data
     }
   }

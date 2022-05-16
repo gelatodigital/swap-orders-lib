@@ -4,7 +4,7 @@ import { darken } from "polished";
 import { ArrowRight } from "react-feather";
 import { Text } from "rebass";
 import { RowBetween } from "../../Row";
-import { Order, constants } from "@gelatonetwork/limit-orders-lib";
+import { OrderV2, constants } from "@gelatonetwork/limit-orders-lib";
 import useTheme from "../../../hooks/useTheme";
 import { useCurrency } from "../../../hooks/Tokens";
 import CurrencyLogo from "../../CurrencyLogo";
@@ -175,7 +175,7 @@ const Spacer = styled.div`
   flex: 1 1 auto;
 `;
 
-export default function OrderCard({ order }: { order: Order }) {
+export default function OrderCard({ order }: { order: OrderV2 }) {
   const theme = useTheme();
 
   const { chainId, factory, initCodeHash } = useWeb3();

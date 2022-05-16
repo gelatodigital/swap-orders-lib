@@ -14,9 +14,11 @@ export default function useGelatoLimitOrdersLib():
       return chainId && library && router && factory && initCodeHash
         ? new GelatoLimitOrders(
             chainId as ChainId,
-            library.getSigner(),
-            router, factory, initCodeHash,
-            frontrunProtected
+            router, 
+            factory, 
+            initCodeHash,
+            frontrunProtected,
+            library.getSigner()
           )
         : undefined;
     } catch (error: any) {
