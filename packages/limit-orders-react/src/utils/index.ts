@@ -43,18 +43,6 @@ export function isAddress(value: any): string | false {
   }
 }
 
-// export function safeAccess(object, path) {
-//   return object
-//     ? path.reduce(
-//         (accumulator, currentValue) =>
-//           accumulator && accumulator[currentValue]
-//             ? accumulator[currentValue]
-//             : null,
-//         object
-//       )
-//     : null;
-// }
-
 export function isTradeBetter(
   tradeA: V2Trade<Currency, Currency, TradeType> | undefined | null,
   tradeB: V2Trade<Currency, Currency, TradeType> | undefined | null,
@@ -80,102 +68,6 @@ export function isTradeBetter(
       .lessThan(tradeB.executionPrice);
   }
 }
-
-// export function getContract(address: string, ABI: any, signerOrProvider?: any) {
-//   if (!isAddress(address) || address === AddressZero) {
-//     throw Error(`Invalid 'address' parameter '${address}'.`);
-//   }
-
-//   return new Contract(address, ABI, signerOrProvider);
-// }
-// get token decimals
-// export async function getTokenDecimals(tokenAddress, signerOrProvider) {
-//   if (!isAddress(tokenAddress)) {
-//     throw Error(`Invalid 'tokenAddress' parameter '${tokenAddress}'.`);
-//   }
-
-//   return getContract(tokenAddress, ERC20_ABI, signerOrProvider)
-//     .decimals()
-//     .catch((error) => {
-//       error.code = "TOKEN_DECIMALS";
-//       throw error;
-//     });
-// }
-
-// get token name
-// export async function getTokenName(tokenAddress, library) {
-//   if (!isAddress(tokenAddress)) {
-//     throw Error(`Invalid 'tokenAddress' parameter '${tokenAddress}'.`);
-//   }
-
-//   if (
-//     tokenAddress.toLowerCase() === "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359"
-//   ) {
-//     return "Sai Stablecoin";
-//   }
-
-//   return getContract(tokenAddress, ERC20_ABI, library)
-//     .name()
-//     .catch(() =>
-//       getContract(tokenAddress, ERC20_BYTES32_ABI, library)
-//         .name()
-//         .then((bytes32) => utils.parseBytes32String(bytes32))
-//     )
-//     .catch((error) => {
-//       error.code = "TOKEN_NAME";
-//       throw error;
-//     });
-// }
-
-// // get token symbol
-// export async function getTokenSymbol(tokenAddress, signerOrProvider) {
-//   if (!isAddress(tokenAddress)) {
-//     throw Error(`Invalid 'tokenAddress' parameter '${tokenAddress}'.`);
-//   }
-
-//   if (
-//     tokenAddress.toLowerCase() === "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359"
-//   ) {
-//     return "SAI";
-//   }
-
-//   return getContract(tokenAddress, ERC20_ABI, signerOrProvider)
-//     .symbol()
-//     .catch(() => {
-//       const contractBytes32 = getContract(
-//         tokenAddress,
-//         ERC20_BYTES32_ABI,
-//         signerOrProvider
-//       );
-//       return contractBytes32
-//         .symbol()
-//         .then((bytes32) => utils.parseBytes32String(bytes32));
-//     })
-//     .catch((error) => {
-//       error.code = "TOKEN_SYMBOL";
-//       throw error;
-//     });
-// }
-
-// export async function getTokenBalance(tokenAddress, address, library) {
-//   if (!isAddress(tokenAddress) || !isAddress(address)) {
-//     throw Error(
-//       `Invalid 'tokenAddress' or 'address' parameter '${tokenAddress}' or '${address}'.`
-//     );
-//   }
-
-//   return getContract(tokenAddress, ERC20_ABI, library).balanceOf(address);
-// }
-
-// export async function getERC20Contract(tokenAddress, address) {
-//   if (!isAddress(tokenAddress) || !isAddress(address)) {
-//     throw Error(
-//       `Invalid 'tokenAddress' or 'address' parameter '${tokenAddress}' or '${address}'.`
-//     );
-//   }
-
-//   return getContract(tokenAddress, ERC20_ABI);
-// }
 
 // account is not optional
 export function getSigner(
@@ -218,3 +110,18 @@ export async function getEtherBalance(address: string, library: Web3Provider) {
   }
   return library.getBalance(address);
 }
+
+export const buildBasesToCheckTradesAgainst = (
+  bases: {
+    chainId: number;
+    address: string;
+    decimals: number;
+    name: string;
+    symbol: string;
+  }[]
+): Token[] => {
+  return bases.map(
+    ({ chainId, address, decimals, name, symbol }) =>
+      new Token(chainId, address, decimals, symbol, name)
+  );
+};

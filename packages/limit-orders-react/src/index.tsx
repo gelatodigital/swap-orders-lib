@@ -1,6 +1,6 @@
 import React from "react";
-import { Handler } from "@gelatonetwork/limit-orders-lib";
 export * from "@gelatonetwork/limit-orders-lib";
+import { CurrencyAmount } from "@uniswap/sdk-core";
 
 import { gelatoReducers, GELATO_PERSISTED_KEYS } from "./state";
 import ApplicationUpdater from "./state/gapplication/updater";
@@ -9,10 +9,9 @@ import MulticallUpdater from "./state/gmulticall/updater";
 import TransactionUpdater from "./state/gtransactions/updater";
 import { clearAllTransactions } from "./state/gtransactions/actions";
 import { tryParseAmount } from "./state/gorder/hooks";
-import {
+import { 
   useGelatoLimitOrders,
-  useGelatoLimitOrdersHandlers,
-} from "./hooks/gelato";
+  useGelatoLimitOrdersHandlers } from "./hooks/gelato";
 import useGelatoLimitOrdersHistory from "./hooks/gelato/useGelatoLimitOrdersHistory";
 import useGelatoLimitOrdersLib from "./hooks/gelato/useGelatoLimitOrdersLib";
 import GelatoLimitOrderPanel from "./components/GelatoLimitOrder";
@@ -31,8 +30,8 @@ import {
 } from "./hooks/useApproveCallback";
 import { useTransactionAdder } from "./state/gtransactions/hooks";
 import { clearOrdersLocalStorage } from "./utils/localStorageOrders";
-import { CurrencyAmount } from "@uniswap/sdk-core";
 import TradePrice from "./components/order/TradePrice";
+import { buildBasesToCheckTradesAgainst } from "./utils";
 
 export function GelatoProvider({
   chainId,
@@ -41,22 +40,45 @@ export function GelatoProvider({
   account,
   router,
   factory,
+  bases,
   initCodeHash,
   toggleWalletModal,
   useDefaultTheme = true,
   useDarkMode = true,
+  tokenListURLs = [],
 }: {
   chainId: number | undefined;
   library: any | undefined;
   account: string | undefined;
   router: string;
+  bases?: {
+    chainId: number;
+    address: string;
+    decimals: number;
+    name: string;
+    symbol: string;
+  }[];
   factory: string;
   initCodeHash: string;
   toggleWalletModal?: () => void;
   useDefaultTheme?: boolean;
   useDarkMode?: boolean;
   children?: React.ReactNode;
+  tokenListURLs?: string[];
 }) {
+  const basesToCheckTradesAgainst = bases && bases.length > 0
+  ? buildBasesToCheckTradesAgainst(bases)
+  : undefined;
+
+if (basesToCheckTradesAgainst) {
+  for (const base of basesToCheckTradesAgainst) {
+    if (base.chainId !== chainId) {
+      throw new Error(
+        `Invalid base chainId for token ${base.name}/${base.symbol}: ${base.address}. Required chainId: ${chainId}`
+      );
+    }
+  }
+}
   return useDefaultTheme ? (
     <ThemeProvider useDarkMode={useDarkMode}>
       <Web3Provider
@@ -64,12 +86,13 @@ export function GelatoProvider({
         library={library}
         account={account}
         router={router}
+        bases={basesToCheckTradesAgainst}
         factory={factory}
         initCodeHash={initCodeHash}
         toggleWalletModal={toggleWalletModal}
       >
         <ThemedGlobalStyle />
-        <ListsUpdater />
+        <ListsUpdater includeTokenLists={tokenListURLs} />
         <ApplicationUpdater />
         <MulticallUpdater />
         <TransactionUpdater />
@@ -80,13 +103,14 @@ export function GelatoProvider({
     <Web3Provider
       chainId={chainId}
       library={library}
+      bases={basesToCheckTradesAgainst}
       account={account}
       router={router}
       factory={factory}
       initCodeHash={initCodeHash}
       toggleWalletModal={toggleWalletModal}
     >
-      <ListsUpdater />
+      <ListsUpdater includeTokenLists={tokenListURLs} />
       <ApplicationUpdater />
       <MulticallUpdater />
       <TransactionUpdater />

@@ -87,6 +87,8 @@ function Gelato({ children }: { children?: React.ReactNode }) {
 
       // By default `useDefaultTheme`and `useDarkMode` are set to true
       // Optionally, if you can try to use and pass your own theme by setting `useDefaultTheme`={false}
+      // Optionally, parse tokenlist as tokenListURLs={["https://tokenlist.com"]}
+      // Optionally, set your own bases (otherwise the default one will be used) `bases={bases}` (where bases is an array of {chainId:number; address:string; decimals:number; name:string; symbol:string;})
       // as long as it conforms with our theme definitions (you can check our `ThemeProvider` [here](https://github.com/gelatodigital/limit-orders-lib/tree/master/packages/limit-orders-react/theme/index.tsx))
       // Optionally, if your main theme does not comply with our definitions, you can also wrap `GelatoProvider`
       // with a custom `ThemeProvider` with your own custom definitions. (check our `ThemeProvider` as an example)
