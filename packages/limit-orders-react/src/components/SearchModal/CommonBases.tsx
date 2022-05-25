@@ -9,6 +9,7 @@ import { AutoColumn } from "../Column";
 import QuestionHelper from "../QuestionHelper";
 import { AutoRow } from "../Row";
 import CurrencyLogo from "../CurrencyLogo";
+import { useWeb3 } from "../../web3";
 
 const BaseWrapper = styled.div<{ disable?: boolean }>`
   border: 1px solid
@@ -36,6 +37,8 @@ export default function CommonBases({
   selectedCurrency?: Currency | null;
   onSelect: (currency: Currency) => void;
 }) {
+  const { bases: customBasesToCheckTradesAgainst } = useWeb3();
+
   return (
     <AutoColumn gap="md">
       <AutoRow>
@@ -46,7 +49,9 @@ export default function CommonBases({
       </AutoRow>
       <AutoRow gap="4px">
         {(typeof chainId === "number"
-          ? SUGGESTED_BASES[chainId] ?? []
+          ? customBasesToCheckTradesAgainst ??
+            BASES_TO_CHECK_TRADES_AGAINST[chainId] ??
+            []
           : []
         ).map((currency: Currency) => {
           const isSelected = selectedCurrency?.equals(currency);
@@ -56,7 +61,11 @@ export default function CommonBases({
               disable={isSelected}
               key={currencyId(currency)}
             >
-              <CurrencyLogo currency={currency} style={{ marginRight: 8 }} />
+              <CurrencyLogo
+                chainId={chainId}
+                currency={currency}
+                style={{ marginRight: 8 }}
+              />
               <Text fontWeight={500} fontSize={16}>
                 {currency.symbol}
               </Text>

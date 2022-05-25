@@ -40,7 +40,7 @@ export default function useGasOverhead(
   const gasCostInInputTokens = useTradeExactIn(
     requiredGasAsCurrencyAmount,
     inputAmount?.currency,
-    factory, 
+    factory,
     initCodeHash
   );
 

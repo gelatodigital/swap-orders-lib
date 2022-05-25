@@ -7,10 +7,7 @@ import { useAllCurrencyCombinations } from "./useAllCurrencyCombinations";
 import { PairState, usePairs } from "./usePairs";
 import { Pair } from "../entities/pair";
 
-function useAllCommonPairs(
-  currencyA?: Currency,
-  currencyB?: Currency,
-): Pair[] {
+function useAllCommonPairs(currencyA?: Currency, currencyB?: Currency): Pair[] {
   const allCurrencyCombinations = useAllCurrencyCombinations(
     currencyA,
     currencyB
@@ -105,7 +102,7 @@ export function useTradeExactIn(
 export function useTradeExactOut(
   currencyIn?: Currency,
   currencyAmountOut?: CurrencyAmount<Currency>,
-  factory?: string | undefined, 
+  factory?: string | undefined,
   initCodeHash?: string | undefined,
   { maxHops = MAX_HOPS } = {}
 ): Trade<Currency, Currency, TradeType.EXACT_OUTPUT> | null {

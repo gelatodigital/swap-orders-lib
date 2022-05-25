@@ -49,7 +49,8 @@ export default function useUSDCPrice(
       : chainId === 1
       ? usdcCurrencyAmount
       : undefined,
-      factory, initCodeHash,
+    factory,
+    initCodeHash,
     {
       maxHops: 2,
     }

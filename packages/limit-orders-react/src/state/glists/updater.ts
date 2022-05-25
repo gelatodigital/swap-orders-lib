@@ -9,7 +9,7 @@ import {
   DEFAULT_LIST_OF_LISTS_MAINNET,
   DEFAULT_LIST_OF_LISTS_MATIC,
   DEFAULT_LIST_OF_LISTS_AVALANCHE,
-  DEFAULT_LIST_OF_LISTS_CRO
+  DEFAULT_LIST_OF_LISTS_CRO,
 } from "../../constants/lists";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "..";
@@ -44,20 +44,20 @@ export default function Updater({
   useInterval(fetchAllListsCallback, library ? 1000 * 60 * 10 : null);
 
   // includeTokenLists
-    useEffect(() => {
-      if (!library || !includeTokenLists.length) return;
-      includeTokenLists.forEach((listURL: string) => {
-        fetchList(library, listURL)
-          .then(() => {
-            dispatch(addList(listURL));
-            dispatch(enableList(listURL));
-          })
-          .catch((error) => {
-            console.debug("list added fetching error", error);
-            dispatch(removeList(listURL));
-          });
-      });
-    }, [library, includeTokenLists]);
+  useEffect(() => {
+    if (!library || !includeTokenLists.length) return;
+    includeTokenLists.forEach((listURL: string) => {
+      fetchList(library, listURL)
+        .then(() => {
+          dispatch(addList(listURL));
+          dispatch(enableList(listURL));
+        })
+        .catch((error) => {
+          console.debug("list added fetching error", error);
+          dispatch(removeList(listURL));
+        });
+    });
+  }, [library, includeTokenLists]);
 
   // whenever a list is not loaded and not loading, try again to load it
   useEffect(() => {
@@ -77,8 +77,8 @@ export default function Updater({
 
     const urlList =
       chainId === 25
-      ? DEFAULT_LIST_OF_LISTS_CRO
-      : chainId === 56
+        ? DEFAULT_LIST_OF_LISTS_CRO
+        : chainId === 56
         ? DEFAULT_LIST_OF_LISTS_BSC
         : chainId === 137
         ? DEFAULT_LIST_OF_LISTS_MATIC

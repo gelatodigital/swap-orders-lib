@@ -259,7 +259,12 @@ export default function OrderCard({ order }: { order: OrderV2 }) {
     [inputAmount, outputAmount]
   );
 
-  const trade = useTradeExactIn(inputAmount, outputToken ?? undefined, factory, initCodeHash);
+  const trade = useTradeExactIn(
+    inputAmount,
+    outputToken ?? undefined,
+    factory,
+    initCodeHash
+  );
 
   const isSubmissionPending = useIsTransactionPending(order.createdTxHash);
   const isCancellationPending = useIsTransactionPending(

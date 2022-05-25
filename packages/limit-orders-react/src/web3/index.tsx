@@ -8,9 +8,9 @@ interface Web3State {
   account: string | undefined | null;
   chainId: number | undefined;
   bases?: Token[];
-  router: string | undefined,
-  factory: string | undefined,
-  initCodeHash: string | undefined,
+  router: string | undefined;
+  factory: string | undefined;
+  initCodeHash: string | undefined;
   toggleWalletModal?: () => void;
 }
 
@@ -20,9 +20,9 @@ interface Web3ProviderProps {
   account: string | undefined | null;
   chainId: number | undefined;
   bases?: Token[];
-  router: string | undefined,
-  factory: string | undefined,
-  initCodeHash: string | undefined,
+  router: string | undefined;
+  factory: string | undefined;
+  initCodeHash: string | undefined;
   toggleWalletModal?: () => void;
 }
 
@@ -65,9 +65,16 @@ export const Web3Provider: FC<Web3ProviderProps> = ({
       initCodeHash,
       toggleWalletModal,
     });
-  }, [library, chainId, account, bases, router,
+  }, [
+    library,
+    chainId,
+    account,
+    bases,
+    router,
     factory,
-    initCodeHash, toggleWalletModal]);
+    initCodeHash,
+    toggleWalletModal,
+  ]);
 
   return (
     <Web3Context.Provider

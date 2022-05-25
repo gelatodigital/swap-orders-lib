@@ -140,8 +140,8 @@ export default function useGelatoLimitOrdersHandlers(): GelatoLimitOrdersHandler
 
       const checkIfOrderExists = Boolean(
         orderToCancel.factory &&
-        orderToCancel.initCodeHash &&
-        orderToCancel.router &&
+          orderToCancel.initCodeHash &&
+          orderToCancel.router &&
           orderToCancel.inputToken &&
           orderToCancel.owner &&
           orderToCancel.data

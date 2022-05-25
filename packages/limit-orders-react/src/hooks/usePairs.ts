@@ -17,10 +17,10 @@ export enum PairState {
 }
 
 export function usePairs(
-  currencies: [Currency | undefined, Currency | undefined][],
+  currencies: [Currency | undefined, Currency | undefined][]
 ): [PairState | undefined, Pair | null][] {
   const { chainId, factory, initCodeHash } = useWeb3();
-  if(!factory || !initCodeHash) return [[undefined, null]];
+  if (!factory || !initCodeHash) return [[undefined, null]];
   const tokens = useMemo(
     () =>
       currencies.map(([currencyA, currencyB]) => [

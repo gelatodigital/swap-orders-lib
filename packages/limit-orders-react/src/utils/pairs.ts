@@ -2,7 +2,12 @@ import { Token } from "@uniswap/sdk-core";
 import { getCreate2Address } from "@ethersproject/address";
 import { keccak256, pack } from "@ethersproject/solidity";
 
-const getPairAddress = (tokenA: Token, tokenB: Token, factory: string, initCodeHash: string): string => {
+const getPairAddress = (
+  tokenA: Token,
+  tokenB: Token,
+  factory: string,
+  initCodeHash: string
+): string => {
   const tokens = tokenA.sortsBefore(tokenB)
     ? [tokenA, tokenB]
     : [tokenB, tokenA]; // does safety checks
@@ -17,12 +22,11 @@ const getPairAddress = (tokenA: Token, tokenB: Token, factory: string, initCodeH
   );
 };
 
-
 export const calculatePairAddressByHandler = (
   tokenA: Token,
   tokenB: Token,
   factory: string,
   initCodeHash: string
 ): string | undefined => {
- return getPairAddress(tokenA, tokenB, factory, initCodeHash);
+  return getPairAddress(tokenA, tokenB, factory, initCodeHash);
 };

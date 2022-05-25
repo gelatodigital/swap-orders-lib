@@ -9,9 +9,10 @@ import MulticallUpdater from "./state/gmulticall/updater";
 import TransactionUpdater from "./state/gtransactions/updater";
 import { clearAllTransactions } from "./state/gtransactions/actions";
 import { tryParseAmount } from "./state/gorder/hooks";
-import { 
+import {
   useGelatoLimitOrders,
-  useGelatoLimitOrdersHandlers } from "./hooks/gelato";
+  useGelatoLimitOrdersHandlers,
+} from "./hooks/gelato";
 import useGelatoLimitOrdersHistory from "./hooks/gelato/useGelatoLimitOrdersHistory";
 import useGelatoLimitOrdersLib from "./hooks/gelato/useGelatoLimitOrdersLib";
 import GelatoLimitOrderPanel from "./components/GelatoLimitOrder";
@@ -66,19 +67,20 @@ export function GelatoProvider({
   children?: React.ReactNode;
   tokenListURLs?: string[];
 }) {
-  const basesToCheckTradesAgainst = bases && bases.length > 0
-  ? buildBasesToCheckTradesAgainst(bases)
-  : undefined;
+  const basesToCheckTradesAgainst =
+    bases && bases.length > 0
+      ? buildBasesToCheckTradesAgainst(bases)
+      : undefined;
 
-if (basesToCheckTradesAgainst) {
-  for (const base of basesToCheckTradesAgainst) {
-    if (base.chainId !== chainId) {
-      throw new Error(
-        `Invalid base chainId for token ${base.name}/${base.symbol}: ${base.address}. Required chainId: ${chainId}`
-      );
+  if (basesToCheckTradesAgainst) {
+    for (const base of basesToCheckTradesAgainst) {
+      if (base.chainId !== chainId) {
+        throw new Error(
+          `Invalid base chainId for token ${base.name}/${base.symbol}: ${base.address}. Required chainId: ${chainId}`
+        );
+      }
     }
   }
-}
   return useDefaultTheme ? (
     <ThemeProvider useDarkMode={useDarkMode}>
       <Web3Provider
