@@ -1,10 +1,4 @@
-import React, {
-  Fragment,
-  useState,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
+import React, { Fragment, useState, useCallback, useEffect, useMemo } from "react";
 import {
   Currency,
   CurrencyAmount,
@@ -71,7 +65,7 @@ enum Rate {
   MUL = "MUL",
 }
 
-const RANGE_ORDER_SUPPORTED_CHAINS = [137];
+const RANGE_ORDER_SUPPORTED_CHAINS = [137]
 
 export default function GelatoRangeOrder({
   showCommonBases = true,
@@ -80,7 +74,7 @@ export default function GelatoRangeOrder({
   const { account, toggleWalletModal, chainId } = useWeb3();
   const [activeTab, setActiveTab] = useState<"sell" | "buy">("sell");
   const recipient = account ?? null;
-  const [chainError, setChainError] = useState<UnsupportedChainIdError>();
+  const [chainError, setChainError] = useState<UnsupportedChainIdError>()
   const {
     handlers: {
       handleInput,
@@ -146,14 +140,14 @@ export default function GelatoRangeOrder({
     userHasSpecifiedInputOutput &&
     ((parsedAmounts.input && !parsedAmounts.output) ||
       (!parsedAmounts.input && parsedAmounts.output));
-
+  
   useMemo(() => {
     if (chainId && !RANGE_ORDER_SUPPORTED_CHAINS.includes(chainId)) {
-      setChainError(new UnsupportedChainIdError(chainId));
+      setChainError(new UnsupportedChainIdError(chainId))
     } else {
-      setChainError(undefined);
+      setChainError(undefined)
     }
-  }, [chainId]);
+  }, [chainId])
 
   const handleActiveTab = (tab: "sell" | "buy") => {
     if (activeTab === tab) return;
@@ -509,7 +503,9 @@ export default function GelatoRangeOrder({
                   Connect Wallet
                 </ButtonLight>
               ) : chainError ? (
-                <ButtonLight disabled={true}>Switch Network</ButtonLight>
+                <ButtonLight disabled={true}>
+                  Switch Network
+                </ButtonLight>
               ) : routeNotFound && isLoadingRoute ? (
                 <GreyCard style={{ textAlign: "center" }}>
                   <TYPE.main mb="4px">
