@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useCallback, useEffect } from "react";
+import React, { Fragment, useState, useCallback, useEffect, useMemo } from "react";
 import {
   Currency,
   CurrencyAmount,
@@ -54,6 +54,7 @@ import { MouseoverTooltip } from "../Tooltip";
 import { Trade } from "@uniswap/v2-sdk";
 import { BigNumber } from "ethers";
 import ConfirmSwapModal from "../order/ConfirmSwapModal";
+import { UnsupportedChainIdError } from "@web3-react/core";
 
 interface GelatoRangeOrderProps {
   showCommonBases?: boolean;
@@ -64,13 +65,16 @@ enum Rate {
   MUL = "MUL",
 }
 
+const RANGE_ORDER_SUPPORTED_CHAINS = [137]
+
 export default function GelatoRangeOrder({
   showCommonBases = true,
 }: GelatoRangeOrderProps) {
   const theme = useTheme();
-  const { account, toggleWalletModal } = useWeb3();
+  const { account, toggleWalletModal, chainId } = useWeb3();
   const [activeTab, setActiveTab] = useState<"sell" | "buy">("sell");
   const recipient = account ?? null;
+  const [chainError, setChainError] = useState<UnsupportedChainIdError>()
   const {
     handlers: {
       handleInput,
@@ -136,6 +140,14 @@ export default function GelatoRangeOrder({
     userHasSpecifiedInputOutput &&
     ((parsedAmounts.input && !parsedAmounts.output) ||
       (!parsedAmounts.input && parsedAmounts.output));
+  
+  useMemo(() => {
+    if (chainId && !RANGE_ORDER_SUPPORTED_CHAINS.includes(chainId)) {
+      setChainError(new UnsupportedChainIdError(chainId))
+    } else {
+      setChainError(undefined)
+    }
+  }, [chainId])
 
   const handleActiveTab = (tab: "sell" | "buy") => {
     if (activeTab === tab) return;
@@ -180,13 +192,11 @@ export default function GelatoRangeOrder({
     },
     [handleRangeSelection]
   );
-
   const {
     gasPrice,
     realExecutionPrice,
     realExecutionPriceAsString,
   } = useGasOverhead(parsedAmounts.input, parsedAmounts.output, rateType);
-
   // modal and loading
   const [
     { showConfirm, tradeToConfirm, swapErrorMessage, attemptingTxn, txHash },
@@ -328,8 +338,7 @@ export default function GelatoRangeOrder({
     handleRangeOrderSubmission,
     tradeToConfirm,
     showConfirm,
-    currencies.input?.wrapped.address,
-    currencies.output?.wrapped.address,
+    currencies,
     rawAmounts.input,
     rawAmounts.output,
   ]);
@@ -492,6 +501,10 @@ export default function GelatoRangeOrder({
               ) : !account ? (
                 <ButtonLight onClick={toggleWalletModal}>
                   Connect Wallet
+                </ButtonLight>
+              ) : chainError ? (
+                <ButtonLight disabled={true}>
+                  Switch Network
                 </ButtonLight>
               ) : routeNotFound && isLoadingRoute ? (
                 <GreyCard style={{ textAlign: "center" }}>
