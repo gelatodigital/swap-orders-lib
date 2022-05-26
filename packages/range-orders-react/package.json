@@ -130,5 +130,6 @@
     "react": "16.8-0 || ^17.0.0",
     "react-redux": "^7.2.3",
     "styled-components": "^4.2.0 || ^5.0.0"
-  }
+  },
+  "gitHead": "9c9ca057a15570446a1eafdd1f7f18e5b90cbc6f"
 }
