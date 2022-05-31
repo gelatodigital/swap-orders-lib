@@ -102,7 +102,6 @@ export interface OrderV2 {
   updatedAt: string;
   updatedAtBlock: string;
   updatedAtBlockHash: string;
-  data: string;
   inputData: string;
   isExpired: boolean;
 }
@@ -119,7 +118,6 @@ export interface PartialOrderV2 {
   minReturn: string;
   adjustedMinReturn: string;
   inputAmount: string;
-  data: string;
   inputData: string;
   factory: string;
   router: string;

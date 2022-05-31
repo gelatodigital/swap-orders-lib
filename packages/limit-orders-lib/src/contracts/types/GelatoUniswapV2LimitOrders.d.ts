@@ -24,14 +24,14 @@ interface GelatoUniswapV2LimitOrdersInterface extends ethers.utils.Interface {
   functions: {
     "GELATO()": FunctionFragment;
     "WRAPPED_NATIVE()": FunctionFragment;
-    "canFill(uint256,(address,address,address,address,address,uint256,uint256,uint256,bytes32,bytes),bytes)": FunctionFragment;
-    "cancelOrder((address,address,address,address,address,uint256,uint256,uint256,bytes32,bytes))": FunctionFragment;
-    "depositNative((address,address,address,address,address,uint256,uint256,uint256,bytes32,bytes))": FunctionFragment;
-    "depositToken((address,address,address,address,address,uint256,uint256,uint256,bytes32,bytes))": FunctionFragment;
+    "canFill(uint256,(address,address,address,address,address,uint256,uint256,uint256,bytes32),bytes)": FunctionFragment;
+    "cancelOrder((address,address,address,address,address,uint256,uint256,uint256,bytes32))": FunctionFragment;
+    "depositNative((address,address,address,address,address,uint256,uint256,uint256,bytes32))": FunctionFragment;
+    "depositToken((address,address,address,address,address,uint256,uint256,uint256,bytes32))": FunctionFragment;
     "deposits(bytes32)": FunctionFragment;
-    "fill((address,address,address,address,address,uint256,uint256,uint256,bytes32,bytes),bytes)": FunctionFragment;
+    "fill((address,address,address,address,address,uint256,uint256,uint256,bytes32),bytes)": FunctionFragment;
     "isActiveOrder(bytes32)": FunctionFragment;
-    "keyOf((address,address,address,address,address,uint256,uint256,uint256,bytes32,bytes))": FunctionFragment;
+    "keyOf((address,address,address,address,address,uint256,uint256,uint256,bytes32))": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "GELATO", values?: undefined): string;
@@ -53,7 +53,6 @@ interface GelatoUniswapV2LimitOrdersInterface extends ethers.utils.Interface {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       BytesLike
     ]
@@ -71,7 +70,6 @@ interface GelatoUniswapV2LimitOrdersInterface extends ethers.utils.Interface {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       }
     ]
   ): string;
@@ -88,7 +86,6 @@ interface GelatoUniswapV2LimitOrdersInterface extends ethers.utils.Interface {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       }
     ]
   ): string;
@@ -105,7 +102,6 @@ interface GelatoUniswapV2LimitOrdersInterface extends ethers.utils.Interface {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       }
     ]
   ): string;
@@ -123,7 +119,6 @@ interface GelatoUniswapV2LimitOrdersInterface extends ethers.utils.Interface {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       BytesLike
     ]
@@ -145,7 +140,6 @@ interface GelatoUniswapV2LimitOrdersInterface extends ethers.utils.Interface {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       }
     ]
   ): string;
@@ -207,7 +201,6 @@ export type LogDepositEvent = TypedEvent<
       BigNumber,
       BigNumber,
       BigNumber,
-      string,
       string
     ] & {
       owner: string;
@@ -219,7 +212,6 @@ export type LogDepositEvent = TypedEvent<
       minReturn: BigNumber;
       salt: BigNumber;
       initCodeHash: string;
-      data: string;
     },
     BigNumber
   ] & {
@@ -233,7 +225,6 @@ export type LogDepositEvent = TypedEvent<
       BigNumber,
       BigNumber,
       BigNumber,
-      string,
       string
     ] & {
       owner: string;
@@ -245,7 +236,6 @@ export type LogDepositEvent = TypedEvent<
       minReturn: BigNumber;
       salt: BigNumber;
       initCodeHash: string;
-      data: string;
     };
     amountIn: BigNumber;
   }
@@ -320,7 +310,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       _auxData: BytesLike,
       overrides?: CallOverrides
@@ -337,7 +326,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -353,7 +341,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -369,7 +356,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
@@ -387,7 +373,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       _auxData: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -409,7 +394,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<[string]>;
@@ -431,7 +415,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
       minReturn: BigNumberish;
       salt: BigNumberish;
       initCodeHash: BytesLike;
-      data: BytesLike;
     },
     _auxData: BytesLike,
     overrides?: CallOverrides
@@ -448,7 +431,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
       minReturn: BigNumberish;
       salt: BigNumberish;
       initCodeHash: BytesLike;
-      data: BytesLike;
     },
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -464,7 +446,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
       minReturn: BigNumberish;
       salt: BigNumberish;
       initCodeHash: BytesLike;
-      data: BytesLike;
     },
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -480,7 +461,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
       minReturn: BigNumberish;
       salt: BigNumberish;
       initCodeHash: BytesLike;
-      data: BytesLike;
     },
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
@@ -498,7 +478,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
       minReturn: BigNumberish;
       salt: BigNumberish;
       initCodeHash: BytesLike;
-      data: BytesLike;
     },
     _auxData: BytesLike,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -517,7 +496,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
       minReturn: BigNumberish;
       salt: BigNumberish;
       initCodeHash: BytesLike;
-      data: BytesLike;
     },
     overrides?: CallOverrides
   ): Promise<string>;
@@ -539,7 +517,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       _auxData: BytesLike,
       overrides?: CallOverrides
@@ -556,7 +533,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<void>;
@@ -572,7 +548,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<void>;
@@ -588,7 +563,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<void>;
@@ -606,7 +580,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       _auxData: BytesLike,
       overrides?: CallOverrides
@@ -625,7 +598,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<string>;
@@ -666,7 +638,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
-          string,
           string
         ] & {
           owner: string;
@@ -678,7 +649,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
           minReturn: BigNumber;
           salt: BigNumber;
           initCodeHash: string;
-          data: string;
         },
         BigNumber
       ],
@@ -693,7 +663,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
-          string,
           string
         ] & {
           owner: string;
@@ -705,7 +674,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
           minReturn: BigNumber;
           salt: BigNumber;
           initCodeHash: string;
-          data: string;
         };
         amountIn: BigNumber;
       }
@@ -727,7 +695,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
-          string,
           string
         ] & {
           owner: string;
@@ -739,7 +706,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
           minReturn: BigNumber;
           salt: BigNumber;
           initCodeHash: string;
-          data: string;
         },
         BigNumber
       ],
@@ -754,7 +720,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
           BigNumber,
           BigNumber,
           BigNumber,
-          string,
           string
         ] & {
           owner: string;
@@ -766,7 +731,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
           minReturn: BigNumber;
           salt: BigNumber;
           initCodeHash: string;
-          data: string;
         };
         amountIn: BigNumber;
       }
@@ -810,7 +774,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       _auxData: BytesLike,
       overrides?: CallOverrides
@@ -827,7 +790,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -843,7 +805,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -859,7 +820,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
@@ -877,7 +837,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       _auxData: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -899,7 +858,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -922,7 +880,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       _auxData: BytesLike,
       overrides?: CallOverrides
@@ -939,7 +896,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -955,7 +911,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -971,7 +926,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
@@ -992,7 +946,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       _auxData: BytesLike,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1014,7 +967,6 @@ export class GelatoUniswapV2LimitOrders extends BaseContract {
         minReturn: BigNumberish;
         salt: BigNumberish;
         initCodeHash: BytesLike;
-        data: BytesLike;
       },
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

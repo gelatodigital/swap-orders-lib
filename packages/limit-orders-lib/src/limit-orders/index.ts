@@ -195,8 +195,6 @@ export class GelatoLimitOrders {
       checkAllowance
     );
 
-    const encodedData = "0x00";
-
     const orderKey = await this._gelatoUniswapV2LimitOrders.keyOf({
       owner,
       inputToken,
@@ -206,15 +204,13 @@ export class GelatoLimitOrders {
       amountIn: inputAmount,
       minReturn,
       salt,
-      initCodeHash: this._initCodeHash,
-      data: encodedData,
-    });
+      initCodeHash: this._initCodeHash
+      });
 
     return {
       payload,
       order: {
         id: orderKey,
-        data: encodedData,
         inputToken: inputToken.toLowerCase(),
         outputToken: outputToken.toLowerCase(),
         owner: owner.toLowerCase(),
@@ -331,7 +327,6 @@ export class GelatoLimitOrders {
     if (!_order.inputToken) throw new Error("No input token in order");
     if (!_order.outputToken) throw new Error("No output token in order");
     if (!_order.minReturn) throw new Error("No minReturn in order");
-    if (!_order.data) throw new Error("No data in order");
 
     if (checkIsActiveOrder) {
       const isActiveOrder = await this.isActiveOrder(_order);
@@ -380,7 +375,6 @@ export class GelatoLimitOrders {
 
     if (!order.inputToken) throw new Error("No input token in order");
     if (!order.owner) throw new Error("No owner in order");
-    if (!order.data) throw new Error("No data in order");
 
     return this._gelatoUniswapV2LimitOrders.isActiveOrder(order.id);
   }
@@ -546,8 +540,7 @@ export class GelatoLimitOrders {
   }
 
   public async getCancelledOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
+    owner: string
   ): Promise<OrderV2[]> {
     const orders = await queryCancelledOrdersV2(owner, this._chainId);
     return orders.map((order) => ({
@@ -567,7 +560,6 @@ export class GelatoLimitOrders {
       minReturn: BigNumber.from(order.minReturn),
       salt: BigNumber.from(order.salt),
       initCodeHash: order.initCodeHash,
-      data: order.data,
     };
   }
 
