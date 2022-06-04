@@ -20,7 +20,6 @@ export function usePairs(
   currencies: [Currency | undefined, Currency | undefined][]
 ): [PairState | undefined, Pair | null][] {
   const { chainId, factory, initCodeHash } = useWeb3();
-  if (!factory || !initCodeHash) return [[undefined, null]];
   const tokens = useMemo(
     () =>
       currencies.map(([currencyA, currencyB]) => [
@@ -34,7 +33,7 @@ export function usePairs(
     () =>
       tokens.map(([tokenA, tokenB]) => {
         return tokenA && tokenB && !tokenA.equals(tokenB)
-          ? Pair.getAddress(tokenA, tokenB, factory, initCodeHash)
+          ? Pair.getAddress(tokenA, tokenB, factory ?? "", initCodeHash ?? "")
           : undefined;
       }),
     [tokens, factory, initCodeHash]
@@ -70,8 +69,8 @@ export function usePairs(
         new Pair(
           CurrencyAmount.fromRawAmount(token0, reserve0.toString()),
           CurrencyAmount.fromRawAmount(token1, reserve1.toString()),
-          factory,
-          initCodeHash
+          factory ?? "",
+          initCodeHash ?? ""
         ),
       ];
     });
