@@ -58,7 +58,7 @@ export const queryOrderV2 = async (
 
     const allOrders = [...dataFromSubgraph.orders];
 
-    return _getUniqueOrdersV2WithExpiry(allOrders, chainId).pop() ?? null;
+    return _getUniqueOrdersV2WithExpiry(allOrders).pop() ?? null;
   } catch (error) {
     throw new Error("Could not query subgraph for all orders");
   }
@@ -105,7 +105,7 @@ export const queryOrdersV2 = async (
 
     const allOrders = [...dataFromSubgraph.orders];
 
-    return _getUniqueOrdersV2WithExpiry(allOrders, chainId);
+    return _getUniqueOrdersV2WithExpiry(allOrders);
   } catch (error) {
     throw new Error("Could not query subgraph for all orders");
   }
@@ -154,7 +154,7 @@ export const queryOpenOrdersV2 = async (
 
     const allOrders = [...dataFromSubgraph.orders];
 
-    return _getUniqueOrdersV2WithExpiry(allOrders, chainId).filter(
+    return _getUniqueOrdersV2WithExpiry(allOrders).filter(
       (order) => order.status === "open"
     );
   } catch (error) {
@@ -205,7 +205,7 @@ export const queryPastOrdersV2 = async (
 
     const allOrders = [...dataFromSubgraph.orders];
 
-    return _getUniqueOrdersV2WithExpiry(allOrders, chainId).filter(
+    return _getUniqueOrdersV2WithExpiry(allOrders).filter(
       (order) => order.status !== "open"
     );
   } catch (error) {
@@ -256,7 +256,7 @@ export const queryExecutedOrdersV2 = async (
 
     const allOrders = [...dataFromSubgraph.orders];
 
-    return _getUniqueOrdersV2WithExpiry(allOrders, chainId).filter(
+    return _getUniqueOrdersV2WithExpiry(allOrders).filter(
       (order) => order.status === "executed"
     );
   } catch (error) {
@@ -307,7 +307,7 @@ export const queryCancelledOrdersV2 = async (
 
     const allOrders = [...dataFromSubgraph.orders];
 
-    return _getUniqueOrdersV2WithExpiry(allOrders, chainId).filter(
+    return _getUniqueOrdersV2WithExpiry(allOrders).filter(
       (order) => order.status === "cancelled"
     );
   } catch (error) {
@@ -315,10 +315,7 @@ export const queryCancelledOrdersV2 = async (
   }
 };
 
-const _getUniqueOrdersV2WithExpiry = (
-  allOrders: OrderV2[],
-  chainId: number
-): OrderV2[] =>
+const _getUniqueOrdersV2WithExpiry = (allOrders: OrderV2[]): OrderV2[] =>
   // create Map and asign order id to order (key:value) to avoid having duplicated orders form multiple subgraphs
   [...new Map(allOrders.map((order) => [order.id, order])).values()]
     // sort by `updatedAt` asc so that the most recent one will be used

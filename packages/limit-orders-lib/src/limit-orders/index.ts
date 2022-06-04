@@ -11,9 +11,7 @@ import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
 import {
   CHAIN_ID,
-  ETH_ADDRESS,
   GELATO_LIMIT_ORDERS_V2_ADDRESS,
-  GELATO_LIMIT_ORDERS_MODULE_FLASHBOTS_ADDRESS,
   NETWORK_HANDLERS,
   SUBGRAPH_URL,
   BPS_GELATO_FEE,
@@ -204,8 +202,8 @@ export class GelatoLimitOrders {
       amountIn: inputAmount,
       minReturn,
       salt,
-      initCodeHash: this._initCodeHash
-      });
+      initCodeHash: this._initCodeHash,
+    });
 
     return {
       payload,
@@ -495,10 +493,7 @@ export class GelatoLimitOrders {
     }
   }
 
-  public async getOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
-  ): Promise<OrderV2[]> {
+  public async getOrders(owner: string): Promise<OrderV2[]> {
     const orders = await queryOrdersV2(owner, this._chainId);
     return orders.map((order) => ({
       ...order,
@@ -506,10 +501,7 @@ export class GelatoLimitOrders {
     }));
   }
 
-  public async getOpenOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
-  ): Promise<OrderV2[]> {
+  public async getOpenOrders(owner: string): Promise<OrderV2[]> {
     const orders = await queryOpenOrdersV2(owner, this._chainId);
     return orders.map((order) => ({
       ...order,
@@ -517,10 +509,7 @@ export class GelatoLimitOrders {
     }));
   }
 
-  public async getPastOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
-  ): Promise<OrderV2[]> {
+  public async getPastOrders(owner: string): Promise<OrderV2[]> {
     const orders = await queryPastOrdersV2(owner, this._chainId);
     return orders.map((order) => ({
       ...order,
@@ -528,10 +517,7 @@ export class GelatoLimitOrders {
     }));
   }
 
-  public async getExecutedOrders(
-    owner: string,
-    includeOrdersWithNullHandler = false
-  ): Promise<OrderV2[]> {
+  public async getExecutedOrders(owner: string): Promise<OrderV2[]> {
     const orders = await queryExecutedOrdersV2(owner, this._chainId);
     return orders.map((order) => ({
       ...order,
@@ -539,9 +525,7 @@ export class GelatoLimitOrders {
     }));
   }
 
-  public async getCancelledOrders(
-    owner: string
-  ): Promise<OrderV2[]> {
+  public async getCancelledOrders(owner: string): Promise<OrderV2[]> {
     const orders = await queryCancelledOrdersV2(owner, this._chainId);
     return orders.map((order) => ({
       ...order,
