@@ -43,3 +43,7 @@ Range Order Swaps are implemented based on the following possiblities
 | ---------- | ------- | ------- | -------------- |
 | true       | 1/price | price   | tick > current |
 | false      | price   | 1/price | tick < current |
+
+### Need help? Want to add a new handler?
+
+Reach out to us on [Telegram](https://t.me/gelatonetwork), [Discord](https://discord.gg/ApbA39BKyJ) or [Twitter](https://twitter.com/gelatonetwork)
