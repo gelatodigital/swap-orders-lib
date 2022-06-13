@@ -1,4 +1,4 @@
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { OrderV2 } from "@gelatonetwork/limit-orders-lib";
 import { createAction } from "@reduxjs/toolkit";
 
 export interface SerializableTransactionReceipt {
@@ -19,7 +19,7 @@ export const addTransaction = createAction<{
   hash: string;
   from: string;
   type: TransactionType;
-  order?: Order;
+  order?: OrderV2;
   approval?: { tokenAddress: string; spender: string };
   summary?: string;
 }>("gtransactions/addTransaction");

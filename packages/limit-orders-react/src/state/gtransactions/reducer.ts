@@ -1,4 +1,4 @@
-import { Order } from "@gelatonetwork/limit-orders-lib";
+import { OrderV2 } from "@gelatonetwork/limit-orders-lib";
 import { createReducer } from "@reduxjs/toolkit";
 import {
   confirmOrderCancellation,
@@ -20,7 +20,7 @@ export interface TransactionDetails {
   hash: string;
   approval?: { tokenAddress: string; spender: string };
   type: TransactionType;
-  order?: Order;
+  order?: OrderV2;
   summary?: string;
   receipt?: SerializableTransactionReceipt;
   lastCheckedBlockNumber?: number;

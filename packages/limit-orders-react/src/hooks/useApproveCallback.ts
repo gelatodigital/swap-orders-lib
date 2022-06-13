@@ -135,6 +135,6 @@ export function useApproveCallbackFromInputCurrencyAmount(
 
   return useApproveCallback(
     currencyAmountIn,
-    gelatoLibrary?.erc20OrderRouter.address ?? undefined
+    gelatoLibrary?.contract.address ?? undefined
   );
 }

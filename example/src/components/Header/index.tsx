@@ -264,6 +264,7 @@ const NETWORK_LABELS: { [chainId: number]: string } = {
   3: 'Ropsten',
   5: 'Görli',
   10: 'Optimism',
+  25: 'Cronos',
   42: 'Kovan',
   56: "BSC",
   137: 'Polygon (Matic)',
@@ -315,7 +316,7 @@ export default function Header() {
           <AccountElement active={!!account} style={{ pointerEvents: 'auto' }}>
             {account && userEthBalance ? (
               <BalanceText style={{ flexShrink: 0 }} pl="0.75rem" pr="0.5rem" fontWeight={500}>
-                {userEthBalance?.toSignificant(4)} {chainId === 43114 ? 'AVAX' : chainId === 56 ? 'BNB' : chainId === 137 ? 'MATIC' : 'ETH'}
+                {userEthBalance?.toSignificant(4)} {chainId === 25 ? 'CRO' : chainId === 43114 ? 'AVAX' : chainId === 56 ? 'BNB' : chainId === 137 ? 'MATIC' : 'ETH'}
               </BalanceText>
             ) : null}
             <Web3Status />

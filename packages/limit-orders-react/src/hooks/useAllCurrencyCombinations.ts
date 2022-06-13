@@ -12,7 +12,7 @@ export function useAllCurrencyCombinations(
   currencyA?: Currency,
   currencyB?: Currency
 ): [Token, Token][] {
-  const { chainId } = useWeb3();
+  const { chainId, bases: customBasesToCheckTradesAgainst } = useWeb3();
   const [tokenA, tokenB] = chainId
     ? [currencyA?.wrapped, currencyB?.wrapped]
     : [undefined, undefined];
@@ -20,7 +20,10 @@ export function useAllCurrencyCombinations(
   const bases: Token[] = useMemo(() => {
     if (!chainId) return [];
 
-    const common = BASES_TO_CHECK_TRADES_AGAINST[chainId] ?? [];
+    const common =
+      customBasesToCheckTradesAgainst ??
+      BASES_TO_CHECK_TRADES_AGAINST[chainId] ??
+      [];
 
     const additionalA = tokenA
       ? ADDITIONAL_BASES[chainId]?.[tokenA.address] ?? []
@@ -30,7 +33,7 @@ export function useAllCurrencyCombinations(
       : [];
 
     return [...common, ...additionalA, ...additionalB];
-  }, [chainId, tokenA, tokenB]);
+  }, [chainId, tokenA, tokenB, customBasesToCheckTradesAgainst]);
 
   const basePairs: [Token, Token][] = useMemo(
     () =>

@@ -3,6 +3,7 @@ export enum SupportedChainId {
   ROPSTEN = 3,
   RINKEBY = 4,
   GOERLI = 5,
+  CRONOS = 25,
   KOVAN = 42,
   BSC = 56,
   AVAX = 43114,
@@ -22,6 +23,7 @@ export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.KOVAN,
   SupportedChainId.BSC,
   SupportedChainId.AVAX,
+  SupportedChainId.CRONOS,
 
   SupportedChainId.ARBITRUM_ONE,
   SupportedChainId.ARBITRUM_RINKEBY,
@@ -38,6 +40,7 @@ export const L1_CHAIN_IDS = [
   SupportedChainId.KOVAN,
   SupportedChainId.BSC,
   SupportedChainId.AVAX,
+  SupportedChainId.CRONOS,
 ] as const
 
 export type SupportedL1ChainId = typeof L1_CHAIN_IDS[number]
@@ -91,6 +94,12 @@ export const CHAIN_INFO: ChainInfo = {
     explorer: 'https://goerli.etherscan.io/',
     infoLink: 'https://info.uniswap.org/#/',
     label: 'Görli',
+  },
+  [SupportedChainId.CRONOS]: {
+    docs: 'https://docs.uniswap.org/',
+    explorer: 'https://cronoscan.com/',
+    infoLink: 'https://info.uniswap.org/#/',
+    label: 'CRONOS',
   },
   [SupportedChainId.BSC]: {
     docs: 'https://docs.uniswap.org/',

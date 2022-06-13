@@ -180,7 +180,7 @@ export interface DerivedOrderInfo {
 
 // from the current swap inputs, compute the best trade and return it.
 export function useDerivedOrderInfo(): DerivedOrderInfo {
-  const { account, handler, chainId } = useWeb3();
+  const { account, factory, initCodeHash, chainId } = useWeb3();
 
   const {
     independentField,
@@ -239,12 +239,14 @@ export function useDerivedOrderInfo(): DerivedOrderInfo {
   const bestTradeExactIn = useTradeExactIn(
     isExactIn ? parsedAmountToUse : undefined,
     outputCurrency ?? undefined,
-    handler
+    factory,
+    initCodeHash
   );
   const bestTradeExactOut = useTradeExactOut(
     inputCurrency ?? undefined,
     !isExactIn ? parsedAmountToUse : undefined,
-    handler
+    factory,
+    initCodeHash
   );
 
   const trade = isExactIn ? bestTradeExactIn : bestTradeExactOut;
