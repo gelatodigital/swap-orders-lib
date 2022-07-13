@@ -16,6 +16,7 @@ export function getExplorerLink(chainId: number, data: string, type: ExplorerDat
   if (chainId === 1) prefix = `https://etherscan.io`
   else if (chainId === 3) prefix = `https://ropsten.etherscan.io`
   else if (chainId === 5) prefix = `https://goerli.etherscan.io`
+  else if (chainId === 25) prefix = `https://cronoscan.com`
   else if (chainId === 56) prefix = `https://bscscan.io`
   else if (chainId === 137) prefix = `https://polygonscan.com`
   else if (chainId === 250) prefix = `https://ftmscan.com`

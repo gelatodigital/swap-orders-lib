@@ -1,8 +1,8 @@
 import { BytesLike } from "@ethersproject/bytes";
 import { BigNumberish } from "@ethersproject/bignumber";
 
-// mainnet | ropsten | goerli | bsc | matic | fantom | avalanche
-export type ChainId = 1 | 3 | 5 | 56 | 137 | 250 | 43114;
+// mainnet | ropsten | goerli | cronos | bsc | matic | fantom | avalanche
+export type ChainId = 1 | 3 | 5 | 25 | 56 | 137 | 250 | 43114;
 
 export type Handler =
   | "spookyswap"
@@ -23,7 +23,10 @@ export type Handler =
   | "defyswap"
   | "pangolin"
   | "pangolin_stoplimit"
-  | "tombswap";
+  | "tombswap"
+  | "vvsfinance"
+  | "mmfinance"
+  | "protofi";
 
 export interface TransactionData {
   to: string;

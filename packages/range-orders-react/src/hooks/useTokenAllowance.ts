@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useSingleCallResult } from "../state/gmulticall/hooks";
 import { useTokenContract } from "./useContract";
 import { useWeb3 } from "../web3";
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isPolygonChainId } from "@gelatonetwork/range-orders-lib/dist/utils";
 
 export function useTokenAllowance(
   token?: Token,
@@ -20,7 +20,7 @@ export function useTokenAllowance(
     "allowance",
     inputs,
     {
-      blocksPerFetch: isEthereumChain(chainId ?? 1) ? 1 : 5,
+      blocksPerFetch: isPolygonChainId(chainId ?? 1) ? 1 : 5,
     }
   ).result;
 

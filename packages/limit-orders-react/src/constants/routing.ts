@@ -1,5 +1,5 @@
 // a list of tokens by chain
-import { Currency, Ether, Token, WETH9 } from "@uniswap/sdk-core";
+import { Currency, Token, WETH9 } from "@uniswap/sdk-core";
 import {
   AMPL,
   DAI,
@@ -22,13 +22,10 @@ import { BSC_BASES, WBNB_BSC } from "./tokens.bsc";
 import { AVAX_BASES, WAVAX_AVAX } from "./tokens.avax";
 import { WETH_FANTOM } from "./tokens.fantom";
 import { WETH_MATIC } from "./tokens.matic";
+import { CRONOS_BASES, WETH_CRONOS } from "./tokens.cronos";
 
 type ChainTokenList = {
   readonly [chainId: number]: Token[];
-};
-
-type ChainCurrencyList = {
-  readonly [chainId: number]: Currency[];
 };
 
 // List of all mirror's assets addresses.
@@ -56,6 +53,7 @@ const WETH_ONLY: ChainTokenList = {
   [3]: [WETH9[3]],
   [4]: [WETH9[4]],
   [5]: [WETH9[5]],
+  [25]: [WETH_CRONOS],
   [42]: [WETH9[42]],
   [56]: [WBNB_BSC],
   [250]: [WETH_FANTOM],
@@ -66,6 +64,7 @@ const WETH_ONLY: ChainTokenList = {
 export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   ...WETH_ONLY,
   [1]: [...WETH_ONLY[1], DAI, USDC, USDT, WBTC],
+  [25]: CRONOS_BASES,
   [56]: BSC_BASES,
   [137]: MATIC_BASES,
   [250]: FANTOM_BASES,
@@ -97,42 +96,4 @@ export const CUSTOM_BASES: {
   [1]: {
     [AMPL.address]: [DAI, WETH9[1]],
   },
-};
-// used for display in the default list when adding liquidity
-export const SUGGESTED_BASES: ChainCurrencyList = {
-  [1]: [Ether.onChain(1), DAI, USDC, USDT, WBTC],
-  [56]: BSC_BASES,
-  [137]: MATIC_BASES,
-  [250]: FANTOM_BASES,
-  [43114]: AVAX_BASES,
-};
-// used to construct the list of all pairs we consider by default in the frontend
-export const BASES_TO_TRACK_LIQUIDITY_FOR: ChainTokenList = {
-  ...WETH_ONLY,
-  [1]: [...WETH_ONLY[1], DAI, USDC, USDT, WBTC],
-  [137]: MATIC_BASES,
-  [250]: FANTOM_BASES,
-};
-
-export const PINNED_PAIRS: { readonly [chainId: number]: [Token, Token][] } = {
-  [1]: [
-    [
-      new Token(
-        1,
-        "0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643",
-        8,
-        "cDAI",
-        "Compound Dai"
-      ),
-      new Token(
-        1,
-        "0x39AA39c021dfbaE8faC545936693aC917d5E7563",
-        8,
-        "cUSDC",
-        "Compound USD Coin"
-      ),
-    ],
-    [USDC, USDT],
-    [DAI, USDT],
-  ],
 };

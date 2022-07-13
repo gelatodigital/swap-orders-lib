@@ -50,6 +50,18 @@ const TOMB_FACTORY_ADDRESS = "0xe236f6890f1824fa0a7ffc39b1597a5a6077cfe9";
 const TOMB_INIT_CODE_HASH =
   "0x2dfbcf1b907f911bc66d083d103a1d7de0b8b21a6cb2a66a78d1f1559018fba4";
 
+const VVS_FACTORY_ADDRESS = "0x3b44b2a187a7b3824131f8db5a74194d0a42fc15";
+const VVS_INIT_CODE_HASH =
+  "0xa77ee1cc0f39570ddde947459e293d7ebc2c30ff4e8fc45860afdcb2c2d3dc17";
+
+const MMF_FACTORY_ADDRESS = "0xd590cC180601AEcD6eeADD9B7f2B7611519544f4";
+const MMF_INIT_CODE_HASH =
+  "0x7ae6954210575e79ea2402d23bc6a59c4146a6e6296118aa8b99c747afec8acf";
+
+const PROTOFI_FACTORY_ADDRESS = "0x39720E5Fe53BEEeb9De4759cb91d8E7d42c17b76";
+const PROTOFI_INIT_CODE_HASH =
+  "0x5e47480f25da6d84d0437a474359e885cdb7dc9eb9f8fd61f3cb41d85a64a420";
+
 const getSpiritSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
     ? [tokenA, tokenB]
@@ -215,6 +227,51 @@ const getTombSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   );
 };
 
+const getVVSPairAddress = (tokenA: Token, tokenB: Token): string => {
+  const tokens = tokenA.sortsBefore(tokenB)
+    ? [tokenA, tokenB]
+    : [tokenB, tokenA]; // does safety checks
+
+  return getCreate2Address(
+    VVS_FACTORY_ADDRESS,
+    keccak256(
+      ["bytes"],
+      [pack(["address", "address"], [tokens[0].address, tokens[1].address])]
+    ),
+    VVS_INIT_CODE_HASH
+  );
+};
+
+const getMMFPairAddress = (tokenA: Token, tokenB: Token): string => {
+  const tokens = tokenA.sortsBefore(tokenB)
+    ? [tokenA, tokenB]
+    : [tokenB, tokenA]; // does safety checks
+
+  return getCreate2Address(
+    MMF_FACTORY_ADDRESS,
+    keccak256(
+      ["bytes"],
+      [pack(["address", "address"], [tokens[0].address, tokens[1].address])]
+    ),
+    MMF_INIT_CODE_HASH
+  );
+};
+
+const getProtofiPairAddress = (tokenA: Token, tokenB: Token): string => {
+  const tokens = tokenA.sortsBefore(tokenB)
+    ? [tokenA, tokenB]
+    : [tokenB, tokenA]; // does safety checks
+
+  return getCreate2Address(
+    PROTOFI_FACTORY_ADDRESS,
+    keccak256(
+      ["bytes"],
+      [pack(["address", "address"], [tokens[0].address, tokens[1].address])]
+    ),
+    PROTOFI_INIT_CODE_HASH
+  );
+};
+
 export const calculatePairAddressByHandler = (
   tokenA: Token,
   tokenB: Token,
@@ -241,6 +298,8 @@ export const calculatePairAddressByHandler = (
         return getDefySwapPairAddress(tokenA, tokenB);
       case "tombswap":
         return getTombSwapPairAddress(tokenA, tokenB);
+      case "protofi":
+        return getProtofiPairAddress(tokenA, tokenB);
       default:
         return getSpookySwapPairAddress(tokenA, tokenB);
     }
@@ -250,6 +309,15 @@ export const calculatePairAddressByHandler = (
         return getPancakeSwapPairAddress(tokenA, tokenB);
       default:
         return getPancakeSwapPairAddress(tokenA, tokenB);
+    }
+  } else if (tokenA.chainId === 25 && tokenB.chainId === 25) {
+    switch (handler) {
+      case "vvsfinance":
+        return getVVSPairAddress(tokenA, tokenB);
+      case "mmfinance":
+        return getMMFPairAddress(tokenA, tokenB);
+      default:
+        return getVVSPairAddress(tokenA, tokenB);
     }
   } else if (tokenA.chainId === 43114 && tokenB.chainId === 43114) {
     switch (handler) {

@@ -1,4 +1,4 @@
-import { isEthereumChain } from "@gelatonetwork/limit-orders-lib/dist/utils";
+import { isPolygonChainId } from "@gelatonetwork/range-orders-lib/dist/utils";
 import { useEffect, useMemo, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Multicall2 } from "../../abis/types";
@@ -189,7 +189,7 @@ export default function Updater(): null {
     cancellations.current = {
       blockNumber: latestBlockNumber,
       cancellations: chunkedCalls.map((chunk, index) => {
-        const blockDiff = isEthereumChain(chainId) ? 5 : 60;
+        const blockDiff = isPolygonChainId(chainId) ? 5 : 60;
         const { cancel, promise } = retry(
           () =>
             fetchChunk(

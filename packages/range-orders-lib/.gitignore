@@ -31,7 +31,7 @@ dist
 
 # typechain
 typechain
-packages/limit-orders-lib/src/contracts/types
+packages/range-orders-lib/src/contracts/types
 ./src
 
 limit-orders-hooks
