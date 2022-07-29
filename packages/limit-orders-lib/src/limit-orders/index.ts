@@ -97,6 +97,10 @@ export class GelatoLimitOrders {
     return this._subgraphUrl;
   }
 
+  set subgraphUrl(url: string) {
+    this._subgraphUrl = url;
+  }
+
   get handler(): Handler | undefined {
     return this._handler;
   }
@@ -125,7 +129,8 @@ export class GelatoLimitOrders {
     chainId: ChainId,
     signerOrProvider?: Signer | Provider,
     handler?: Handler,
-    isFlashbotsProtected = false
+    isFlashbotsProtected = false,
+    subgraphUrl?: string
   ) {
     if (handler && !isValidChainIdAndHandler(chainId, handler)) {
       throw new Error("Invalid chainId and handler");
@@ -141,7 +146,7 @@ export class GelatoLimitOrders {
     this._chainId = chainId;
     this._gelatoFeeBPS = BPS_GELATO_FEE[chainId];
     this._slippageBPS = LIMIT_ORDER_SLIPPAGE[chainId];
-    this._subgraphUrl = SUBGRAPH_URL[chainId];
+    this._subgraphUrl = subgraphUrl ?? SUBGRAPH_URL[chainId];
     this._signer = Signer.isSigner(signerOrProvider)
       ? signerOrProvider
       : undefined;

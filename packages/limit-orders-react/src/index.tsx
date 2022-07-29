@@ -42,6 +42,7 @@ export function GelatoProvider({
   account,
   handler,
   bases,
+  subgraphUrl,
   toggleWalletModal,
   useDefaultTheme = true,
   useDarkMode = true,
@@ -51,6 +52,7 @@ export function GelatoProvider({
   library: any | undefined;
   account: string | undefined;
   handler?: Handler;
+  subgraphUrl?: string;
   bases?: {
     chainId: number;
     address: string;
@@ -86,6 +88,7 @@ export function GelatoProvider({
         library={library}
         account={account}
         bases={basesToCheckTradesAgainst}
+        subgraphUrl={subgraphUrl}
         handler={handler}
         toggleWalletModal={toggleWalletModal}
       >
@@ -104,6 +107,7 @@ export function GelatoProvider({
       account={account}
       bases={basesToCheckTradesAgainst}
       handler={handler}
+      subgraphUrl={subgraphUrl}
       toggleWalletModal={toggleWalletModal}
     >
       <ListsUpdater includeTokenLists={tokenListURLs} />
