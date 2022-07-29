@@ -11,6 +11,7 @@ interface Web3State {
   chainId: number | undefined;
   bases?: Token[];
   handler?: Handler;
+  subgraphUrl?: string;
   toggleWalletModal?: () => void;
 }
 
@@ -21,6 +22,7 @@ interface Web3ProviderProps {
   chainId: number | undefined;
   bases?: Token[];
   handler?: Handler;
+  subgraphUrl?: string;
   toggleWalletModal?: () => void;
 }
 
@@ -30,6 +32,7 @@ const initialWeb3State: Web3State = {
   account: undefined,
   handler: undefined,
   bases: undefined,
+  subgraphUrl: undefined,
   toggleWalletModal: undefined,
 };
 
@@ -43,6 +46,7 @@ export const Web3Provider: FC<Web3ProviderProps> = ({
   chainId,
   account,
   handler,
+  subgraphUrl,
   bases,
   toggleWalletModal,
 }: Web3ProviderProps) => {
@@ -55,9 +59,18 @@ export const Web3Provider: FC<Web3ProviderProps> = ({
       account,
       handler,
       bases,
+      subgraphUrl,
       toggleWalletModal,
     });
-  }, [library, chainId, account, handler, bases, toggleWalletModal]);
+  }, [
+    library,
+    chainId,
+    account,
+    handler,
+    bases,
+    toggleWalletModal,
+    subgraphUrl,
+  ]);
 
   return (
     <Web3Context.Provider

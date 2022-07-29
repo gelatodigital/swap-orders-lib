@@ -84,6 +84,7 @@ function Gelato({ children }: { children?: React.ReactNode }) {
       // [ONLY IF USING COMPONENT] Optionally pass a toggle modal to be able to connect
       // to a wallet via the component button
       // toggleWalletModal={toggleWalletModal}
+      // Optionally, pass a custom subgraph url subgraphUrl={"..."}
       // Optionally, parse tokenlist as tokenListURLs={["https://tokenlist.com"]}
       // Optionally, set your own bases (otherwise the default one will be used) `bases={bases}` (where bases is an array of {chainId:number; address:string; decimals:number; name:string; symbol:string;})
       // By default `useDefaultTheme`and `useDarkMode` are set to true
