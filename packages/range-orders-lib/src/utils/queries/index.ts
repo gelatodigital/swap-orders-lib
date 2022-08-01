@@ -2,10 +2,10 @@ import { request } from "graphql-request";
 import { SUBGRAPH_URL } from "../../constants";
 import {
   GET_RANGE_ORDER_BY_TOKEN_ID,
-  GET_OPEN_RANGE_ORDER_BY_CREATOR,
-  GET_EXECUTED_RANGE_ORDER_BY_CREATOR,
-  GET_CANCELLED_RANGE_ORDER_BY_CREATOR,
-  GET_EXPIRED_RANGE_ORDER_BY_CREATOR,
+  GET_OPEN_RANGE_ORDER_BY_RECEIVER,
+  GET_EXECUTED_RANGE_ORDER_BY_RECEIVER,
+  GET_CANCELLED_RANGE_ORDER_BY_RECEIVER,
+  GET_EXPIRED_RANGE_ORDER_BY_RECEIVER,
 } from "./constants";
 import { ChainId, RangeOrderData } from "../../types";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -30,12 +30,12 @@ export const queryRangeOrder = async (
 
 export const queryOpenRangeOrderByUser = async (
   chainId: ChainId,
-  creator: string
+  receiver: string
 ): Promise<RangeOrderData[]> => {
   try {
     const result = SUBGRAPH_URL[chainId]
-      ? await request(SUBGRAPH_URL[chainId], GET_OPEN_RANGE_ORDER_BY_CREATOR, {
-          creator,
+      ? await request(SUBGRAPH_URL[chainId], GET_OPEN_RANGE_ORDER_BY_RECEIVER, {
+          receiver,
         })
       : { orders: [] };
 
@@ -48,15 +48,15 @@ export const queryOpenRangeOrderByUser = async (
 
 export const queryExecutedRangeOrderByUser = async (
   chainId: ChainId,
-  creator: string
+  receiver: string
 ): Promise<RangeOrderData[]> => {
   try {
     const result = SUBGRAPH_URL[chainId]
       ? await request(
           SUBGRAPH_URL[chainId],
-          GET_EXECUTED_RANGE_ORDER_BY_CREATOR,
+          GET_EXECUTED_RANGE_ORDER_BY_RECEIVER,
           {
-            creator,
+            receiver,
           }
         )
       : { orders: [] };
@@ -70,15 +70,15 @@ export const queryExecutedRangeOrderByUser = async (
 
 export const queryCancelledRangeOrderByUser = async (
   chainId: ChainId,
-  creator: string
+  receiver: string
 ): Promise<RangeOrderData[]> => {
   try {
     const result = SUBGRAPH_URL[chainId]
       ? await request(
           SUBGRAPH_URL[chainId],
-          GET_CANCELLED_RANGE_ORDER_BY_CREATOR,
+          GET_CANCELLED_RANGE_ORDER_BY_RECEIVER,
           {
-            creator,
+            receiver,
           }
         )
       : { orders: [] };
@@ -92,15 +92,15 @@ export const queryCancelledRangeOrderByUser = async (
 
 export const queryExpiredRangeOrderByUser = async (
   chainId: ChainId,
-  creator: string
+  receiver: string
 ): Promise<RangeOrderData[]> => {
   try {
     const result = SUBGRAPH_URL[chainId]
       ? await request(
           SUBGRAPH_URL[chainId],
-          GET_EXPIRED_RANGE_ORDER_BY_CREATOR,
+          GET_EXPIRED_RANGE_ORDER_BY_RECEIVER,
           {
-            creator,
+            receiver,
           }
         )
       : { orders: [] };

@@ -31,9 +31,9 @@ export const GET_RANGE_ORDER_BY_TOKEN_ID = gql`
   }
 `;
 
-export const GET_OPEN_RANGE_ORDER_BY_CREATOR = gql`
-  query getOpenRangeOrderByUser($creator: ID) {
-    rangeOrders(where: { creator: $creator, status: submitted }) {
+export const GET_OPEN_RANGE_ORDER_BY_RECEIVER = gql`
+  query getOpenRangeOrderByUser($receiver: ID) {
+    rangeOrders(where: { receiver: $receiver, status: submitted }) {
       id
       status
       creator
@@ -62,9 +62,9 @@ export const GET_OPEN_RANGE_ORDER_BY_CREATOR = gql`
   }
 `;
 
-export const GET_EXECUTED_RANGE_ORDER_BY_CREATOR = gql`
-  query getExecutedRangeOrderByUser($creator: ID) {
-    rangeOrders(where: { creator: $creator, status: executed }) {
+export const GET_EXECUTED_RANGE_ORDER_BY_RECEIVER = gql`
+  query getExecutedRangeOrderByUser($receiver: ID) {
+    rangeOrders(where: { receiver: $receiver, status: executed }) {
       id
       status
       creator
@@ -93,9 +93,9 @@ export const GET_EXECUTED_RANGE_ORDER_BY_CREATOR = gql`
   }
 `;
 
-export const GET_CANCELLED_RANGE_ORDER_BY_CREATOR = gql`
-  query getCancelledRangeOrderByUser($creator: ID) {
-    rangeOrders(where: { creator: $creator, status: cancelled }) {
+export const GET_CANCELLED_RANGE_ORDER_BY_RECEIVER = gql`
+  query getCancelledRangeOrderByUser($receiver: ID) {
+    rangeOrders(where: { receiver: $receiver, status: cancelled }) {
       id
       status
       creator
@@ -124,9 +124,9 @@ export const GET_CANCELLED_RANGE_ORDER_BY_CREATOR = gql`
   }
 `;
 
-export const GET_EXPIRED_RANGE_ORDER_BY_CREATOR = gql`
-  query getCancelledRangeOrderByUser($creator: ID) {
-    rangeOrders(where: { creator: $creator, status: expired }) {
+export const GET_EXPIRED_RANGE_ORDER_BY_RECEIVER = gql`
+  query getCancelledRangeOrderByUser($receiver: ID) {
+    rangeOrders(where: { receiver: $receiver, status: expired }) {
       id
       status
       creator
