@@ -60,6 +60,7 @@ export const HANDLERS_ADDRESSES = {
     ["quickswap"]: "0xaccbd2c6ad75ad3394dc5f4b1f606bf111e4eae3",
     ["polydex"]: "0x00fc86d360162e4672ec6B427E12ed36F39f1f53",
     ["cafeswap"]: "0xd167afcee4e9a89e69646fd3c27e58b61d1b7f97",
+    ["mmfinance"]: "0xfbc6b53fa3792a95f37ac8d66e5110f41da0d976",
     ["quickswap_stoplimit"]: "0x51cc226648f8de65513de7cdfd3e7b116156234e",
   },
   // UniswapV2Router02Handler
@@ -105,7 +106,13 @@ export const NETWORK_NAME = {
 export const NETWORK_HANDLERS = {
   [CHAIN_ID.MAINNET]: ["uniswap", "uniswap_stoplimit"],
   [CHAIN_ID.ROPSTEN]: ["uniswap", "quickswap_stoplimit"],
-  [CHAIN_ID.MATIC]: ["quickswap", "polydex", "cafeswap", "quickswap_stoplimit"],
+  [CHAIN_ID.MATIC]: [
+    "quickswap",
+    "polydex",
+    "cafeswap",
+    "mmfinance",
+    "quickswap_stoplimit",
+  ],
   [CHAIN_ID.FANTOM]: [
     "spiritswap",
     "spookyswap",

@@ -54,13 +54,18 @@ const VVS_FACTORY_ADDRESS = "0x3b44b2a187a7b3824131f8db5a74194d0a42fc15";
 const VVS_INIT_CODE_HASH =
   "0xa77ee1cc0f39570ddde947459e293d7ebc2c30ff4e8fc45860afdcb2c2d3dc17";
 
-const MMF_FACTORY_ADDRESS = "0xd590cC180601AEcD6eeADD9B7f2B7611519544f4";
-const MMF_INIT_CODE_HASH =
+const MMF_CRONOS_FACTORY_ADDRESS = "0xd590cC180601AEcD6eeADD9B7f2B7611519544f4";
+const MMF_CRONOS_INIT_CODE_HASH =
   "0x7ae6954210575e79ea2402d23bc6a59c4146a6e6296118aa8b99c747afec8acf";
 
 const PROTOFI_FACTORY_ADDRESS = "0x39720E5Fe53BEEeb9De4759cb91d8E7d42c17b76";
 const PROTOFI_INIT_CODE_HASH =
   "0x5e47480f25da6d84d0437a474359e885cdb7dc9eb9f8fd61f3cb41d85a64a420";
+
+export const MMF_POLYGON_FACTORY_ADDRESS =
+  "0x7cfb780010e9c861e03bcbc7ac12e013137d47a5";
+export const MMF_POLYGON_INIT_CODE_HASH =
+  "0x7ae6954210575e79ea2402d23bc6a59c4146a6e6296118aa8b99c747afec8acf";
 
 const getSpiritSwapPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
@@ -242,18 +247,18 @@ const getVVSPairAddress = (tokenA: Token, tokenB: Token): string => {
   );
 };
 
-const getMMFPairAddress = (tokenA: Token, tokenB: Token): string => {
+const getMMFCronosPairAddress = (tokenA: Token, tokenB: Token): string => {
   const tokens = tokenA.sortsBefore(tokenB)
     ? [tokenA, tokenB]
     : [tokenB, tokenA]; // does safety checks
 
   return getCreate2Address(
-    MMF_FACTORY_ADDRESS,
+    MMF_CRONOS_FACTORY_ADDRESS,
     keccak256(
       ["bytes"],
       [pack(["address", "address"], [tokens[0].address, tokens[1].address])]
     ),
-    MMF_INIT_CODE_HASH
+    MMF_CRONOS_INIT_CODE_HASH
   );
 };
 
@@ -272,6 +277,21 @@ const getProtofiPairAddress = (tokenA: Token, tokenB: Token): string => {
   );
 };
 
+const getMMFPolygonPairAddress = (tokenA: Token, tokenB: Token): string => {
+  const tokens = tokenA.sortsBefore(tokenB)
+    ? [tokenA, tokenB]
+    : [tokenB, tokenA]; // does safety checks
+
+  return getCreate2Address(
+    MMF_POLYGON_FACTORY_ADDRESS,
+    keccak256(
+      ["bytes"],
+      [pack(["address", "address"], [tokens[0].address, tokens[1].address])]
+    ),
+    MMF_POLYGON_INIT_CODE_HASH
+  );
+};
+
 export const calculatePairAddressByHandler = (
   tokenA: Token,
   tokenB: Token,
@@ -285,6 +305,8 @@ export const calculatePairAddressByHandler = (
         return getQuickSwapPairAddress(tokenA, tokenB);
       case "cafeswap":
         return getCafeSwapPairAddress(tokenA, tokenB);
+      case "mmfinance":
+        return getMMFPolygonPairAddress(tokenA, tokenB);
       default:
         return getQuickSwapPairAddress(tokenA, tokenB);
     }
@@ -315,7 +337,7 @@ export const calculatePairAddressByHandler = (
       case "vvsfinance":
         return getVVSPairAddress(tokenA, tokenB);
       case "mmfinance":
-        return getMMFPairAddress(tokenA, tokenB);
+        return getMMFCronosPairAddress(tokenA, tokenB);
       default:
         return getVVSPairAddress(tokenA, tokenB);
     }
