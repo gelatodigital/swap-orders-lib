@@ -1,4 +1,10 @@
-import React, { Fragment, useState, useCallback, useEffect } from "react";
+import React, {
+  Fragment,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo,
+} from "react";
 import {
   Currency,
   CurrencyAmount,
@@ -36,7 +42,7 @@ import useGasOverhead from "../../hooks/useGasOverhead";
 import { useIsSwapUnsupported } from "../../hooks/useIsSwapUnsupported";
 import {
   ButtonConfirmed,
-  ButtonError,
+  ButtonOrder,
   ButtonLight,
   ButtonPrimary,
 } from "../Button";
@@ -54,6 +60,7 @@ import { MouseoverTooltip } from "../Tooltip";
 import { Trade } from "@uniswap/v2-sdk";
 import { BigNumber } from "ethers";
 import ConfirmSwapModal from "../order/ConfirmSwapModal";
+import { Web3Guard } from "../Web3Guard";
 
 interface GelatoRangeOrderProps {
   showCommonBases?: boolean;
@@ -68,7 +75,7 @@ export default function GelatoRangeOrder({
   showCommonBases = true,
 }: GelatoRangeOrderProps) {
   const theme = useTheme();
-  const { account, toggleWalletModal } = useWeb3();
+  const { account, chainId, toggleWalletModal } = useWeb3();
   const [activeTab, setActiveTab] = useState<"sell" | "buy">("sell");
   const recipient = account ?? null;
   const {
@@ -220,8 +227,9 @@ export default function GelatoRangeOrder({
     approveCallback,
   ] = useApproveCallbackFromInputCurrencyAmount(parsedAmounts.input);
 
-  // const inputError = false;
-  const isValid = !inputError;
+  const isValid = useMemo(() => {
+    return !inputError;
+  }, [inputError]);
 
   // check if user has gone through approval process, used to show two step buttons, reset on token change
   const [approvalSubmitted, setApprovalSubmitted] = useState<boolean>(false);
@@ -550,7 +558,7 @@ export default function GelatoRangeOrder({
                         )}
                       </AutoRow>
                     </ButtonConfirmed>
-                    <ButtonError
+                    <ButtonOrder
                       onClick={() => {
                         setSwapState({
                           tradeToConfirm: trade,
@@ -564,33 +572,33 @@ export default function GelatoRangeOrder({
                       disabled={
                         !isValid || approvalState !== ApprovalState.APPROVED
                       }
-                      error={false}
                     >
                       <Text fontSize={20} fontWeight={500}>
                         {inputError ? inputError : `Place order`}
                       </Text>
-                    </ButtonError>
+                    </ButtonOrder>
                   </AutoColumn>
                 </AutoRow>
               ) : (
-                <ButtonError
-                  onClick={() => {
-                    setSwapState({
-                      tradeToConfirm: trade,
-                      attemptingTxn: false,
-                      swapErrorMessage: undefined,
-                      showConfirm: true,
-                      txHash: undefined,
-                    });
-                  }}
-                  id="range-order-button"
-                  disabled={!isValid}
-                  error={false}
-                >
-                  <Text fontSize={20} fontWeight={500}>
-                    {inputError ? inputError : `Place order`}
-                  </Text>
-                </ButtonError>
+                <Web3Guard>
+                  <ButtonOrder
+                    onClick={() => {
+                      setSwapState({
+                        tradeToConfirm: trade,
+                        attemptingTxn: false,
+                        swapErrorMessage: undefined,
+                        showConfirm: true,
+                        txHash: undefined,
+                      });
+                    }}
+                    id="range-order-button"
+                    disabled={!isValid}
+                  >
+                    <Text fontSize={20} fontWeight={500}>
+                      {inputError ? inputError : `Place order`}
+                    </Text>
+                  </ButtonOrder>
+                </Web3Guard>
               )}
               {swapErrorMessage && isValid ? (
                 <SwapCallbackError error={swapErrorMessage} />

@@ -466,3 +466,7 @@ export function ButtonRadioChecked({
     );
   }
 }
+
+export function ButtonOrder({ ...rest }: ButtonProps) {
+  return <ButtonPrimary {...rest} />;
+}
