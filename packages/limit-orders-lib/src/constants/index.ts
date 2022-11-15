@@ -78,6 +78,7 @@ export const HANDLERS_ADDRESSES = {
   [CHAIN_ID.BSC]: {
     ["pancakeswap"]: "0x88f8CCC064bA2D39cF08D57B6e7504a7B6bE8E4e",
     ["pancakeswap_stoplimit"]: "0x84b826bcd26f1bc0cd5fbbdef7f5b8965d6bbb38",
+    ["cryptoswap"]: "0xDB8Fd028434F6dD913C032300ef9BA44e6db6f81",
   },
   // UniswapV2Router02Handler
   [CHAIN_ID.AVAX]: {
@@ -123,7 +124,7 @@ export const NETWORK_HANDLERS = {
     "spiritswap_stoplimit",
     "spookyswap_stoplimit",
   ],
-  [CHAIN_ID.BSC]: ["pancakeswap", "pancakeswap_stoplimit"],
+  [CHAIN_ID.BSC]: ["pancakeswap", "pancakeswap_stoplimit", "cryptoswap"],
   [CHAIN_ID.AVAX]: [
     "traderjoe",
     "pangolin",

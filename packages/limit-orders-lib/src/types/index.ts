@@ -18,6 +18,7 @@ export type Handler =
   | "cafeswap"
   | "pancakeswap"
   | "pancakeswap_stoplimit"
+  | "cryptoswap"
   | "traderjoe"
   | "traderjoe_stoplimit"
   | "defyswap"
