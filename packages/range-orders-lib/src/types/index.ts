@@ -13,6 +13,7 @@ export type Handler =
   | "polydex"
   | "cafeswap"
   | "pancakeswap"
+  | "cryptoswap"
   | "traderjoe"
   | "defyswap"
   | "pangolin"

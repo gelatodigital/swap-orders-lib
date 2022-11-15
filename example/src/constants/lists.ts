@@ -24,6 +24,10 @@ const QUICKSWAP_LIST =
 
 const PANCAKESWAP_LIST =
   "https://raw.githubusercontent.com/complusnetwork/default-token-list/master/default-tokenlist-bsc.json";
+
+const CRYPTOSWAP_LIST =
+  "https://tokens.cryptoswapdex.com/cstswap-extended.json";
+  
 const TRADERJOE_LIST =
   "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/joe.tokenlist.json";
 
@@ -47,6 +51,7 @@ export const DEFAULT_LIST_OF_LISTS: string[] = [
   KLEROS_LIST,
   GEMINI_LIST,
   QUICKSWAP_LIST,
+  CRYPTOSWAP_LIST,
   ...UNSUPPORTED_LIST_URLS, // need to load unsupported tokens as well
 ];
 
