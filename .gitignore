@@ -13,3 +13,9 @@ packages/range-orders-react/src/types/v3
 
 .DS_Store
 packages/.DS_Store
+
+.npmrc
+
+git push --delete origin
+
+bd12a31defc7dc70651217c7c3d177a24c199d40
