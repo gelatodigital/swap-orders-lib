@@ -19,13 +19,13 @@ const BA_LIST =
   "https://raw.githubusercontent.com/The-Blockchain-Association/sec-notice-list/master/ba-sec-list.json";
 
 const QUICKSWAP_LIST =
-  "https://unpkg.com/quickswap-default-token-list@1.2.18/build/quickswap-default.tokenlist.json";
+  "https://unpkg.com/quickswap-default-token-list@latest/build/quickswap-default.tokenlist.json";
 
 const PANCAKESWAP_LIST =
   "https://tokens.pancakeswap.finance/pancakeswap-extended.json";
 
-const TRADERJOE_LIST =
-  "https://raw.githubusercontent.com/traderjoe-xyz/joe-tokenlists/main/joe.tokenlist.json";
+const PANGOLIN_LIST =
+  "https://raw.githubusercontent.com/pangolindex/tokenlists/main/pangolin.tokenlist.json";
 
 const VVS_LIST =
   "https://raw.githubusercontent.com/HarryTgerman/vvs-tokenlist/main/vvs-tokenlist.json";
@@ -42,7 +42,7 @@ export const DEFAULT_LIST_OF_LISTS_MAINNET: string[] = [
 
 export const DEFAULT_LIST_OF_LISTS_MATIC: string[] = [QUICKSWAP_LIST];
 export const DEFAULT_LIST_OF_LISTS_BSC: string[] = [PANCAKESWAP_LIST];
-export const DEFAULT_LIST_OF_LISTS_AVALANCHE: string[] = [TRADERJOE_LIST];
+export const DEFAULT_LIST_OF_LISTS_AVALANCHE: string[] = [PANGOLIN_LIST];
 export const DEFAULT_LIST_OF_LISTS_CRO: string[] = [VVS_LIST];
 
 // default lists to be 'active' aka searched across
@@ -50,7 +50,7 @@ export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
   GEMINI_LIST,
   QUICKSWAP_LIST,
   PANCAKESWAP_LIST,
-  TRADERJOE_LIST,
+  PANGOLIN_LIST,
   VVS_LIST,
 ];
 
@@ -61,5 +61,5 @@ export const DEFAULT_ACTIVE_LIST_URLS_BY_CHAIN_ID: {
   [25]: [VVS_LIST],
   [56]: [PANCAKESWAP_LIST],
   [137]: [QUICKSWAP_LIST],
-  [43114]: [TRADERJOE_LIST],
+  [43114]: [PANGOLIN_LIST],
 };
