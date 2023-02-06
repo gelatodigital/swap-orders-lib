@@ -10,11 +10,13 @@ import {
   DEFAULT_LIST_OF_LISTS_MATIC,
   DEFAULT_LIST_OF_LISTS_AVALANCHE,
   DEFAULT_LIST_OF_LISTS_CRO,
+  DEFAULT_ACTIVE_LIST_URLS,
 } from "../../constants/lists";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "..";
 import { addList, removeList, enableList } from "./actions";
 
+let ERRORS = 0;
 export default function Updater({
   includeTokenLists,
 }: {
@@ -73,7 +75,7 @@ export default function Updater({
   }, [fetchList, library, lists]);
 
   useEffect(() => {
-    if (!chainId || !library || Object.keys(lists).length) return;
+    if (!chainId || !library || Object.keys(lists).length || ERRORS > 5) return;
 
     const urlList =
       chainId === 25
@@ -90,8 +92,16 @@ export default function Updater({
       fetchList(library, listURL)
         .then(() => {
           dispatch(addList(listURL));
+          if (
+            DEFAULT_ACTIVE_LIST_URLS.includes(listURL) &&
+            !includeTokenLists.length
+          ) {
+            dispatch(enableList(listURL));
+          }
         })
-        .catch(() => {
+        .catch((error) => {
+          ERRORS++;
+          console.debug(`Could not fetch token list ${listURL}`, error);
           dispatch(removeList(listURL));
         });
     });
