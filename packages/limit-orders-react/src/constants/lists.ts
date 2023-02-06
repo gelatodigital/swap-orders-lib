@@ -57,7 +57,7 @@ export const DEFAULT_ACTIVE_LIST_URLS: string[] = [
 export const DEFAULT_ACTIVE_LIST_URLS_BY_CHAIN_ID: {
   [chainId: number]: string[];
 } = {
-  [1]: DEFAULT_ACTIVE_LIST_URLS,
+  [1]: DEFAULT_LIST_OF_LISTS_MAINNET,
   [25]: [VVS_LIST],
   [56]: [PANCAKESWAP_LIST],
   [137]: [QUICKSWAP_LIST],
