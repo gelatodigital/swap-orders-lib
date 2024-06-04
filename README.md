@@ -1,4 +1,4 @@
-# GelatoNetwork Orders Library monorepo
+# [Deprecated] GelatoNetwork Orders Library monorepo
 
 ## Development
 ### Add a new react-component-library `range-orders-react`
